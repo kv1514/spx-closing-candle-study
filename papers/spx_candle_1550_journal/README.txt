@@ -52,18 +52,23 @@ Checks
   Every number in main.tex was checked by script against the working
   paper's main.tex. The only numbers not found there are
   bibliographic (SSRN ids 4404704 and 4692190, article 100852) and
-  the SEC release number 34-85021, which come from the sources below.
+  the SEC release numbers 34-85021, 34-84454 and 34-87179, which come
+  from the sources below.
   Every table row was matched to the working paper's rows.
 
 Sources for the new facts and citations (checked on 10 November 2026)
   NYSE MOC/LOC cut-off and regulatory imbalance at 15:50: NYSE fact
     sheets "NYSE Opening and Closing Auctions" and "NYSE Auctions
-    Closing Process"; cut-off moved from 15:45 to 15:50 by SEC
-    Release 34-85021 (31 January 2019).
-  Nasdaq NOII on the close from 15:50, moved from 15:55 in Q4 2018:
-    Nasdaq Closing Cross FAQ; Nasdaq article "Automation and
-    information produce efficient price discovery in Nasdaq's
-    auction process".
+    Closing Process"; cut-off and publication moved from 15:45 to
+    15:50 on 1 April 2019 (NYSE notice "MOC/LOC Cutoff Time Change";
+    SEC Release 34-85021, 31 January 2019).
+  Nasdaq: cut-off and the start of the Net Order Imbalance Indicator
+    moved from 15:50 to 15:55 in Q4 2018 (SEC Release 34-84454,
+    SR-NASDAQ-2018-068, approved October 2018); an abbreviated Early
+    Order Imbalance Indicator from 15:50 was added later, scheduled
+    for Q4 2019 (Releases 34-85292 and 34-87179). Nasdaq Closing
+    Cross FAQ; Nasdaq article "Automation and information produce
+    efficient price discovery in Nasdaq's auction process".
   Bogousslavsky and Muravyev (2023), Journal of Financial Markets 66,
     100852 (RePEc listing).
   Beckmeyer, Branger and Gayda (2023), SSRN 4404704.
