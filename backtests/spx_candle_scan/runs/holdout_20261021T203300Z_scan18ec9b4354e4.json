@@ -1,0 +1,2175 @@
+{
+ "what": "SPX close candle scan, step 2 (HOLDOUT 2021-01-01 .. 2026-10-20), run on the frozen candidate list after its SHA-256 matched.",
+ "summary_plain_english": [
+  "3 candle feature(s) were picked using 2013-2020 only, frozen, and tested on 2021-2026: 2 passed (one-sided test, Holm 5%).",
+  "F2_1m_1550_strong_body (+1 = trade in the signal direction): 2021-2026 right 57.5% of 644 trades (95% CI 53.6%-61.2%), mean 1.05 bps/day, Holm p 6.28e-05 -> PASSES. Break-even to buy the ATM 0DTE option: 49.5% (size-neutral 51.8%), so the CI lower bound clears it. Descriptive only: 2023-2026 raw-direction hit 54.7% (CI 49.9%-59.3%); same candle at 11:51 hit 50.7%, t 0.61. To confirm going forward at 80% power: about 244 trades for the hit rate to beat break-even (~2.2 years at 112 trades/yr), 808 trades for the option P&L itself (~7.2 years). It is the already-known P3 effect in another form (same sign as P3 on 98% of its 2013-2020 signal days), so it is not a new discovery.",
+  "F1_1m_15:50 (+1 = trade in the signal direction): 2021-2026 right 54.0% of 1444 trades (95% CI 51.4%-56.6%), mean 0.92 bps/day, Holm p 0.0109 -> PASSES. Break-even to buy the ATM 0DTE option: 51.5% (size-neutral 51.9%), so it is NOT accurate enough to pay for the option. Descriptive only: 2023-2026 raw-direction hit 53.2% (CI 50.0%-56.4%); same candle at 11:51 hit 48.6%, t -1.09. To confirm going forward at 80% power: about 2525 trades for the hit rate to beat break-even (~10.0 years at 252 trades/yr), 7774 trades for the option P&L itself (~30.9 years). It is the already-known P3 effect in another form (same sign as P3 on 93% of its 2013-2020 signal days), so it is not a new discovery.",
+  "F4_day_so_far (+1 = trade in the signal direction): 2021-2026 right 48.4% of 1446 trades (95% CI 45.8%-51.0%), mean -0.03 bps/day, Holm p 0.526 -> fails. Break-even to buy the ATM 0DTE option: 51.0% (size-neutral 51.6%), so it is NOT accurate enough to pay for the option.",
+  "Cost check: on 22 Robinhood days the ATM straddle cost 1.02x the realized official move on the same days (95% CI 0.68-1.65), consistent with the 'fair straddle' cost assumption but too few days to pin it down.",
+  "Plain answer: only the 15:50 one-minute candle works, and it is the effect already known as P3. Its strong-body version cleared the pre-registered accuracy bar on 2021-2026 under the fair-straddle cost assumption, on the Dukascopy CFD series to the 15:59 bar (not the official settlement). It is a lead to confirm with forward trades, not a proven edge. Of the other features, 38 never reached the discovery bar and 2 candidate(s) did not clear the accuracy bar."
+ ],
+ "meta": {
+  "prereg": "/Users/kv15/trading/preregistration/spx_close_candle_scan.md",
+  "prereg_sha256": "2fbf826635e8261ba143470f098876332d845bd791eeab8e381972a94446ab4c",
+  "prereg_params_checked": true,
+  "script": "/Users/kv15/trading/backtests/spx_candle_scan/scan.py",
+  "scan_py_sha256": "18ec9b4354e48f0b1b036927deb50677ff72f3c5729f4445b1382d6390f790e4",
+  "scan_py_sha256_at_freeze": "05fd91bbf9d76fa388353e66dae91904d32f7339805e6cd5d742cb56fe9e4c7a",
+  "scan_py_changed_since_freeze": true,
+  "generated_utc": "2026-10-21T20:33:00Z",
+  "decisions_and_interpretations": [
+   {
+    "id": "entry-assignment",
+    "text": "Each feature is assigned the earliest pre-registered entry its candles allow: a feature whose candles all close by 15:48:59 uses entry 15:49 (target r(15:49 open -> 15:59 close)); a feature that uses the 15:49 or 15:50 one-minute bar uses entry 15:51 (target r(15:51 open -> 15:59 close)). So F1 15:30..15:48 and F3 15:20..15:40 enter at 15:49; F1 15:49, F1 15:50, every F2 shape (the 15:50 1-minute candle and the 15:45-15:49 five-minute candle, which closes at 15:49:59) and F3 15:45 enter at 15:51; every F4 feature is a 'day level at entry' and enters at 15:49.",
+    "kind": "implementation choice (the pre-registration's entry rule applied feature by feature)"
+   },
+   {
+    "id": "f4-definitions",
+    "text": "F4: P = open of the entry bar (15:49). CLV = (P - day low)/(day high - day low) with high/low over the 1-minute bars 09:30..15:48 and P itself; signal sign(CLV - 0.5), 0 if high = low. Opening gap = sign(09:30 open - prior session's 15:59 close). Prior-day candle = sign(prior session's 15:59 close - its 09:30 open). The prior session is the previous NYSE session in d1_days.csv (calendar != nyse_holiday); if that session is not in the keep set (no bars) the two prior-day features are undefined for that day (dropped, not zero). Day-so-far = P1 = sign(ln(15:49 open / 09:30 open)).",
+    "kind": "implementation choice"
+   },
+   {
+    "id": "f2-definitions",
+    "text": "F2 candle = (open of its first minute, max high, min low, close of its last minute); body = close - open, range = high - low, upper wick = high - max(open, close), lower wick = min(open, close) - low. strong body: sign(body) if range > 0 and |body| >= 0.6 range, else 0. hammer: +1 if range > 0, lower wick >= 2|body| and lower wick >= 0.6 range, else 0. shooting star: -1 if range > 0, upper wick >= 2|body| and upper wick >= 0.6 range, else 0. engulfing vs the prior candle of the same size (1-minute 15:49; five-minute 15:40-15:44): +1 if prior close < prior open, current close > current open, current open <= prior close and current close >= prior open; -1 for the mirror case; else 0. big candle: sign(body) if |body| >= 2 x the median (high - low) of the day's 1-minute bars from 09:30 through the candle's last minute, else 0. A candle with any of its bars missing is undefined (dropped).",
+    "kind": "implementation choice"
+   },
+   {
+    "id": "p3-reference",
+    "text": "The P3 reference row is P3 exactly as in spx_close_1549/analysis.py: sign(ln(15:51 open / 15:50 open)), entry 15:51. It is never eligible as a candidate and is outside the BH family. F1 15:50 (sign(close - open) of the 15:50 bar) and the F2 shapes on the 15:50 candle are in the 41 as the pre-registration lists them; any candidate whose non-zero signals agree with P3 on >= 90% of discovery days is flagged overlaps_known_P3, because P3's 2013-2026 result (which includes the holdout years) was known when the pre-registration was written, so its holdout is not a clean out-of-sample test.",
+    "kind": "interpretation (flag only; nothing is excluded)"
+   },
+   {
+    "id": "stat-conventions",
+    "text": "Per feature: y = signal x target x 1e4 over days where both are defined; mean and Newey-West t (lag 5) over all those days (zero-signal days contribute 0, as in analysis.py); hit rate = share of days with signal != 0 and target != 0 on which signal x target > 0. Discovery p-values are two-sided normal; BH q-values over the 41. Holdout: one-sided normal p of mean > 0 with the frozen direction; Holm over the candidates. Hit-rate 95% CI = Wilson score interval treating days as independent.",
+    "kind": "implementation choice (statistics as in analysis.py where it has them)"
+   },
+   {
+    "id": "economics",
+    "text": "Buy one ATM 0DTE call (signal x direction > 0) or put (< 0) at the entry price, strike = entry price (idealised ATM), hold to the 15:59 close. Payoff = |move| on correct days, 0 on wrong days (a zero move counts as wrong). Option cost = half the realized-move-fair straddle = 0.5 x mean |move| over the candidate's holdout trade days, + $0.10 half-spread + one fee ($0.09 or $0.74 per contract = 0.0009 or 0.0074 points; no exit fee at expiry, as analysis.py). Break-even hit rate = cost / mean |move| on correct days (primary, uses the correct- vs wrong-day |move| distribution); also reported: the size-neutral break-even cost / mean |move| (= 0.5 + (spread + fee)/mean|move|) and both at the last D1 price level (moves in return units x the 2026-10-20 15:49 open). Trades needed (one-sided 5%, 80% power, iid normal approximation): n = ((z_a + z_b) sd / mean)^2 for the per-trade signed return and for the per-trade option P&L; for the hit rate vs 50% and vs the break-even, n = ((z_a sqrt(p0 q0) + z_b sqrt(p q)) / (p - p0))^2.",
+    "kind": "implementation choice (the pre-registration's step 4 made concrete)"
+   },
+   {
+    "id": "straddle-crosscheck",
+    "text": "Cross-check: on the 22 Robinhood 10-minute days the ATM straddle = call + put 15:40-bar close (last trade in 15:40:00-15:49:59, about 15:50) at the strike nearest the SPX 15:49-bar close, in bps of that SPX price, versus the assumed realized-move-fair straddle (D1 holdout mean |move| in bps, for the 15:49 and 15:51 entries, which bracket a 15:50 mark) and versus the official |settle - S| on the same days. The two fully priced days use the 15:49 one-minute marks: 2026-10-20 from spx_close_1549/results.json, 2026-10-21 from the live scorecard (settlement provisional there).",
+    "kind": "implementation choice"
+   },
+   {
+    "id": "placebo",
+    "text": "Placebo: every candidate rebuilt 240 minutes earlier (every bar index - 240: entry 15:49 -> 11:49, 15:51 -> 11:51, target to the 11:59 close; F1 15:40 -> 11:40, etc.), with its frozen direction. Opening gap and prior-day candle keep their signal (only the target moves); day-so-far becomes sign(11:49 open / 09:30 open). Reported on discovery and holdout, descriptive.",
+    "kind": "implementation choice"
+   },
+   {
+    "id": "holdout-rerun",
+    "text": "The holdout step was re-run on the same frozen file (hash unchanged) after its first run, to change two reporting items: (a) the straddle-cost sensitivity had scaled the option cost by market straddle / D1 holdout mean |move|, a ratio across different volatility regimes (2026 vs 2021-2026) that made the break-even look far too low (about 36%); it now uses the market's markup over the realized official move on the same 22 days, with a bootstrap CI; (b) the plain summary now states the P3 overlap, the 2023-2026 descriptive hit rate, the size-neutral break-even and the calendar time to confirm. No test statistic, candidate, direction, or pre-registered economics number changed (the code is deterministic).",
+    "kind": "DEVIATION in reporting only (labelled), made after seeing the first holdout output"
+   }
+  ],
+  "runtime_s": 6.05
+ },
+ "hash_gate": {
+  "file": "/Users/kv15/trading/backtests/spx_candle_scan/candidates.json",
+  "sha256": "20ca75f8a9cf62d8f46a0eb5e6c59eae1292284c50a9319922ac2e17ee75931f",
+  "matched": true,
+  "frozen_utc": "2026-10-21T20:25:04Z"
+ },
+ "data": {
+  "holdout": {
+   "first": "2021-01-04",
+   "last": "2026-10-20",
+   "n_days": 1446
+  },
+  "discovery": {
+   "first": "2013-02-28",
+   "last": "2020-12-31",
+   "n_days": 1861
+  },
+  "last_d1_level_1549_open": 7709.581,
+  "last_d1_date": "2026-10-20"
+ },
+ "lookahead_selfcheck": [
+  "42 signals (41 features + P3) at shift 0 min: masked-at-entry == full and scrambled-future == full; every target starts at the entry bar open",
+  "42 signals (41 features + P3) at shift -240 min: masked-at-entry == full and scrambled-future == full; every target starts at the entry bar open"
+ ],
+ "discovery_reproduced_with_current_code": {
+  "same_candidates_and_directions": true,
+  "max_abs_t_diff_vs_discovery_json": 0.0
+ },
+ "frozen_candidates": [
+  {
+   "rank": 1,
+   "feature": "F2_1m_1550_strong_body",
+   "direction": 1,
+   "entry": "15:51",
+   "target": "r(15:51 open -> 15:59 close)",
+   "desc": "strong body (|body| >= 0.6 range): sign(body); on the 15:50 1-minute candle",
+   "discovery_nw_t": 3.8235384635695224,
+   "discovery_mean_bps": 1.1896196956837422,
+   "discovery_hit_rate": 0.5410733844468785,
+   "discovery_bh_q": 0.005393552415050596,
+   "discovery_agreement_with_P3_sign": 0.9793478260869565,
+   "overlaps_known_P3": true
+  },
+  {
+   "rank": 2,
+   "feature": "F1_1m_15:50",
+   "direction": 1,
+   "entry": "15:51",
+   "target": "r(15:51 open -> 15:59 close)",
+   "desc": "sign(close - open) of the 15:50 1-minute candle",
+   "discovery_nw_t": 2.8904507246213393,
+   "discovery_mean_bps": 0.9478926757455223,
+   "discovery_hit_rate": 0.5217877094972067,
+   "discovery_bh_q": 0.07886141599440871,
+   "discovery_agreement_with_P3_sign": 0.9313019390581717,
+   "overlaps_known_P3": true
+  },
+  {
+   "rank": 3,
+   "feature": "F4_day_so_far",
+   "direction": 1,
+   "entry": "15:49",
+   "target": "r(15:49 open -> 15:59 close)",
+   "desc": "sign r(09:30 open -> 15:49 open) (= P1)",
+   "discovery_nw_t": 2.68954351211156,
+   "discovery_mean_bps": 1.4628437663883678,
+   "discovery_hit_rate": 0.5201086956521739,
+   "discovery_bh_q": 0.09778475207552965,
+   "discovery_agreement_with_P3_sign": 0.4997298757428417,
+   "overlaps_known_P3": false
+  }
+ ],
+ "holdout_test": {
+  "rule": "one-sided NW test of mean(direction x signal x target) > 0; Holm across candidates at 5%; a candle 'predicts' only if it passes",
+  "rows": [
+   {
+    "feature": "F2_1m_1550_strong_body",
+    "direction": 1,
+    "entry": "15:51",
+    "discovery_nw_t": 3.8235384635695224,
+    "n": 1446,
+    "n_undefined": 0,
+    "n_zero_signal": 802,
+    "n_trades": 644,
+    "n_trades_zero_target": 0,
+    "mean_bps": 1.051823249805103,
+    "nw_se_bps": 0.2567392539436035,
+    "nw_t": 4.096854040232396,
+    "p_two_sided": 4.1880277733262595e-05,
+    "mean_bps_per_trade": 2.361702514313942,
+    "sd_bps_per_trade": 15.789789166139562,
+    "hit_rate": 0.5745341614906833,
+    "n_hits": 370,
+    "n_hit_days": 644,
+    "hit_rate_wilson95": [
+     0.5360177849163231,
+     0.612166618370794
+    ],
+    "p_one_sided": 2.0940138866631298e-05,
+    "overlaps_known_P3": true,
+    "p_holm": 6.282041659989389e-05,
+    "passes_holm_5pct": true
+   },
+   {
+    "feature": "F1_1m_15:50",
+    "direction": 1,
+    "entry": "15:51",
+    "discovery_nw_t": 2.8904507246213393,
+    "n": 1446,
+    "n_undefined": 0,
+    "n_zero_signal": 1,
+    "n_trades": 1445,
+    "n_trades_zero_target": 1,
+    "mean_bps": 0.9221368370202928,
+    "nw_se_bps": 0.36210518500195715,
+    "nw_t": 2.54659937281845,
+    "p_two_sided": 0.010877823547524982,
+    "mean_bps_per_trade": 0.9227749940009297,
+    "sd_bps_per_trade": 15.133549892635957,
+    "hit_rate": 0.5401662049861495,
+    "n_hits": 780,
+    "n_hit_days": 1444,
+    "hit_rate_wilson95": [
+     0.5143878846256181,
+     0.5657313848519151
+    ],
+    "p_one_sided": 0.005438911773762491,
+    "overlaps_known_P3": true,
+    "p_holm": 0.010877823547524982,
+    "passes_holm_5pct": true
+   },
+   {
+    "feature": "F4_day_so_far",
+    "direction": 1,
+    "entry": "15:49",
+    "discovery_nw_t": 2.68954351211156,
+    "n": 1446,
+    "n_undefined": 0,
+    "n_zero_signal": 0,
+    "n_trades": 1446,
+    "n_trades_zero_target": 0,
+    "mean_bps": -0.029928718437692896,
+    "nw_se_bps": 0.4507986563567723,
+    "nw_t": -0.06639043399012846,
+    "p_two_sided": 0.9470669859712341,
+    "mean_bps_per_trade": -0.029928718437692896,
+    "sd_bps_per_trade": 18.444981950807488,
+    "hit_rate": 0.48409405255878285,
+    "n_hits": 700,
+    "n_hit_days": 1446,
+    "hit_rate_wilson95": [
+     0.45841219315834725,
+     0.5098601998539091
+    ],
+    "p_one_sided": 0.526466507014383,
+    "overlaps_known_P3": false,
+    "p_holm": 0.526466507014383,
+    "passes_holm_5pct": false
+   }
+  ],
+  "n_candidates": 3,
+  "n_pass_holm": 2
+ },
+ "p3_reference_holdout": {
+  "note": "reference only, not tested, not in Holm",
+  "n": 1446,
+  "n_undefined": 0,
+  "n_zero_signal": 4,
+  "n_trades": 1442,
+  "n_trades_zero_target": 1,
+  "mean_bps": 0.9601280623501194,
+  "nw_se_bps": 0.36647088139060974,
+  "nw_t": 2.619930016559076,
+  "p_two_sided": 0.008794781332373804,
+  "mean_bps_per_trade": 0.9627913856853485,
+  "sd_bps_per_trade": 15.098659198929365,
+  "hit_rate": 0.5364330326162388,
+  "n_hits": 773,
+  "n_hit_days": 1441,
+  "hit_rate_wilson95": [
+   0.5106230291039761,
+   0.5620493041537525
+  ],
+  "p_one_sided_positive": 0.004397390666186902
+ },
+ "economics": {
+  "rule": "see decisions 'economics'",
+  "candidates": {
+   "F2_1m_1550_strong_body": {
+    "holdout_points": {
+     "n_trades": 644,
+     "units": "index points",
+     "share_correct_incl_zero_moves": 0.5745341614906833,
+     "mean_abs_move_all": 5.549204968944111,
+     "mean_abs_move_correct_days": 5.806983783783787,
+     "mean_abs_move_wrong_days": 5.201109489051118,
+     "median_abs_move_correct_days": 3.7910000000001673,
+     "median_abs_move_wrong_days": 3.992000000000189,
+     "realized_move_fair_straddle": 5.549204968944111,
+     "option_cost_ex_costs_half_straddle": 2.7746024844720556,
+     "fee_cases": {
+      "fee_0.09": {
+       "option_cost_pts": 2.875502484472056,
+       "breakeven_hit_rate": 0.49518004381241787,
+       "breakeven_hit_rate_size_neutral": 0.518182784842997,
+       "mean_pnl_usd_per_trade_at_observed_hits": 46.08080745341572,
+       "sd_pnl_usd_per_trade": 526.5568013397424,
+       "trades_needed_option_pnl_80pct_power": 808
+      },
+      "fee_0.74": {
+       "option_cost_pts": 2.8820024844720558,
+       "breakeven_hit_rate": 0.49629938566733256,
+       "breakeven_hit_rate_size_neutral": 0.5193541238071147,
+       "mean_pnl_usd_per_trade_at_observed_hits": 45.430807453415746,
+       "sd_pnl_usd_per_trade": 526.5568013397424,
+       "trades_needed_option_pnl_80pct_power": 831
+      }
+     },
+     "sensitivity_breakeven_with_observed_market_markup": {
+      "rule": "option cost = 0.5 x markup x realized-move-fair straddle + half-spread + fee, markup = market straddle / realized official |move| on the 22 Robinhood 10-minute days",
+      "breakeven_hit_rate": {
+       "point": {
+        "markup": 1.0150401254245758,
+        "fee_0.09": 0.5023662821288281,
+        "fee_0.74": 0.5034856239837427
+       },
+       "boot95_low": {
+        "markup": 0.6796728623366257,
+        "fee_0.09": 0.3421263234823263,
+        "fee_0.74": 0.34324566533724105
+       },
+       "boot95_high": {
+        "markup": 1.6473748749817758,
+        "fee_0.09": 0.8044986166531406,
+        "fee_0.74": 0.8056179585080553
+       }
+      },
+      "caveat": "sensitivity, not the pre-registered assumption; 22 days, so the markup is uncertain"
+     }
+    },
+    "at_last_level": {
+     "n_trades": 644,
+     "units": "index points at level 7709.58",
+     "share_correct_incl_zero_moves": 0.5745341614906833,
+     "mean_abs_move_all": 8.599455217855638,
+     "mean_abs_move_correct_days": 9.067465750841658,
+     "mean_abs_move_wrong_days": 7.967470191560647,
+     "median_abs_move_correct_days": 6.066785145757896,
+     "median_abs_move_wrong_days": 5.805282146184424,
+     "realized_move_fair_straddle": 8.599455217855638,
+     "option_cost_ex_costs_half_straddle": 4.299727608927819,
+     "fee_cases": {
+      "fee_0.09": {
+       "option_cost_pts": 4.4006276089278185,
+       "breakeven_hit_rate": 0.48532056583939615,
+       "breakeven_hit_rate_size_neutral": 0.5117333014061743,
+       "mean_pnl_usd_per_trade_at_observed_hits": 80.89412230774823,
+       "sd_pnl_usd_per_trade": 842.6545446557217,
+       "trades_needed_option_pnl_80pct_power": 671
+      },
+      "fee_0.74": {
+       "option_cost_pts": 4.407127608927818,
+       "breakeven_hit_rate": 0.4860374144251652,
+       "breakeven_hit_rate_size_neutral": 0.5124891632410618,
+       "mean_pnl_usd_per_trade_at_observed_hits": 80.24412230774824,
+       "sd_pnl_usd_per_trade": 842.6545446557217,
+       "trades_needed_option_pnl_80pct_power": 682
+      }
+     }
+    },
+    "verdict_vs_breakeven": {
+     "fee_0.09": {
+      "breakeven_hit_rate": 0.49518004381241787,
+      "breakeven_hit_rate_at_last_level": 0.48532056583939615,
+      "hit_rate_ci_lower": 0.5360177849163231,
+      "accurate_ci_lower_above_breakeven": true,
+      "trades_needed_hit_vs_breakeven_80pct_power": 244,
+      "trades_needed_hit_vs_breakeven_at_last_level": 193
+     },
+     "fee_0.74": {
+      "breakeven_hit_rate": 0.49629938566733256,
+      "breakeven_hit_rate_at_last_level": 0.4860374144251652,
+      "hit_rate_ci_lower": 0.5360177849163231,
+      "accurate_ci_lower_above_breakeven": true,
+      "trades_needed_hit_vs_breakeven_80pct_power": 251,
+      "trades_needed_hit_vs_breakeven_at_last_level": 196
+     }
+    },
+    "trades_needed_mean_return_80pct_power": 277,
+    "trades_needed_hit_vs_50pct_80pct_power": 277,
+    "holdout_trades_available": 644,
+    "holdout_trades_per_252_days": 112.23236514522823,
+    "years_needed_at_holdout_trade_rate": {
+     "mean_return": 2.4680937592428274,
+     "hit_vs_breakeven_fee_0.09": 2.1740609287193133,
+     "option_pnl_fee_0.09": 7.199349304939366
+    }
+   },
+   "F1_1m_15:50": {
+    "holdout_points": {
+     "n_trades": 1445,
+     "units": "index points",
+     "share_correct_incl_zero_moves": 0.5397923875432526,
+     "mean_abs_move_all": 5.331024913494814,
+     "mean_abs_move_correct_days": 5.366906410256415,
+     "mean_abs_move_wrong_days": 5.288938345864666,
+     "median_abs_move_correct_days": 3.787500000000364,
+     "median_abs_move_wrong_days": 3.8890000000001237,
+     "realized_move_fair_straddle": 5.331024913494814,
+     "option_cost_ex_costs_half_straddle": 2.665512456747407,
+     "fee_cases": {
+      "fee_0.09": {
+       "option_cost_pts": 2.7664124567474073,
+       "breakeven_hit_rate": 0.5154575551123196,
+       "breakeven_hit_rate_size_neutral": 0.5189269421241279,
+       "mean_pnl_usd_per_trade_at_observed_hits": 13.060276816608996,
+       "sd_pnl_usd_per_trade": 463.10483342633364,
+       "trades_needed_option_pnl_80pct_power": 7774
+      },
+      "fee_0.74": {
+       "option_cost_pts": 2.7729124567474073,
+       "breakeven_hit_rate": 0.5166686811322514,
+       "breakeven_hit_rate_size_neutral": 0.5201462198625504,
+       "mean_pnl_usd_per_trade_at_observed_hits": 12.410276816608981,
+       "sd_pnl_usd_per_trade": 463.10483342633364,
+       "trades_needed_option_pnl_80pct_power": 8610
+      }
+     },
+     "sensitivity_breakeven_with_observed_market_markup": {
+      "rule": "option cost = 0.5 x markup x realized-move-fair straddle + half-spread + fee, markup = market straddle / realized official |move| on the 22 Robinhood 10-minute days",
+      "breakeven_hit_rate": {
+       "point": {
+        "markup": 1.0150401254245758,
+        "fee_0.09": 0.5229273409825627,
+        "fee_0.74": 0.5241384670024944
+       },
+       "boot95_low": {
+        "markup": 0.6796728623366257,
+        "fee_0.09": 0.3563647909746323,
+        "fee_0.74": 0.3575759169945641
+       },
+       "boot95_high": {
+        "markup": 1.6473748749817758,
+        "fee_0.09": 0.8369809172770745,
+        "fee_0.74": 0.8381920432970061
+       }
+      },
+      "caveat": "sensitivity, not the pre-registered assumption; 22 days, so the markup is uncertain"
+     }
+    },
+    "at_last_level": {
+     "n_trades": 1445,
+     "units": "index points at level 7709.58",
+     "share_correct_incl_zero_moves": 0.5397923875432526,
+     "mean_abs_move_all": 8.28504724642184,
+     "mean_abs_move_correct_days": 8.333204859650815,
+     "mean_abs_move_wrong_days": 8.22856162489011,
+     "median_abs_move_correct_days": 6.0651246600182915,
+     "median_abs_move_wrong_days": 5.656682291396692,
+     "realized_move_fair_straddle": 8.28504724642184,
+     "option_cost_ex_costs_half_straddle": 4.14252362321092,
+     "fee_cases": {
+      "fee_0.09": {
+       "option_cost_pts": 4.243423623210919,
+       "breakeven_hit_rate": 0.5092186853292757,
+       "breakeven_hit_rate_size_neutral": 0.512178566639264,
+       "mean_pnl_usd_per_trade_at_observed_hits": 25.477692386702934,
+       "sd_pnl_usd_per_trade": 734.6406842606086,
+       "trades_needed_option_pnl_80pct_power": 5141
+      },
+      "fee_0.74": {
+       "option_cost_pts": 4.249923623210919,
+       "breakeven_hit_rate": 0.5099986973545978,
+       "breakeven_hit_rate_size_neutral": 0.5129631125575516,
+       "mean_pnl_usd_per_trade_at_observed_hits": 24.82769238670293,
+       "sd_pnl_usd_per_trade": 734.6406842606086,
+       "trades_needed_option_pnl_80pct_power": 5414
+      }
+     }
+    },
+    "verdict_vs_breakeven": {
+     "fee_0.09": {
+      "breakeven_hit_rate": 0.5154575551123196,
+      "breakeven_hit_rate_at_last_level": 0.5092186853292757,
+      "hit_rate_ci_lower": 0.5143878846256181,
+      "accurate_ci_lower_above_breakeven": false,
+      "trades_needed_hit_vs_breakeven_80pct_power": 2525,
+      "trades_needed_hit_vs_breakeven_at_last_level": 1610
+     },
+     "fee_0.74": {
+      "breakeven_hit_rate": 0.5166686811322514,
+      "breakeven_hit_rate_at_last_level": 0.5099986973545978,
+      "hit_rate_ci_lower": 0.5143878846256181,
+      "accurate_ci_lower_above_breakeven": false,
+      "trades_needed_hit_vs_breakeven_80pct_power": 2792,
+      "trades_needed_hit_vs_breakeven_at_last_level": 1695
+     }
+    },
+    "trades_needed_mean_return_80pct_power": 1663,
+    "trades_needed_hit_vs_50pct_80pct_power": 956,
+    "holdout_trades_available": 1445,
+    "holdout_trades_per_252_days": 251.82572614107883,
+    "years_needed_at_holdout_trade_rate": {
+     "mean_return": 6.603773274015489,
+     "hit_vs_breakeven_fee_0.09": 10.026775416048773,
+     "option_pnl_fee_0.09": 30.870555280935903
+    }
+   },
+   "F4_day_so_far": {
+    "holdout_points": {
+     "n_trades": 1446,
+     "units": "index points",
+     "share_correct_incl_zero_moves": 0.48409405255878285,
+     "mean_abs_move_all": 6.420587136929452,
+     "mean_abs_move_correct_days": 6.488871428571425,
+     "mean_abs_move_wrong_days": 6.356513404825723,
+     "median_abs_move_correct_days": 4.693499999999858,
+     "median_abs_move_wrong_days": 4.695500000000038,
+     "realized_move_fair_straddle": 6.420587136929452,
+     "option_cost_ex_costs_half_straddle": 3.210293568464726,
+     "fee_cases": {
+      "fee_0.09": {
+       "option_cost_pts": 3.3111935684647262,
+       "breakeven_hit_rate": 0.5102880531559109,
+       "breakeven_hit_rate_size_neutral": 0.5157150736915711,
+       "mean_pnl_usd_per_trade_at_observed_hits": -16.99695020746863,
+       "sd_pnl_usd_per_trade": 545.6044083184131,
+       "trades_needed_option_pnl_80pct_power": null
+      },
+      "fee_0.74": {
+       "option_cost_pts": 3.317693568464726,
+       "breakeven_hit_rate": 0.5112897681800951,
+       "breakeven_hit_rate_size_neutral": 0.5167274421652601,
+       "mean_pnl_usd_per_trade_at_observed_hits": -17.646950207468656,
+       "sd_pnl_usd_per_trade": 545.6044083184132,
+       "trades_needed_option_pnl_80pct_power": null
+      }
+     },
+     "sensitivity_breakeven_with_observed_market_markup": {
+      "rule": "option cost = 0.5 x markup x realized-move-fair straddle + half-spread + fee, markup = market straddle / realized official |move| on the 22 Robinhood 10-minute days",
+      "breakeven_hit_rate": {
+       "point": {
+        "markup": 1.0150401254245758,
+        "fee_0.09": 0.5177289800491176,
+        "fee_0.74": 0.5187306950733019
+       },
+       "boot95_low": {
+        "markup": 0.6796728623366257,
+        "fee_0.09": 0.3518099323971145,
+        "fee_0.74": 0.3528116474212987
+       },
+       "boot95_high": {
+        "markup": 1.6473748749817758,
+        "fee_0.09": 0.8305692330832491,
+        "fee_0.74": 0.8315709481074335
+       }
+      },
+      "caveat": "sensitivity, not the pre-registered assumption; 22 days, so the markup is uncertain"
+     }
+    },
+    "at_last_level": {
+     "n_trades": 1446,
+     "units": "index points at level 7709.58",
+     "share_correct_incl_zero_moves": 0.48409405255878285,
+     "mean_abs_move_all": 10.001401527592217,
+     "mean_abs_move_correct_days": 10.304723134620613,
+     "mean_abs_move_wrong_days": 9.716783397672812,
+     "median_abs_move_correct_days": 7.232098451841611,
+     "median_abs_move_wrong_days": 6.798559449657131,
+     "realized_move_fair_straddle": 10.001401527592217,
+     "option_cost_ex_costs_half_straddle": 5.000700763796108,
+     "fee_cases": {
+      "fee_0.09": {
+       "option_cost_pts": 5.101600763796108,
+       "breakeven_hit_rate": 0.49507402548801543,
+       "breakeven_hit_rate_size_neutral": 0.5100885860568274,
+       "mean_pnl_usd_per_trade_at_observed_hits": -11.314558106137147,
+       "sd_pnl_usd_per_trade": 880.2465779220071,
+       "trades_needed_option_pnl_80pct_power": null
+      },
+      "fee_0.74": {
+       "option_cost_pts": 5.108100763796108,
+       "breakeven_hit_rate": 0.4957048042013379,
+       "breakeven_hit_rate_size_neutral": 0.5107384949703,
+       "mean_pnl_usd_per_trade_at_observed_hits": -11.964558106137144,
+       "sd_pnl_usd_per_trade": 880.246577922007,
+       "trades_needed_option_pnl_80pct_power": null
+      }
+     }
+    },
+    "verdict_vs_breakeven": {
+     "fee_0.09": {
+      "breakeven_hit_rate": 0.5102880531559109,
+      "breakeven_hit_rate_at_last_level": 0.49507402548801543,
+      "hit_rate_ci_lower": 0.45841219315834725,
+      "accurate_ci_lower_above_breakeven": false,
+      "trades_needed_hit_vs_breakeven_80pct_power": null,
+      "trades_needed_hit_vs_breakeven_at_last_level": null
+     },
+     "fee_0.74": {
+      "breakeven_hit_rate": 0.5112897681800951,
+      "breakeven_hit_rate_at_last_level": 0.4957048042013379,
+      "hit_rate_ci_lower": 0.45841219315834725,
+      "accurate_ci_lower_above_breakeven": false,
+      "trades_needed_hit_vs_breakeven_80pct_power": null,
+      "trades_needed_hit_vs_breakeven_at_last_level": null
+     }
+    },
+    "trades_needed_mean_return_80pct_power": null,
+    "trades_needed_hit_vs_50pct_80pct_power": null,
+    "holdout_trades_available": 1446,
+    "holdout_trades_per_252_days": 252.0,
+    "years_needed_at_holdout_trade_rate": {
+     "mean_return": null,
+     "hit_vs_breakeven_fee_0.09": null,
+     "option_pnl_fee_0.09": null
+    }
+   }
+  },
+  "size_neutral_reference_by_entry": {
+   "15:49": {
+    "holdout_points": {
+     "n_trades": 1446,
+     "units": "index points",
+     "share_correct_incl_zero_moves": 0.5027662517289073,
+     "mean_abs_move_all": 6.420587136929452,
+     "mean_abs_move_correct_days": 6.463980742778538,
+     "mean_abs_move_wrong_days": 6.376710709318485,
+     "median_abs_move_correct_days": 4.69399999999996,
+     "median_abs_move_wrong_days": 4.697000000000116,
+     "realized_move_fair_straddle": 6.420587136929452,
+     "option_cost_ex_costs_half_straddle": 3.210293568464726,
+     "fee_cases": {
+      "fee_0.09": {
+       "option_cost_pts": 3.3111935684647262,
+       "breakeven_hit_rate": 0.5122530063481303,
+       "breakeven_hit_rate_size_neutral": 0.5157150736915711,
+       "mean_pnl_usd_per_trade_at_observed_hits": -6.1322199170122715,
+       "sd_pnl_usd_per_trade": 556.3738138464821,
+       "trades_needed_option_pnl_80pct_power": null
+      },
+      "fee_0.74": {
+       "option_cost_pts": 3.317693568464726,
+       "breakeven_hit_rate": 0.513258578650811,
+       "breakeven_hit_rate_size_neutral": 0.5167274421652601,
+       "mean_pnl_usd_per_trade_at_observed_hits": -6.782219917012295,
+       "sd_pnl_usd_per_trade": 556.3738138464822,
+       "trades_needed_option_pnl_80pct_power": null
+      }
+     }
+    },
+    "at_last_level": {
+     "n_trades": 1446,
+     "units": "index points at level 7709.58",
+     "share_correct_incl_zero_moves": 0.5027662517289073,
+     "mean_abs_move_all": 10.001401527592217,
+     "mean_abs_move_correct_days": 10.078149574843312,
+     "mean_abs_move_wrong_days": 9.923799538229842,
+     "median_abs_move_correct_days": 7.1360367991222855,
+     "median_abs_move_wrong_days": 6.824767424994668,
+     "realized_move_fair_straddle": 10.001401527592217,
+     "option_cost_ex_costs_half_straddle": 5.000700763796108,
+     "fee_cases": {
+      "fee_0.09": {
+       "option_cost_pts": 5.101600763796108,
+       "breakeven_hit_rate": 0.5062041127599978,
+       "breakeven_hit_rate_size_neutral": 0.5100885860568274,
+       "mean_pnl_usd_per_trade_at_observed_hits": -3.464727768885425,
+       "sd_pnl_usd_per_trade": 885.2432227400759,
+       "trades_needed_option_pnl_80pct_power": null
+      },
+      "fee_0.74": {
+       "option_cost_pts": 5.108100763796108,
+       "breakeven_hit_rate": 0.5068490724276162,
+       "breakeven_hit_rate_size_neutral": 0.5107384949703,
+       "mean_pnl_usd_per_trade_at_observed_hits": -4.114727768885406,
+       "sd_pnl_usd_per_trade": 885.2432227400757,
+       "trades_needed_option_pnl_80pct_power": null
+      }
+     }
+    }
+   },
+   "15:51": {
+    "holdout_points": {
+     "n_trades": 1446,
+     "units": "index points",
+     "share_correct_incl_zero_moves": 0.5034578146611342,
+     "mean_abs_move_all": 5.329676348547722,
+     "mean_abs_move_correct_days": 5.317230769230773,
+     "mean_abs_move_wrong_days": 5.34229526462396,
+     "median_abs_move_correct_days": 3.9205000000001746,
+     "median_abs_move_wrong_days": 3.752499999999827,
+     "realized_move_fair_straddle": 5.329676348547722,
+     "option_cost_ex_costs_half_straddle": 2.664838174273861,
+     "fee_cases": {
+      "fee_0.09": {
+       "option_cost_pts": 2.7657381742738614,
+       "breakeven_hit_rate": 0.520146349539381,
+       "breakeven_hit_rate_size_neutral": 0.518931731197429,
+       "mean_pnl_usd_per_trade_at_observed_hits": -8.873679114799492,
+       "sd_pnl_usd_per_trade": 433.11863570520296,
+       "trades_needed_option_pnl_80pct_power": null
+      },
+      "fee_0.74": {
+       "option_cost_pts": 2.7722381742738613,
+       "breakeven_hit_rate": 0.5213687903703514,
+       "breakeven_hit_rate_size_neutral": 0.5201513174489977,
+       "mean_pnl_usd_per_trade_at_observed_hits": -9.523679114799496,
+       "sd_pnl_usd_per_trade": 433.11863570520296,
+       "trades_needed_option_pnl_80pct_power": null
+      }
+     }
+    },
+    "at_last_level": {
+     "n_trades": 1446,
+     "units": "index points at level 7709.58",
+     "share_correct_incl_zero_moves": 0.5034578146611342,
+     "mean_abs_move_all": 8.283558547746955,
+     "mean_abs_move_correct_days": 8.312589097910449,
+     "mean_abs_move_wrong_days": 8.25412367237227,
+     "median_abs_move_correct_days": 6.132425371108272,
+     "median_abs_move_wrong_days": 5.794502294647527,
+     "realized_move_fair_straddle": 8.283558547746955,
+     "option_cost_ex_costs_half_straddle": 4.141779273873477,
+     "fee_cases": {
+      "fee_0.09": {
+       "option_cost_pts": 4.242679273873477,
+       "breakeven_hit_rate": 0.5103920359710751,
+       "breakeven_hit_rate_size_neutral": 0.5121807553382288,
+       "mean_pnl_usd_per_trade_at_observed_hits": -5.764133246351361,
+       "sd_pnl_usd_per_trade": 698.6987080112248,
+       "trades_needed_option_pnl_80pct_power": null
+      },
+      "fee_0.74": {
+       "option_cost_pts": 4.249179273873477,
+       "breakeven_hit_rate": 0.5111739824769639,
+       "breakeven_hit_rate_size_neutral": 0.5129654422529809,
+       "mean_pnl_usd_per_trade_at_observed_hits": -6.4141332463513665,
+       "sd_pnl_usd_per_trade": 698.6987080112249,
+       "trades_needed_option_pnl_80pct_power": null
+      }
+     }
+    }
+   }
+  }
+ },
+ "straddle_cost_crosscheck": {
+  "assumed_fair_straddle_bps_from_d1": {
+   "15:49": {
+    "holdout_mean_abs_move_bps": 12.972691418109772,
+    "late_2023_2026_mean_abs_move_bps": 11.11706116355739
+   },
+   "15:51": {
+    "holdout_mean_abs_move_bps": 10.744499017192963,
+    "late_2023_2026_mean_abs_move_bps": 9.431054743893213
+   }
+  },
+  "robinhood_10m_days": {
+   "files": [
+    "d2_chunk_B_options_10m.csv",
+    "d2_chunk_C_options_10m.csv"
+   ],
+   "n_days": 22,
+   "first": "2026-09-21",
+   "last": "2026-10-20",
+   "mean_market_straddle_bps": 7.745758950645356,
+   "median_market_straddle_bps": 7.918134298430276,
+   "mean_realized_abs_move_official_bps_same_days": 7.630987934989687,
+   "ratio_market_to_realized_same_days": 1.0150401254245758,
+   "ratio_market_to_realized_same_days_boot95": [
+    0.6796728623366257,
+    1.6473748749817758
+   ],
+   "how_to_read": "ratio_market_to_realized_same_days is the market's markup over the realized official move on the same days (1 = priced at realized-move-fair, the pre-registered assumption). The ratio_market_to_assumed_fair_* values compare these 2026 days with the D1 holdout average, i.e. different volatility regimes: below 1 they say the recent move is smaller than the 2021-2026 average, not that options are cheap.",
+   "max_abs_parity_dev_pts": 3.5999999999996355,
+   "note": "10-minute closes are last trades in 15:40:00-15:49:59 (about 15:50), not simultaneous with each other or with SPX; the straddle (call + put) is much less sensitive to that than either leg",
+   "rows": [
+    {
+     "date": "2026-09-21",
+     "spx_1549_close": 7772.73,
+     "K": 7775.0,
+     "K_minus_S": 2.2700000000004366,
+     "call_10m_1540_close": 2.48,
+     "put_10m_1540_close": 4.45,
+     "straddle_pts": 6.93,
+     "straddle_bps": 8.915786345338125,
+     "parity_atm_dev_pts": 0.30000000000043636,
+     "settle_official": 7764.7,
+     "realized_abs_move_official_bps": 10.3309905271375,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 9.032038260846642,
+      "15:51": 3.9660712324929293
+     }
+    },
+    {
+     "date": "2026-09-22",
+     "spx_1549_close": 7777.36,
+     "K": 7775.0,
+     "K_minus_S": -2.3599999999996726,
+     "call_10m_1540_close": 3.85,
+     "put_10m_1540_close": 1.45,
+     "straddle_pts": 5.3,
+     "straddle_bps": 6.814651758437311,
+     "parity_atm_dev_pts": 0.04000000000032777,
+     "settle_official": 7764.64,
+     "realized_abs_move_official_bps": 16.355164220248703,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 15.916053970815858,
+      "15:51": 15.606626592169492
+     }
+    },
+    {
+     "date": "2026-09-23",
+     "spx_1549_close": 7709.14,
+     "K": 7710.0,
+     "K_minus_S": 0.8599999999996726,
+     "call_10m_1540_close": 2.55,
+     "put_10m_1540_close": 3.3,
+     "straddle_pts": 5.85,
+     "straddle_bps": 7.588395073899293,
+     "parity_atm_dev_pts": 0.10999999999967258,
+     "settle_official": 7706.03,
+     "realized_abs_move_official_bps": 4.034172423902772,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 0.8029968517075936,
+      "15:51": 10.42860664204781
+     }
+    },
+    {
+     "date": "2026-09-24",
+     "spx_1549_close": 7704.29,
+     "K": 7705.0,
+     "K_minus_S": 0.7100000000000364,
+     "call_10m_1540_close": 2.45,
+     "put_10m_1540_close": 3.9,
+     "straddle_pts": 6.35,
+     "straddle_bps": 8.242161185521313,
+     "parity_atm_dev_pts": -0.7399999999999634,
+     "settle_official": 7704.13,
+     "realized_abs_move_official_bps": 0.20767650231215917,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 3.046111535444096,
+      "15:51": 2.298707648648035
+     }
+    },
+    {
+     "date": "2026-09-25",
+     "spx_1549_close": 7746.4,
+     "K": 7745.0,
+     "K_minus_S": -1.3999999999996362,
+     "call_10m_1540_close": 4.1,
+     "put_10m_1540_close": 2.18,
+     "straddle_pts": 6.279999999999999,
+     "straddle_bps": 8.106991634823919,
+     "parity_atm_dev_pts": 0.5200000000003633,
+     "settle_official": 7743.41,
+     "realized_abs_move_official_bps": 3.8598574821849914,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 5.848750360464283,
+      "15:51": 11.673911742182685
+     }
+    },
+    {
+     "date": "2026-09-28",
+     "spx_1549_close": 7681.86,
+     "K": 7680.0,
+     "K_minus_S": -1.8599999999996726,
+     "call_10m_1540_close": 4.55,
+     "put_10m_1540_close": 2.08,
+     "straddle_pts": 6.63,
+     "straddle_bps": 8.630722246955816,
+     "parity_atm_dev_pts": 0.6100000000003272,
+     "settle_official": 7683.69,
+     "realized_abs_move_official_bps": 2.382235552327076,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 0.16268127900342932,
+      "15:51": 3.709146659320872
+     }
+    },
+    {
+     "date": "2026-09-29",
+     "spx_1549_close": 7671.2,
+     "K": 7670.0,
+     "K_minus_S": -1.199999999999818,
+     "call_10m_1540_close": 4.0,
+     "put_10m_1540_close": 2.08,
+     "straddle_pts": 6.08,
+     "straddle_bps": 7.925748253206799,
+     "parity_atm_dev_pts": 0.7200000000001818,
+     "settle_official": 7670.84,
+     "realized_abs_move_official_bps": 0.4692877255183968,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 1.2096448844989283,
+      "15:51": 0.5969648897319324
+     }
+    },
+    {
+     "date": "2026-09-30",
+     "spx_1549_close": 7682.61,
+     "K": 7685.0,
+     "K_minus_S": 2.3900000000003274,
+     "call_10m_1540_close": 2.95,
+     "put_10m_1540_close": 5.4,
+     "straddle_pts": 8.350000000000001,
+     "straddle_bps": 10.868702172829288,
+     "parity_atm_dev_pts": -0.05999999999967276,
+     "settle_official": 7651.54,
+     "realized_abs_move_official_bps": 40.44198521075482,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 42.585450992378426,
+      "15:51": 28.98806039033697
+     }
+    },
+    {
+     "date": "2026-10-01",
+     "spx_1549_close": 7676.95,
+     "K": 7675.0,
+     "K_minus_S": -1.949999999999818,
+     "call_10m_1540_close": 4.65,
+     "put_10m_1540_close": 2.33,
+     "straddle_pts": 6.98,
+     "straddle_bps": 9.092152482431175,
+     "parity_atm_dev_pts": 0.3700000000001822,
+     "settle_official": 7666.45,
+     "realized_abs_move_official_bps": 13.677306742912224,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 8.3016246534795,
+      "15:51": 15.512002175716022
+     }
+    },
+    {
+     "date": "2026-10-02",
+     "spx_1549_close": 7724.11,
+     "K": 7725.0,
+     "K_minus_S": 0.8900000000003274,
+     "call_10m_1540_close": 2.43,
+     "put_10m_1540_close": 3.3,
+     "straddle_pts": 5.73,
+     "straddle_bps": 7.418330396641167,
+     "parity_atm_dev_pts": 0.020000000000327756,
+     "settle_official": 7722.72,
+     "realized_abs_move_official_bps": 1.7995600787656028,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 1.234993182295252,
+      "15:51": 0.22004014308851794
+     }
+    },
+    {
+     "date": "2026-10-05",
+     "spx_1549_close": 7778.44,
+     "K": 7780.0,
+     "K_minus_S": 1.5600000000004002,
+     "call_10m_1540_close": 2.1,
+     "put_10m_1540_close": 3.75,
+     "straddle_pts": 5.85,
+     "straddle_bps": 7.5207882300307,
+     "parity_atm_dev_pts": -0.08999999999959973,
+     "settle_official": 7773.95,
+     "realized_abs_move_official_bps": 5.7723656671514885,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 0.22882195004125805,
+      "15:51": 5.336332346110861
+     }
+    },
+    {
+     "date": "2026-10-06",
+     "spx_1549_close": 7823.09,
+     "K": 7825.0,
+     "K_minus_S": 1.9099999999998545,
+     "call_10m_1540_close": 1.65,
+     "put_10m_1540_close": 3.3,
+     "straddle_pts": 4.949999999999999,
+     "straddle_bps": 6.327423051505223,
+     "parity_atm_dev_pts": 0.25999999999985457,
+     "settle_official": 7818.93,
+     "realized_abs_move_official_bps": 5.317591897830466,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 6.33028198319785,
+      "15:51": 3.4275016287355076
+     }
+    },
+    {
+     "date": "2026-10-07",
+     "spx_1549_close": 7796.65,
+     "K": 7795.0,
+     "K_minus_S": -1.6499999999996362,
+     "call_10m_1540_close": 3.85,
+     "put_10m_1540_close": 1.43,
+     "straddle_pts": 5.28,
+     "straddle_bps": 6.772139316244798,
+     "parity_atm_dev_pts": 0.7700000000003637,
+     "settle_official": 7801.77,
+     "realized_abs_move_official_bps": 6.566922973329316,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 2.4844883018704245,
+      "15:51": 3.0151283294765907
+     }
+    },
+    {
+     "date": "2026-10-08",
+     "spx_1549_close": 7763.16,
+     "K": 7765.0,
+     "K_minus_S": 1.8400000000001455,
+     "call_10m_1540_close": 1.8,
+     "put_10m_1540_close": 4.5,
+     "straddle_pts": 6.3,
+     "straddle_bps": 8.11525203654182,
+     "parity_atm_dev_pts": -0.8599999999998547,
+     "settle_official": 7765.36,
+     "realized_abs_move_official_bps": 2.8338975365699253,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 4.6794511539771655,
+      "15:51": 2.4435393630750646
+     }
+    },
+    {
+     "date": "2026-10-09",
+     "spx_1549_close": 7813.25,
+     "K": 7815.0,
+     "K_minus_S": 1.75,
+     "call_10m_1540_close": 1.5,
+     "put_10m_1540_close": 2.8,
+     "straddle_pts": 4.3,
+     "straddle_bps": 5.503471666719994,
+     "parity_atm_dev_pts": 0.4500000000000002,
+     "settle_official": 7811.54,
+     "realized_abs_move_official_bps": 2.188589895370091,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 1.3682844464979471,
+      "15:51": 1.030408045425979
+     }
+    },
+    {
+     "date": "2026-10-12",
+     "spx_1549_close": 7805.88,
+     "K": 7805.0,
+     "K_minus_S": -0.8800000000001091,
+     "call_10m_1540_close": 2.65,
+     "put_10m_1540_close": 1.05,
+     "straddle_pts": 3.7,
+     "straddle_bps": 4.740016500381763,
+     "parity_atm_dev_pts": 0.7199999999998907,
+     "settle_official": 7807.24,
+     "realized_abs_move_official_bps": 1.7422763352750394,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 3.014856979439706,
+      "15:51": 0.7736013409431752
+     }
+    },
+    {
+     "date": "2026-10-13",
+     "spx_1549_close": 7810.38,
+     "K": 7810.0,
+     "K_minus_S": -0.38000000000010914,
+     "call_10m_1540_close": 2.58,
+     "put_10m_1540_close": 1.55,
+     "straddle_pts": 4.13,
+     "straddle_bps": 5.287834906880331,
+     "parity_atm_dev_pts": 0.6499999999998909,
+     "settle_official": 7805.45,
+     "realized_abs_move_official_bps": 6.31211285494469,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 4.003723834474782,
+      "15:51": 0.4777472870554078
+     }
+    },
+    {
+     "date": "2026-10-14",
+     "spx_1549_close": 7712.1,
+     "K": 7710.0,
+     "K_minus_S": -2.100000000000364,
+     "call_10m_1540_close": 7.3,
+     "put_10m_1540_close": 1.6,
+     "straddle_pts": 8.9,
+     "straddle_bps": 11.540306790627714,
+     "parity_atm_dev_pts": 3.5999999999996355,
+     "settle_official": 7718.94,
+     "realized_abs_move_official_bps": 8.869179600885927,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 13.613469022841773,
+      "15:51": 8.074922215211
+     }
+    },
+    {
+     "date": "2026-10-15",
+     "spx_1549_close": 7748.49,
+     "K": 7750.0,
+     "K_minus_S": 1.5100000000002183,
+     "call_10m_1540_close": 3.15,
+     "put_10m_1540_close": 3.45,
+     "straddle_pts": 6.6,
+     "straddle_bps": 8.517788627203494,
+     "parity_atm_dev_pts": 1.210000000000218,
+     "settle_official": 7744.06,
+     "realized_abs_move_official_bps": 5.717242972500942,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 7.8363828299465865,
+      "15:51": 2.1609394881405564
+     }
+    },
+    {
+     "date": "2026-10-16",
+     "spx_1549_close": 7652.49,
+     "K": 7650.0,
+     "K_minus_S": -2.4899999999997817,
+     "call_10m_1540_close": 2.88,
+     "put_10m_1540_close": 3.55,
+     "straddle_pts": 6.43,
+     "straddle_bps": 8.40249382880605,
+     "parity_atm_dev_pts": -3.1599999999997817,
+     "settle_official": 7659.44,
+     "realized_abs_move_official_bps": 9.082011214650157,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 7.3081162164267965,
+      "15:51": 8.311152835305258
+     }
+    },
+    {
+     "date": "2026-10-19",
+     "spx_1549_close": 7704.76,
+     "K": 7705.0,
+     "K_minus_S": 0.23999999999978172,
+     "call_10m_1540_close": 2.25,
+     "put_10m_1540_close": 2.5,
+     "straddle_pts": 4.75,
+     "straddle_bps": 6.16502006551794,
+     "parity_atm_dev_pts": -0.010000000000218279,
+     "settle_official": 7690.73,
+     "realized_abs_move_official_bps": 18.2095224250991,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 16.217683232239153,
+      "15:51": 5.219543728458564
+     }
+    },
+    {
+     "date": "2026-10-20",
+     "spx_1549_close": 7711.25,
+     "K": 7710.0,
+     "K_minus_S": -1.25,
+     "call_10m_1540_close": 3.65,
+     "put_10m_1540_close": 2.45,
+     "straddle_pts": 6.1,
+     "straddle_bps": 7.910520343653753,
+     "parity_atm_dev_pts": -0.050000000000000266,
+     "settle_official": 7712.57,
+     "realized_abs_move_official_bps": 1.7117847301017461,
+     "d1_abs_move_bps_same_day": {
+      "15:49": 8.446632832574963,
+      "15:51": 9.839777035971498
+     }
+    }
+   ],
+   "ratio_market_to_assumed_fair_entry_15:49_holdout": 0.597081877692114,
+   "ratio_market_to_assumed_fair_entry_15:49_2023_2026": 0.6967451952172908,
+   "ratio_market_to_assumed_fair_entry_15:51_holdout": 0.7209046171674333,
+   "ratio_market_to_assumed_fair_entry_15:51_2023_2026": 0.8213035721864388
+  },
+  "fully_priced_days": [
+   {
+    "date": "2026-10-20",
+    "source": "/Users/kv15/trading/backtests/spx_close_1549/results.json",
+    "S0_1549_open": 7710.93,
+    "K0": 7710.0,
+    "straddle_mark_1549_pts": 5.9,
+    "settle": 7712.57,
+    "settle_provisional": false,
+    "straddle_bps": 7.651476540443241,
+    "assumed_fair_straddle_pts_entry_1549_holdout": 10.003151543664519,
+    "ratio_market_to_assumed_fair_holdout": 0.5898141175054732,
+    "ratio_market_to_assumed_fair_2023_2026": 0.6882643198478919,
+    "realized_abs_move_pts": 1.639999999999418
+   },
+   {
+    "date": "2026-10-21",
+    "source": "/Users/kv15/trading/data/spx_1549/live_2026-10-21/scorecard.json",
+    "S0_1549_open": 7760.23,
+    "K0": 7760,
+    "straddle_mark_1549_pts": 6.43,
+    "straddle_ask_live_154851_pts": 6.55,
+    "settle": 7757.2,
+    "settle_provisional": true,
+    "straddle_bps": 8.2858368888551,
+    "assumed_fair_straddle_pts_entry_1549_holdout": 10.067106912355799,
+    "ratio_market_to_assumed_fair_holdout": 0.6387137889742862,
+    "ratio_market_to_assumed_fair_2023_2026": 0.7453261943018477,
+    "realized_abs_move_pts": 3.0299999999997453
+   }
+  ]
+ },
+ "placebo_1149_1151": {
+  "note": "descriptive; each candidate rebuilt 240 minutes earlier with its frozen direction, target to the 11:59 close",
+  "holdout": [
+   {
+    "feature": "F2_1m_1550_strong_body",
+    "direction": 1,
+    "placebo_entry": "11:51",
+    "placebo_target_end": "11:59",
+    "n": 1443,
+    "n_undefined": 3,
+    "n_zero_signal": 878,
+    "n_trades": 565,
+    "n_trades_zero_target": 1,
+    "mean_bps": 0.10263226033617559,
+    "nw_se_bps": 0.1686700738649988,
+    "nw_t": 0.6084793703139125,
+    "p_two_sided": 0.5428695842546141,
+    "mean_bps_per_trade": 0.26212097639840953,
+    "sd_bps_per_trade": 10.164279936066205,
+    "hit_rate": 0.5070921985815603,
+    "n_hits": 286,
+    "n_hit_days": 564,
+    "hit_rate_wilson95": [
+     0.4659234582435443,
+     0.5481649811892062
+    ],
+    "p_one_sided": 0.27143479212730703
+   },
+   {
+    "feature": "F1_1m_15:50",
+    "direction": 1,
+    "placebo_entry": "11:51",
+    "placebo_target_end": "11:59",
+    "n": 1443,
+    "n_undefined": 3,
+    "n_zero_signal": 3,
+    "n_trades": 1440,
+    "n_trades_zero_target": 1,
+    "mean_bps": -0.28628184122965866,
+    "nw_se_bps": 0.26290867549264485,
+    "nw_t": -1.088902223151125,
+    "p_two_sided": 0.2761970057832513,
+    "mean_bps_per_trade": -0.28687826173222036,
+    "sd_bps_per_trade": 10.384824440338674,
+    "hit_rate": 0.4864489228630994,
+    "n_hits": 700,
+    "n_hit_days": 1439,
+    "hit_rate_wilson95": [
+     0.4606951018050177,
+     0.5122749014052612
+    ],
+    "p_one_sided": 0.8619014971083744
+   },
+   {
+    "feature": "F4_day_so_far",
+    "direction": 1,
+    "placebo_entry": "11:49",
+    "placebo_target_end": "11:59",
+    "n": 1444,
+    "n_undefined": 2,
+    "n_zero_signal": 0,
+    "n_trades": 1444,
+    "n_trades_zero_target": 2,
+    "mean_bps": 0.14729851680553516,
+    "nw_se_bps": 0.30375566822144484,
+    "nw_t": 0.4849243395785825,
+    "p_two_sided": 0.6277300163455527,
+    "mean_bps_per_trade": 0.14729851680553516,
+    "sd_bps_per_trade": 11.407502449189094,
+    "hit_rate": 0.5110957004160888,
+    "n_hits": 737,
+    "n_hit_days": 1442,
+    "hit_rate_wilson95": [
+     0.48529997828844507,
+     0.5368324621702072
+    ],
+    "p_one_sided": 0.31386500817277635
+   }
+  ],
+  "discovery": [
+   {
+    "feature": "F2_1m_1550_strong_body",
+    "direction": 1,
+    "placebo_entry": "11:51",
+    "placebo_target_end": "11:59",
+    "n": 1856,
+    "n_undefined": 5,
+    "n_zero_signal": 1030,
+    "n_trades": 826,
+    "n_trades_zero_target": 8,
+    "mean_bps": -0.1511507980077936,
+    "nw_se_bps": 0.12663421135154404,
+    "nw_t": -1.1936016057160894,
+    "p_two_sided": 0.23263384558557546,
+    "mean_bps_per_trade": -0.3396318173153329,
+    "sd_bps_per_trade": 9.027386363258534,
+    "hit_rate": 0.49877750611246946,
+    "n_hits": 408,
+    "n_hit_days": 818,
+    "hit_rate_wilson95": [
+     0.4645992281356396,
+     0.5329672124733925
+    ],
+    "p_one_sided": 0.8836830772072123
+   },
+   {
+    "feature": "F1_1m_15:50",
+    "direction": 1,
+    "placebo_entry": "11:51",
+    "placebo_target_end": "11:59",
+    "n": 1856,
+    "n_undefined": 5,
+    "n_zero_signal": 132,
+    "n_trades": 1724,
+    "n_trades_zero_target": 19,
+    "mean_bps": -0.37186879077125923,
+    "nw_se_bps": 0.2253613031569068,
+    "nw_t": -1.6501004633983112,
+    "p_two_sided": 0.09892239000658318,
+    "mean_bps_per_trade": -0.40034134319690096,
+    "sd_bps_per_trade": 10.689098760895774,
+    "hit_rate": 0.49266862170087977,
+    "n_hits": 840,
+    "n_hit_days": 1705,
+    "hit_rate_wilson95": [
+     0.46898115797030415,
+     0.5163890471643179
+    ],
+    "p_one_sided": 0.9505388049967084
+   },
+   {
+    "feature": "F4_day_so_far",
+    "direction": 1,
+    "placebo_entry": "11:49",
+    "placebo_target_end": "11:59",
+    "n": 1846,
+    "n_undefined": 15,
+    "n_zero_signal": 2,
+    "n_trades": 1844,
+    "n_trades_zero_target": 24,
+    "mean_bps": -0.11615918060118886,
+    "nw_se_bps": 0.25359511314818267,
+    "nw_t": -0.45804975955240046,
+    "p_two_sided": 0.6469166924319609,
+    "mean_bps_per_trade": -0.11628516669728554,
+    "sd_bps_per_trade": 11.210220565440942,
+    "hit_rate": 0.5016483516483516,
+    "n_hits": 913,
+    "n_hit_days": 1820,
+    "hit_rate_wilson95": [
+     0.47869807621980803,
+     0.5245916834086848
+    ],
+    "p_one_sided": 0.6765416537840195
+   }
+  ]
+ },
+ "descriptive_hit_rates_NOT_TESTS": {
+  "full_2013_2026": {
+   "label": "2013-02-28 .. 2026-10-20 (discovery + holdout)",
+   "first": "2013-02-28",
+   "last": "2026-10-20",
+   "n_days": 3307,
+   "NOT_A_TEST": "descriptive only: raw signal direction (+1 = up), no selection, no multiple-testing control; do not read significance into these",
+   "features": {
+    "F1_1m_15:30": {
+     "n_trades": 3216,
+     "hit_rate": 0.5024953212726139,
+     "hit_rate_wilson95": [
+      0.48519533027877115,
+      0.5197893395889669
+     ],
+     "mean_bps": 0.410032142429457,
+     "nw_t": 1.1796432210633625
+    },
+    "F1_1m_15:31": {
+     "n_trades": 3172,
+     "hit_rate": 0.5126502213788742,
+     "hit_rate_wilson95": [
+      0.49522343352619524,
+      0.530046309460177
+     ],
+     "mean_bps": 0.5689219980499841,
+     "nw_t": 1.5287749633736583
+    },
+    "F1_1m_15:32": {
+     "n_trades": 3161,
+     "hit_rate": 0.5073015873015873,
+     "hit_rate_wilson95": [
+      0.48984444235992464,
+      0.5247409452065133
+     ],
+     "mean_bps": 0.7019452164692851,
+     "nw_t": 2.0083155097111995
+    },
+    "F1_1m_15:33": {
+     "n_trades": 3145,
+     "hit_rate": 0.5004784688995215,
+     "hit_rate_wilson95": [
+      0.48298613554124054,
+      0.5179696311132268
+     ],
+     "mean_bps": -0.04378562794948029,
+     "nw_t": -0.1374969007459786
+    },
+    "F1_1m_15:34": {
+     "n_trades": 3165,
+     "hit_rate": 0.48874801901743264,
+     "hit_rate_wilson95": [
+      0.4713298189287634,
+      0.5061935861152788
+     ],
+     "mean_bps": -0.5456763346866383,
+     "nw_t": -1.5911051095751914
+    },
+    "F1_1m_15:35": {
+     "n_trades": 3166,
+     "hit_rate": 0.49033892936331963,
+     "hit_rate_wilson95": [
+      0.4729231442487747,
+      0.5077781972152926
+     ],
+     "mean_bps": -0.14809720156081604,
+     "nw_t": -0.42212454480971606
+    },
+    "F1_1m_15:36": {
+     "n_trades": 3149,
+     "hit_rate": 0.48439490445859873,
+     "hit_rate_wilson95": [
+      0.46694463565013233,
+      0.5018833089890475
+     ],
+     "mean_bps": -0.35802701774157336,
+     "nw_t": -0.9332341902494863
+    },
+    "F1_1m_15:37": {
+     "n_trades": 3152,
+     "hit_rate": 0.49348171701112875,
+     "hit_rate_wilson95": [
+      0.4760271925309862,
+      0.5109521455728269
+     ],
+     "mean_bps": 0.06202437527493297,
+     "nw_t": 0.19355013688138117
+    },
+    "F1_1m_15:38": {
+     "n_trades": 3137,
+     "hit_rate": 0.4969619443556124,
+     "hit_rate_wilson95": [
+      0.47945190567638535,
+      0.5144794382610504
+     ],
+     "mean_bps": 0.511349605270481,
+     "nw_t": 1.2913597608843657
+    },
+    "F1_1m_15:39": {
+     "n_trades": 3161,
+     "hit_rate": 0.5047619047619047,
+     "hit_rate_wilson95": [
+      0.4873067851858543,
+      0.5222054240966052
+     ],
+     "mean_bps": 0.2990807891067926,
+     "nw_t": 0.8026627490823235
+    },
+    "F1_1m_15:40": {
+     "n_trades": 3193,
+     "hit_rate": 0.4962311557788945,
+     "hit_rate_wilson95": [
+      0.4788793867022227,
+      0.5135920080299112
+     ],
+     "mean_bps": 0.29124337676943124,
+     "nw_t": 0.7743357036281183
+    },
+    "F1_1m_15:41": {
+     "n_trades": 3169,
+     "hit_rate": 0.5075997466751109,
+     "hit_rate_wilson95": [
+      0.4901645041991508,
+      0.5250165226249782
+     ],
+     "mean_bps": 0.45711793387628735,
+     "nw_t": 1.4424395615912893
+    },
+    "F1_1m_15:42": {
+     "n_trades": 3159,
+     "hit_rate": 0.4960304858685297,
+     "hit_rate_wilson95": [
+      0.4785829946802522,
+      0.5134876500614751
+     ],
+     "mean_bps": 0.0931334743981819,
+     "nw_t": 0.23605088056466317
+    },
+    "F1_1m_15:43": {
+     "n_trades": 3152,
+     "hit_rate": 0.5054071246819338,
+     "hit_rate_wilson95": [
+      0.4879348137179249,
+      0.5228662385093805
+     ],
+     "mean_bps": -0.011292478456287721,
+     "nw_t": -0.03347789471071316
+    },
+    "F1_1m_15:44": {
+     "n_trades": 3173,
+     "hit_rate": 0.5097977243994943,
+     "hit_rate_wilson95": [
+      0.49237767480110106,
+      0.5271940117261285
+     ],
+     "mean_bps": 0.11829150338118555,
+     "nw_t": 0.36259398467475057
+    },
+    "F1_1m_15:45": {
+     "n_trades": 3255,
+     "hit_rate": 0.5107891491985204,
+     "hit_rate_wilson95": [
+      0.49358465451395195,
+      0.5279681216567844
+     ],
+     "mean_bps": 0.2991397221345086,
+     "nw_t": 0.9446268192968948
+    },
+    "F1_1m_15:46": {
+     "n_trades": 3170,
+     "hit_rate": 0.49477682811016144,
+     "hit_rate_wilson95": [
+      0.4773588569141563,
+      0.5122074870111871
+     ],
+     "mean_bps": 0.0006219821356966682,
+     "nw_t": 0.001912133966095615
+    },
+    "F1_1m_15:47": {
+     "n_trades": 3168,
+     "hit_rate": 0.4960430515986072,
+     "hit_rate_wilson95": [
+      0.47862313786815514,
+      0.5134725772268021
+     ],
+     "mean_bps": -0.016158890331509194,
+     "nw_t": -0.04313876757518764
+    },
+    "F1_1m_15:48": {
+     "n_trades": 3164,
+     "hit_rate": 0.4995242626070409,
+     "hit_rate_wilson95": [
+      0.4820830330430851,
+      0.5169666499900561
+     ],
+     "mean_bps": -0.23510024462727577,
+     "nw_t": -0.7009740605359429
+    },
+    "F1_1m_15:49": {
+     "n_trades": 3173,
+     "hit_rate": 0.5015832805573147,
+     "hit_rate_wilson95": [
+      0.48415342419752455,
+      0.5190092897241689
+     ],
+     "mean_bps": 0.020478456553586245,
+     "nw_t": 0.06911924867213516
+    },
+    "F1_1m_15:50": {
+     "n_trades": 3250,
+     "hit_rate": 0.5299938157081014,
+     "hit_rate_wilson95": [
+      0.5127669421574554,
+      0.5471495183818633
+     ],
+     "mean_bps": 0.9366308242799395,
+     "nw_t": 3.8519039394903625
+    },
+    "F2_1m_1550_strong_body": {
+     "n_trades": 1564,
+     "hit_rate": 0.5549132947976878,
+     "hit_rate_wilson95": [
+      0.5301228562595282,
+      0.5794334340565941
+     ],
+     "mean_bps": 1.1293676059527136,
+     "nw_t": 5.429552200159849
+    },
+    "F2_1m_1550_hammer": {
+     "n_trades": 251,
+     "hit_rate": 0.4435483870967742,
+     "hit_rate_wilson95": [
+      0.38304578376652343,
+      0.5057731575979506
+     ],
+     "mean_bps": -0.06503896858134883,
+     "nw_t": -0.7695685757842653
+    },
+    "F2_1m_1550_shooting_star": {
+     "n_trades": 281,
+     "hit_rate": 0.4714285714285714,
+     "hit_rate_wilson95": [
+      0.41374153878680764,
+      0.5298889651343712
+     ],
+     "mean_bps": 0.009463928519702718,
+     "nw_t": 0.1425050263772855
+    },
+    "F2_1m_1550_engulfing": {
+     "n_trades": 511,
+     "hit_rate": 0.5364891518737672,
+     "hit_rate_wilson95": [
+      0.49297092456615055,
+      0.5794585921872791
+     ],
+     "mean_bps": 0.1998879075657248,
+     "nw_t": 2.058826070935133
+    },
+    "F2_1m_1550_big_candle": {
+     "n_trades": 601,
+     "hit_rate": 0.5666666666666667,
+     "hit_rate_wilson95": [
+      0.5267162215503707,
+      0.6057688849811358
+     ],
+     "mean_bps": 0.4720187856582742,
+     "nw_t": 3.9242382460830756
+    },
+    "F2_5m_1545_strong_body": {
+     "n_trades": 1256,
+     "hit_rate": 0.51242983159583,
+     "hit_rate_wilson95": [
+      0.4846914436613216,
+      0.5400918730263321
+     ],
+     "mean_bps": 0.2892873260750546,
+     "nw_t": 1.1997581199746497
+    },
+    "F2_5m_1545_hammer": {
+     "n_trades": 254,
+     "hit_rate": 0.48031496062992124,
+     "hit_rate_wilson95": [
+      0.4196250818689339,
+      0.541591395707102
+     ],
+     "mean_bps": -0.12401346950360156,
+     "nw_t": -2.186332673476348
+    },
+    "F2_5m_1545_shooting_star": {
+     "n_trades": 273,
+     "hit_rate": 0.5294117647058824,
+     "hit_rate_wilson95": [
+      0.47009798236161976,
+      0.5879063512451006
+     ],
+     "mean_bps": 0.0096944119936883,
+     "nw_t": 0.15480249873543397
+    },
+    "F2_5m_1545_engulfing": {
+     "n_trades": 460,
+     "hit_rate": 0.5536105032822757,
+     "hit_rate_wilson95": [
+      0.5077744210345483,
+      0.5985528181105415
+     ],
+     "mean_bps": 0.0958713414707141,
+     "nw_t": 1.0578107985353575
+    },
+    "F2_5m_1545_big_candle": {
+     "n_trades": 999,
+     "hit_rate": 0.5045500505561172,
+     "hit_rate_wilson95": [
+      0.47343245710022913,
+      0.535632434298132
+     ],
+     "mean_bps": 0.2628208751132446,
+     "nw_t": 1.1058200136884302
+    },
+    "F3_5m_15:20": {
+     "n_trades": 3267,
+     "hit_rate": 0.5202702702702703,
+     "hit_rate_wilson95": [
+      0.5030964240730935,
+      0.5373963427278274
+     ],
+     "mean_bps": 0.7433391702645675,
+     "nw_t": 2.183001600278294
+    },
+    "F3_5m_15:25": {
+     "n_trades": 3272,
+     "hit_rate": 0.5019932536031892,
+     "hit_rate_wilson95": [
+      0.4848401392132315,
+      0.5191416774121603
+     ],
+     "mean_bps": 0.09063375119341312,
+     "nw_t": 0.26639429552958155
+    },
+    "F3_5m_15:30": {
+     "n_trades": 3272,
+     "hit_rate": 0.5095033721643164,
+     "hit_rate_wilson95": [
+      0.4923470086635963,
+      0.5266373789074981
+     ],
+     "mean_bps": 0.6276697123333709,
+     "nw_t": 1.8954997943024303
+    },
+    "F3_5m_15:35": {
+     "n_trades": 3270,
+     "hit_rate": 0.4894139306535747,
+     "hit_rate_wilson95": [
+      0.4722740742667044,
+      0.5065787137492541
+     ],
+     "mean_bps": -0.03796030231868217,
+     "nw_t": -0.12092670827732326
+    },
+    "F3_5m_15:40": {
+     "n_trades": 3272,
+     "hit_rate": 0.4960147148988351,
+     "hit_rate_wilson95": [
+      0.47887166746907306,
+      0.5131671377430486
+     ],
+     "mean_bps": 0.054519610422845595,
+     "nw_t": 0.15000946175017466
+    },
+    "F3_5m_15:45": {
+     "n_trades": 3277,
+     "hit_rate": 0.5058282208588957,
+     "hit_rate_wilson95": [
+      0.48866899277364734,
+      0.5229737296071543
+     ],
+     "mean_bps": -0.045278747877060134,
+     "nw_t": -0.16180829674194494
+    },
+    "F4_clv": {
+     "n_trades": 3306,
+     "hit_rate": 0.49499241274658573,
+     "hit_rate_wilson95": [
+      0.47793680662074145,
+      0.5120596814154563
+     ],
+     "mean_bps": 0.5676875467692872,
+     "nw_t": 1.6192597029939237
+    },
+    "F4_open_gap": {
+     "n_trades": 3246,
+     "hit_rate": 0.4945904173106646,
+     "hit_rate_wilson95": [
+      0.47737823245068756,
+      0.511815434344987
+     ],
+     "mean_bps": -0.13377078918160337,
+     "nw_t": -0.4160380699981299
+    },
+    "F4_prior_day_candle": {
+     "n_trades": 3245,
+     "hit_rate": 0.5095856524427953,
+     "hit_rate_wilson95": [
+      0.4923551747295762,
+      0.5267933848242267
+     ],
+     "mean_bps": 0.297147263550249,
+     "nw_t": 0.8706817709410272
+    },
+    "F4_day_so_far": {
+     "n_trades": 3297,
+     "hit_rate": 0.504260499087036,
+     "hit_rate_wilson95": [
+      0.48717052898138963,
+      0.5213405194537643
+     ],
+     "mean_bps": 0.8083413367162986,
+     "nw_t": 2.214069699446933
+    },
+    "P3_reference": {
+     "n_trades": 3268,
+     "hit_rate": 0.5259920024607813,
+     "hit_rate_wilson95": [
+      0.5088072917685361,
+      0.5431153601142479
+     ],
+     "mean_bps": 0.9981739125509843,
+     "nw_t": 4.087303215598813
+    }
+   }
+  },
+  "late_2023_2026": {
+   "label": "2023-01-01 .. 2026-10-20 (inside the holdout)",
+   "first": "2023-01-03",
+   "last": "2026-10-20",
+   "n_days": 945,
+   "NOT_A_TEST": "descriptive only: raw signal direction (+1 = up), no selection, no multiple-testing control; do not read significance into these",
+   "features": {
+    "F1_1m_15:30": {
+     "n_trades": 941,
+     "hit_rate": 0.5260361317747078,
+     "hit_rate_wilson95": [
+      0.49409186217744616,
+      0.5577686902385746
+     ],
+     "mean_bps": 0.6583836802378256,
+     "nw_t": 1.203354743762734
+    },
+    "F1_1m_15:31": {
+     "n_trades": 939,
+     "hit_rate": 0.5228966986155484,
+     "hit_rate_wilson95": [
+      0.49092146703601247,
+      0.5546853522205191
+     ],
+     "mean_bps": 0.6690489407003555,
+     "nw_t": 1.3971239454280882
+    },
+    "F1_1m_15:32": {
+     "n_trades": 941,
+     "hit_rate": 0.49840595111583424,
+     "hit_rate_wilson95": [
+      0.46653110237405865,
+      0.530293761763736
+     ],
+     "mean_bps": 0.06192870801928873,
+     "nw_t": 0.11739991464435422
+    },
+    "F1_1m_15:33": {
+     "n_trades": 941,
+     "hit_rate": 0.49415515409139216,
+     "hit_rate_wilson95": [
+      0.46229959603100623,
+      0.5260582391409074
+     ],
+     "mean_bps": -0.333175560520798,
+     "nw_t": -0.65782845495484
+    },
+    "F1_1m_15:34": {
+     "n_trades": 942,
+     "hit_rate": 0.47983014861995754,
+     "hit_rate_wilson95": [
+      0.44807326544833326,
+      0.5117508682417045
+     ],
+     "mean_bps": -0.2970383716660794,
+     "nw_t": -0.503462569129618
+    },
+    "F1_1m_15:35": {
+     "n_trades": 942,
+     "hit_rate": 0.49256900212314225,
+     "hit_rate_wilson95": [
+      0.46073805444099564,
+      0.5244603106027026
+     ],
+     "mean_bps": 0.01453377739476646,
+     "nw_t": 0.029651525677636764
+    },
+    "F1_1m_15:36": {
+     "n_trades": 939,
+     "hit_rate": 0.4653887113951012,
+     "hit_rate_wilson95": [
+      0.43369068703138014,
+      0.4973687722320024
+     ],
+     "mean_bps": -0.4887525554904116,
+     "nw_t": -0.9104151879096625
+    },
+    "F1_1m_15:37": {
+     "n_trades": 943,
+     "hit_rate": 0.4740190880169671,
+     "hit_rate_wilson95": [
+      0.44231954352670283,
+      0.5059294483784147
+     ],
+     "mean_bps": -0.8799629307213361,
+     "nw_t": -1.825034807357192
+    },
+    "F1_1m_15:38": {
+     "n_trades": 937,
+     "hit_rate": 0.4823906083244397,
+     "hit_rate_wilson95": [
+      0.4505330555495131,
+      0.5143919595094913
+     ],
+     "mean_bps": 0.1639061272402486,
+     "nw_t": 0.2688121210431129
+    },
+    "F1_1m_15:39": {
+     "n_trades": 938,
+     "hit_rate": 0.5223880597014925,
+     "hit_rate_wilson95": [
+      0.49039641613727164,
+      0.5541970763307593
+     ],
+     "mean_bps": 0.45115588034923854,
+     "nw_t": 0.876520363180471
+    },
+    "F1_1m_15:40": {
+     "n_trades": 942,
+     "hit_rate": 0.505307855626327,
+     "hit_rate_wilson95": [
+      0.47342345332858243,
+      0.537149143068776
+     ],
+     "mean_bps": 0.11108881687850039,
+     "nw_t": 0.22264304331005552
+    },
+    "F1_1m_15:41": {
+     "n_trades": 942,
+     "hit_rate": 0.5138004246284501,
+     "hit_rate_wilson95": [
+      0.48189183256990253,
+      0.5455969180632295
+     ],
+     "mean_bps": 0.46041778836775166,
+     "nw_t": 0.9351481809724759
+    },
+    "F1_1m_15:42": {
+     "n_trades": 943,
+     "hit_rate": 0.503711558854719,
+     "hit_rate_wilson95": [
+      0.4718495726361397,
+      0.5355434285202721
+     ],
+     "mean_bps": -0.46374679723882173,
+     "nw_t": -0.8367556829336305
+    },
+    "F1_1m_15:43": {
+     "n_trades": 941,
+     "hit_rate": 0.5058448459086079,
+     "hit_rate_wilson95": [
+      0.47394176085909245,
+      0.5377004039689938
+     ],
+     "mean_bps": 0.4674746475476789,
+     "nw_t": 0.8539149917426601
+    },
+    "F1_1m_15:44": {
+     "n_trades": 940,
+     "hit_rate": 0.4968085106382979,
+     "hit_rate_wilson95": [
+      0.46492377144570984,
+      0.52871922871716
+     ],
+     "mean_bps": -0.5979780346968978,
+     "nw_t": -1.10696125887158
+    },
+    "F1_1m_15:45": {
+     "n_trades": 943,
+     "hit_rate": 0.4931071049840933,
+     "hit_rate_wilson95": [
+      0.46129028268122024,
+      0.5249798580283007
+     ],
+     "mean_bps": 0.23758107771662826,
+     "nw_t": 0.44932176428942394
+    },
+    "F1_1m_15:46": {
+     "n_trades": 941,
+     "hit_rate": 0.5132837407013815,
+     "hit_rate_wilson95": [
+      0.4813594493995737,
+      0.5451000161188041
+     ],
+     "mean_bps": 0.49448226329010075,
+     "nw_t": 0.9713543650911406
+    },
+    "F1_1m_15:47": {
+     "n_trades": 942,
+     "hit_rate": 0.49469214437367304,
+     "hit_rate_wilson95": [
+      0.462850856931224,
+      0.5265765466714176
+     ],
+     "mean_bps": -0.12180872264760248,
+     "nw_t": -0.2440153450684741
+    },
+    "F1_1m_15:48": {
+     "n_trades": 940,
+     "hit_rate": 0.5085106382978724,
+     "hit_rate_wilson95": [
+      0.47658222636205466,
+      0.5403697732036261
+     ],
+     "mean_bps": -0.3875657283414613,
+     "nw_t": -0.7577302696707232
+    },
+    "F1_1m_15:49": {
+     "n_trades": 940,
+     "hit_rate": 0.4984025559105431,
+     "hit_rate_wilson95": [
+      0.4664939392561842,
+      0.5303241896328951
+     ],
+     "mean_bps": -0.2581531684410681,
+     "nw_t": -0.6177759217886833
+    },
+    "F1_1m_15:50": {
+     "n_trades": 944,
+     "hit_rate": 0.5323435843054083,
+     "hit_rate_wilson95": [
+      0.5004309917312949,
+      0.563993732631722
+     ],
+     "mean_bps": 0.471837708831191,
+     "nw_t": 1.2349061671960975
+    },
+    "F2_1m_1550_strong_body": {
+     "n_trades": 428,
+     "hit_rate": 0.5467289719626168,
+     "hit_rate_wilson95": [
+      0.4993597932658145,
+      0.5932667926790254
+     ],
+     "mean_bps": 0.6110619060713072,
+     "nw_t": 2.274394809157631
+    },
+    "F2_1m_1550_hammer": {
+     "n_trades": 80,
+     "hit_rate": 0.5316455696202531,
+     "hit_rate_wilson95": [
+      0.4227140939927444,
+      0.6376421584342223
+     ],
+     "mean_bps": 0.06571411008637966,
+     "nw_t": 0.6203224001608763
+    },
+    "F2_1m_1550_shooting_star": {
+     "n_trades": 68,
+     "hit_rate": 0.47058823529411764,
+     "hit_rate_wilson95": [
+      0.35673106421198947,
+      0.5875907791127207
+     ],
+     "mean_bps": -0.025212286118900987,
+     "nw_t": -0.2505274435373575
+    },
+    "F2_1m_1550_engulfing": {
+     "n_trades": 150,
+     "hit_rate": 0.5666666666666667,
+     "hit_rate_wilson95": [
+      0.4866798706275503,
+      0.6433240967900394
+     ],
+     "mean_bps": 0.17955158151333123,
+     "nw_t": 1.1108853017213005
+    },
+    "F2_1m_1550_big_candle": {
+     "n_trades": 188,
+     "hit_rate": 0.5797872340425532,
+     "hit_rate_wilson95": [
+      0.5083246082084568,
+      0.6480545195589132
+     ],
+     "mean_bps": 0.526716602981483,
+     "nw_t": 2.2900698837672255
+    },
+    "F2_5m_1545_strong_body": {
+     "n_trades": 339,
+     "hit_rate": 0.5250737463126843,
+     "hit_rate_wilson95": [
+      0.4719323577748662,
+      0.5776532438570852
+     ],
+     "mean_bps": 0.0797814625751916,
+     "nw_t": 0.30055494976556046
+    },
+    "F2_5m_1545_hammer": {
+     "n_trades": 73,
+     "hit_rate": 0.5068493150684932,
+     "hit_rate_wilson95": [
+      0.39472240623307775,
+      0.6182914018771178
+     ],
+     "mean_bps": -0.12039849633577414,
+     "nw_t": -1.0751079492320461
+    },
+    "F2_5m_1545_shooting_star": {
+     "n_trades": 64,
+     "hit_rate": 0.5,
+     "hit_rate_wilson95": [
+      0.3810209474394701,
+      0.6189790525605299
+     ],
+     "mean_bps": -0.14764341866152286,
+     "nw_t": -1.5987418413547745
+    },
+    "F2_5m_1545_engulfing": {
+     "n_trades": 117,
+     "hit_rate": 0.5897435897435898,
+     "hit_rate_wilson95": [
+      0.49914435516947186,
+      0.6746370622756785
+     ],
+     "mean_bps": 0.07713959224165114,
+     "nw_t": 0.5285823106237779
+    },
+    "F2_5m_1545_big_candle": {
+     "n_trades": 215,
+     "hit_rate": 0.4604651162790698,
+     "hit_rate_wilson95": [
+      0.395117828602944,
+      0.5272003642494952
+     ],
+     "mean_bps": -0.1947073085966907,
+     "nw_t": -0.7830377972673255
+    },
+    "F3_5m_15:20": {
+     "n_trades": 945,
+     "hit_rate": 0.5142857142857142,
+     "hit_rate_wilson95": [
+      0.48242659370484775,
+      0.5460291612044688
+     ],
+     "mean_bps": 0.2220574456865071,
+     "nw_t": 0.4497386400095895
+    },
+    "F3_5m_15:25": {
+     "n_trades": 945,
+     "hit_rate": 0.5058201058201058,
+     "hit_rate_wilson95": [
+      0.4739844701366716,
+      0.5376086151967535
+     ],
+     "mean_bps": 0.4448644290764758,
+     "nw_t": 0.805021960048655
+    },
+    "F3_5m_15:30": {
+     "n_trades": 944,
+     "hit_rate": 0.5052966101694916,
+     "hit_rate_wilson95": [
+      0.4734459253587161,
+      0.5371043622520856
+     ],
+     "mean_bps": 0.43598944457334854,
+     "nw_t": 0.8860298184417593
+    },
+    "F3_5m_15:35": {
+     "n_trades": 944,
+     "hit_rate": 0.4968220338983051,
+     "hit_rate_wilson95": [
+      0.46500455683299824,
+      0.5286652706005209
+     ],
+     "mean_bps": 0.14225488081963517,
+     "nw_t": 0.28234465878416604
+    },
+    "F3_5m_15:40": {
+     "n_trades": 943,
+     "hit_rate": 0.4984093319194062,
+     "hit_rate_wilson95": [
+      0.466568144133538,
+      0.5302634267994285
+     ],
+     "mean_bps": -0.6064436408144612,
+     "nw_t": -1.0400270749478306
+    },
+    "F3_5m_15:45": {
+     "n_trades": 944,
+     "hit_rate": 0.5005302226935313,
+     "hit_rate_wilson95": [
+      0.46868028750196883,
+      0.5323758555203758
+     ],
+     "mean_bps": -0.12933756797497256,
+     "nw_t": -0.3064621113215164
+    },
+    "F4_clv": {
+     "n_trades": 945,
+     "hit_rate": 0.48148148148148145,
+     "hit_rate_wilson95": [
+      0.4497639754865558,
+      0.513348934816182
+     ],
+     "mean_bps": -0.7025428791130696,
+     "nw_t": -1.2716967480465766
+    },
+    "F4_open_gap": {
+     "n_trades": 937,
+     "hit_rate": 0.49626467449306294,
+     "hit_rate_wilson95": [
+      0.4643316222951193,
+      0.5282282293840632
+     ],
+     "mean_bps": 0.2537061349318969,
+     "nw_t": 0.48196867677232796
+    },
+    "F4_prior_day_candle": {
+     "n_trades": 937,
+     "hit_rate": 0.5432230522945571,
+     "hit_rate_wilson95": [
+      0.5112164925952281,
+      0.5748766522599427
+     ],
+     "mean_bps": 1.0541553850599692,
+     "nw_t": 1.9155828963639008
+    },
+    "F4_day_so_far": {
+     "n_trades": 945,
+     "hit_rate": 0.4708994708994709,
+     "hit_rate_wilson95": [
+      0.4392567778090454,
+      0.5027777955238284
+     ],
+     "mean_bps": -0.6022234951031932,
+     "nw_t": -1.2147945201100976
+    },
+    "P3_reference": {
+     "n_trades": 941,
+     "hit_rate": 0.5319148936170213,
+     "hit_rate_wilson95": [
+      0.4999514055357508,
+      0.5636185928355524
+     ],
+     "mean_bps": 0.490445289549289,
+     "nw_t": 1.2756558655880326
+    }
+   }
+  }
+ }
+}

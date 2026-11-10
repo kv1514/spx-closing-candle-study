@@ -1,0 +1,1343 @@
+{
+ "what": "Test step of preregistration/spx_candle_refine.md",
+ "prereg_sha256": "7b99ae6cca0f853d2aa113d6a8edfeb2d5f90c8852a37c40c8578f98d35ae958",
+ "selection_sha256": "075053105d4dd291d6e1107ef58d59157cd438d9ef532ae19108dd6836f3b376",
+ "selection_decision": "no_test",
+ "code_sha256": "b0cbd1a716b19662a316718a1862c0e2d192e520a1735b7d36c93dc22e5014f9",
+ "code_sha256_at_tune": "b0cbd1a716b19662a316718a1862c0e2d192e520a1735b7d36c93dc22e5014f9",
+ "code_changed_since_tune": false,
+ "test_window": [
+  "2024-01-01",
+  "2026-10-20"
+ ],
+ "stage": "complete",
+ "decision_written_utc": "2026-11-09T17:43:30+00:00",
+ "part2": {
+  "run": false,
+  "decision": "no_test",
+  "text": "No candidate advanced under the prespecified rules. Failed gate(s): luck diagnostic p <= 0.05. The current rule stays.",
+  "inputs": {
+   "inputs_manifest_sha256": "ed8929e1b4948aec90a2bcbe175376e43f9b7a0c7dbef69729cd2436fa2bf1ac",
+   "selection_sha256": "075053105d4dd291d6e1107ef58d59157cd438d9ef532ae19108dd6836f3b376",
+   "code_sha256": "b0cbd1a716b19662a316718a1862c0e2d192e520a1735b7d36c93dc22e5014f9",
+   "test_quote_listing": {
+    "window": [
+     "2024-01-01",
+     "2026-10-20"
+    ],
+    "files": 697,
+    "sha256": "de9996b9a1d845811c5889d5125def1fefcf48a4d908200eb472d164f48713e9"
+   },
+   "closes_window_sha256": null,
+   "note": "follows from selection.json alone; written before any test-period close or quote was read"
+  }
+ },
+ "data": {
+  "d1_days": 697,
+  "kept_days": 697,
+  "first": "2024-01-02",
+  "last": "2026-10-20",
+  "no_expiry_days": 0,
+  "no_close_days": [],
+  "close_check": {
+   "overlap_days": 349,
+   "max_abs_diff": 0.0
+  },
+  "f2_check": {
+   "kept_days": 697,
+   "equal_on_every_day": true,
+   "signal_days": 315
+  },
+  "quote_listing": {
+   "window": [
+    "2024-01-01",
+    "2026-10-20"
+   ],
+   "files": 697,
+   "sha256": "de9996b9a1d845811c5889d5125def1fefcf48a4d908200eb472d164f48713e9"
+  }
+ },
+ "part3_test": {
+  "label": "descriptive; computed after the decision was written",
+  "configs": {
+   "pick": {
+    "cell": "15:50 body>=0.80 with ITM20",
+    "versions": {
+     "2024-01-01..2026-10-20": {
+      "ask_fee_0.09": {
+       "days": 697,
+       "mean_per_day": 18.880875179339423,
+       "nw_t_per_day": 1.2980872931214664,
+       "signal_days": 167,
+       "trades": 167,
+       "coverage": 1.0,
+       "mean_per_trade": 78.80221556885975,
+       "share_won": 0.5089820359281437,
+       "median_trade": 10.909999999985377,
+       "worst_trade": -2670.09
+      },
+      "ask_fee_0.74": {
+       "days": 697,
+       "mean_per_day": 18.725136298421205,
+       "nw_t_per_day": 1.287549180997602,
+       "signal_days": 167,
+       "trades": 167,
+       "coverage": 1.0,
+       "mean_per_trade": 78.15221556885976,
+       "share_won": 0.5089820359281437,
+       "median_trade": 10.259999999985377,
+       "worst_trade": -2670.7400000000002
+      },
+      "mid_fee_0.09": {
+       "days": 697,
+       "mean_per_day": 27.388766140601984,
+       "nw_t_per_day": 1.8632944077179199,
+       "signal_days": 167,
+       "trades": 167,
+       "coverage": 1.0,
+       "mean_per_trade": 114.31119760478792,
+       "share_won": 0.5329341317365269,
+       "median_trade": 45.90999999998516,
+       "worst_trade": -2585.09
+      }
+     },
+     "2024": {
+      "ask_fee_0.09": {
+       "days": 249,
+       "mean_per_day": 26.52851405622367,
+       "nw_t_per_day": 1.0658218295527546,
+       "signal_days": 60,
+       "trades": 60,
+       "coverage": 1.0,
+       "mean_per_trade": 110.09333333332822,
+       "share_won": 0.5166666666666667,
+       "median_trade": 28.41000000002186,
+       "worst_trade": -1262.0900000000252
+      },
+      "ask_fee_0.74": {
+       "days": 249,
+       "mean_per_day": 26.371887550199578,
+       "nw_t_per_day": 1.059642499243195,
+       "signal_days": 60,
+       "trades": 60,
+       "coverage": 1.0,
+       "mean_per_trade": 109.44333333332824,
+       "share_won": 0.5166666666666667,
+       "median_trade": 27.76000000002186,
+       "worst_trade": -1262.7400000000252
+      },
+      "mid_fee_0.09": {
+       "days": 249,
+       "mean_per_day": 36.08674698795059,
+       "nw_t_per_day": 1.4385378017457278,
+       "signal_days": 60,
+       "trades": 60,
+       "coverage": 1.0,
+       "mean_per_trade": 149.75999999999487,
+       "share_won": 0.55,
+       "median_trade": 78.41000000002168,
+       "worst_trade": -1222.0900000000254
+      }
+     },
+     "2025": {
+      "ask_fee_0.09": {
+       "days": 247,
+       "mean_per_day": 18.030404858298912,
+       "nw_t_per_day": 0.7496808451321434,
+       "signal_days": 61,
+       "trades": 61,
+       "coverage": 1.0,
+       "mean_per_trade": 73.00836065573493,
+       "share_won": 0.5409836065573771,
+       "median_trade": 67.90999999995627,
+       "worst_trade": -2670.09
+      },
+      "ask_fee_0.74": {
+       "days": 247,
+       "mean_per_day": 17.869878542509433,
+       "nw_t_per_day": 0.7432315881283866,
+       "signal_days": 61,
+       "trades": 61,
+       "coverage": 1.0,
+       "mean_per_trade": 72.35836065573496,
+       "share_won": 0.5409836065573771,
+       "median_trade": 67.25999999995626,
+       "worst_trade": -2670.7400000000002
+      },
+      "mid_fee_0.09": {
+       "days": 247,
+       "mean_per_day": 26.75510121457423,
+       "nw_t_per_day": 1.087423397710634,
+       "signal_days": 61,
+       "trades": 61,
+       "coverage": 1.0,
+       "mean_per_trade": 108.33622950819395,
+       "share_won": 0.5573770491803278,
+       "median_trade": 92.90999999995627,
+       "worst_trade": -2585.09
+      }
+     },
+     "2026": {
+      "ask_fee_0.09": {
+       "days": 201,
+       "mean_per_day": 10.452039800995292,
+       "nw_t_per_day": 0.39047009765125335,
+       "signal_days": 46,
+       "trades": 46,
+       "coverage": 1.0,
+       "mean_per_trade": 45.67086956521855,
+       "share_won": 0.45652173913043476,
+       "median_trade": -94.58999999998919,
+       "worst_trade": -1615.0900000000183
+      },
+      "ask_fee_0.74": {
+       "days": 201,
+       "mean_per_day": 10.303283582089815,
+       "nw_t_per_day": 0.38489561810714695,
+       "signal_days": 46,
+       "trades": 46,
+       "coverage": 1.0,
+       "mean_per_trade": 45.02086956521856,
+       "share_won": 0.45652173913043476,
+       "median_trade": -95.2399999999892,
+       "worst_trade": -1615.7400000000184
+      },
+      "mid_fee_0.09": {
+       "days": 201,
+       "mean_per_day": 17.392338308457987,
+       "nw_t_per_day": 0.650986455078167,
+       "signal_days": 46,
+       "trades": 46,
+       "coverage": 1.0,
+       "mean_per_trade": 75.99695652174032,
+       "share_won": 0.4782608695652174,
+       "median_trade": -72.08999999998905,
+       "worst_trade": -1590.0900000000183
+      }
+     }
+    },
+    "report": {
+     "cell": [
+      "15:50",
+      0.8,
+      1,
+      20
+     ],
+     "name": "15:50 body>=0.80 with ITM20",
+     "2024-01-01..2026-10-20": {
+      "days": 697,
+      "mean_per_day": 18.880875179339423,
+      "nw_t_per_day": 1.2980872931214664,
+      "signal_days": 167,
+      "trades": 167,
+      "coverage": 1.0,
+      "mean_per_trade": 78.80221556885975,
+      "share_won": 0.5089820359281437,
+      "median_trade": 10.909999999985377,
+      "worst_trade": -2670.09,
+      "not_priced": {
+       "signal_days": 167,
+       "priced": 167,
+       "no_spot": 0,
+       "no_quote": 0
+      }
+     },
+     "2024": {
+      "days": 249,
+      "mean_per_day": 26.52851405622367,
+      "nw_t_per_day": 1.0658218295527546,
+      "signal_days": 60,
+      "trades": 60,
+      "coverage": 1.0,
+      "mean_per_trade": 110.09333333332822,
+      "share_won": 0.5166666666666667,
+      "median_trade": 28.41000000002186,
+      "worst_trade": -1262.0900000000252,
+      "not_priced": {
+       "signal_days": 60,
+       "priced": 60,
+       "no_spot": 0,
+       "no_quote": 0
+      }
+     },
+     "2025": {
+      "days": 247,
+      "mean_per_day": 18.030404858298912,
+      "nw_t_per_day": 0.7496808451321434,
+      "signal_days": 61,
+      "trades": 61,
+      "coverage": 1.0,
+      "mean_per_trade": 73.00836065573493,
+      "share_won": 0.5409836065573771,
+      "median_trade": 67.90999999995627,
+      "worst_trade": -2670.09,
+      "not_priced": {
+       "signal_days": 61,
+       "priced": 61,
+       "no_spot": 0,
+       "no_quote": 0
+      }
+     },
+     "2026": {
+      "days": 201,
+      "mean_per_day": 10.452039800995292,
+      "nw_t_per_day": 0.39047009765125335,
+      "signal_days": 46,
+      "trades": 46,
+      "coverage": 1.0,
+      "mean_per_trade": 45.67086956521855,
+      "share_won": 0.45652173913043476,
+      "median_trade": -94.58999999998919,
+      "worst_trade": -1615.0900000000183,
+      "not_priced": {
+       "signal_days": 46,
+       "priced": 46,
+       "no_spot": 0,
+       "no_quote": 0
+      }
+     }
+    }
+   },
+   "current": {
+    "cell": "15:50 body>=0.60 with ITM10",
+    "versions": {
+     "2024-01-01..2026-10-20": {
+      "ask_fee_0.09": {
+       "days": 697,
+       "mean_per_day": 29.973672883787163,
+       "nw_t_per_day": 1.6423382193184621,
+       "signal_days": 315,
+       "trades": 315,
+       "coverage": 1.0,
+       "mean_per_trade": 66.32269841269729,
+       "share_won": 0.526984126984127,
+       "median_trade": 39.91000000003645,
+       "worst_trade": -2210.09
+      },
+      "ask_fee_0.74": {
+       "days": 697,
+       "mean_per_day": 29.679913916785733,
+       "nw_t_per_day": 1.6263516720998978,
+       "signal_days": 315,
+       "trades": 315,
+       "coverage": 1.0,
+       "mean_per_trade": 65.67269841269733,
+       "share_won": 0.526984126984127,
+       "median_trade": 39.26000000003645,
+       "worst_trade": -2210.7400000000002
+      },
+      "mid_fee_0.09": {
+       "days": 697,
+       "mean_per_day": 41.415566714490176,
+       "nw_t_per_day": 2.2658160930148985,
+       "signal_days": 315,
+       "trades": 315,
+       "coverage": 1.0,
+       "mean_per_trade": 91.64015873015762,
+       "share_won": 0.5301587301587302,
+       "median_trade": 64.90999999999985,
+       "worst_trade": -2155.09
+      }
+     },
+     "2024": {
+      "ask_fee_0.09": {
+       "days": 249,
+       "mean_per_day": 8.680562248994026,
+       "nw_t_per_day": 0.3338053055091098,
+       "signal_days": 106,
+       "trades": 106,
+       "coverage": 1.0,
+       "mean_per_trade": 20.391132075467095,
+       "share_won": 0.5,
+       "median_trade": -11.089999999994525,
+       "worst_trade": -1170.09
+      },
+      "ask_fee_0.74": {
+       "days": 249,
+       "mean_per_day": 8.40385542168479,
+       "nw_t_per_day": 0.32317938317271777,
+       "signal_days": 106,
+       "trades": 106,
+       "coverage": 1.0,
+       "mean_per_trade": 19.74113207546711,
+       "share_won": 0.5,
+       "median_trade": -11.739999999994524,
+       "worst_trade": -1170.74
+      },
+      "mid_fee_0.09": {
+       "days": 249,
+       "mean_per_day": 21.612289156624556,
+       "nw_t_per_day": 0.8317047405425594,
+       "signal_days": 106,
+       "trades": 106,
+       "coverage": 1.0,
+       "mean_per_trade": 50.76849056603313,
+       "share_won": 0.5094339622641509,
+       "median_trade": 13.910000000005564,
+       "worst_trade": -1140.09
+      }
+     },
+     "2025": {
+      "ask_fee_0.09": {
+       "days": 247,
+       "mean_per_day": 30.67801619433091,
+       "nw_t_per_day": 0.9310957693836671,
+       "signal_days": 117,
+       "trades": 117,
+       "coverage": 1.0,
+       "mean_per_trade": 64.76470085469855,
+       "share_won": 0.5641025641025641,
+       "median_trade": 67.90999999995627,
+       "worst_trade": -2210.09
+      },
+      "ask_fee_0.74": {
+       "days": 247,
+       "mean_per_day": 30.37012145748881,
+       "nw_t_per_day": 0.9217969788574455,
+       "signal_days": 117,
+       "trades": 117,
+       "coverage": 1.0,
+       "mean_per_trade": 64.11470085469865,
+       "share_won": 0.5641025641025641,
+       "median_trade": 67.25999999995626,
+       "worst_trade": -2210.7400000000002
+      },
+      "mid_fee_0.09": {
+       "days": 247,
+       "mean_per_day": 42.601093117407835,
+       "nw_t_per_day": 1.2887397095545072,
+       "signal_days": 117,
+       "trades": 117,
+       "coverage": 1.0,
+       "mean_per_trade": 89.93564102563872,
+       "share_won": 0.5641025641025641,
+       "median_trade": 84.90999999999997,
+       "worst_trade": -2155.09
+      }
+     },
+     "2026": {
+      "ask_fee_0.09": {
+       "days": 201,
+       "mean_per_day": 55.48616915423087,
+       "nw_t_per_day": 1.5438076137080214,
+       "signal_days": 92,
+       "trades": 92,
+       "coverage": 1.0,
+       "mean_per_trade": 121.2252173913087,
+       "share_won": 0.5108695652173914,
+       "median_trade": 20.910000000012698,
+       "worst_trade": -1280.09
+      },
+      "ask_fee_0.74": {
+       "days": 201,
+       "mean_per_day": 55.18865671641992,
+       "nw_t_per_day": 1.5356771208250675,
+       "signal_days": 92,
+       "trades": 92,
+       "coverage": 1.0,
+       "mean_per_trade": 120.5752173913088,
+       "share_won": 0.5108695652173914,
+       "median_trade": 20.2600000000127,
+       "worst_trade": -1280.74
+      },
+      "mid_fee_0.09": {
+       "days": 201,
+       "mean_per_day": 64.49114427860899,
+       "nw_t_per_day": 1.7882616732197605,
+       "signal_days": 92,
+       "trades": 92,
+       "coverage": 1.0,
+       "mean_per_trade": 140.89913043478697,
+       "share_won": 0.5108695652173914,
+       "median_trade": 35.910000000012644,
+       "worst_trade": -1265.09
+      }
+     }
+    },
+    "report": {
+     "cell": [
+      "15:50",
+      0.6,
+      1,
+      10
+     ],
+     "name": "15:50 body>=0.60 with ITM10",
+     "2024-01-01..2026-10-20": {
+      "days": 697,
+      "mean_per_day": 29.973672883787163,
+      "nw_t_per_day": 1.6423382193184621,
+      "signal_days": 315,
+      "trades": 315,
+      "coverage": 1.0,
+      "mean_per_trade": 66.32269841269729,
+      "share_won": 0.526984126984127,
+      "median_trade": 39.91000000003645,
+      "worst_trade": -2210.09,
+      "not_priced": {
+       "signal_days": 315,
+       "priced": 315,
+       "no_spot": 0,
+       "no_quote": 0
+      }
+     },
+     "2024": {
+      "days": 249,
+      "mean_per_day": 8.680562248994026,
+      "nw_t_per_day": 0.3338053055091098,
+      "signal_days": 106,
+      "trades": 106,
+      "coverage": 1.0,
+      "mean_per_trade": 20.391132075467095,
+      "share_won": 0.5,
+      "median_trade": -11.089999999994525,
+      "worst_trade": -1170.09,
+      "not_priced": {
+       "signal_days": 106,
+       "priced": 106,
+       "no_spot": 0,
+       "no_quote": 0
+      }
+     },
+     "2025": {
+      "days": 247,
+      "mean_per_day": 30.67801619433091,
+      "nw_t_per_day": 0.9310957693836671,
+      "signal_days": 117,
+      "trades": 117,
+      "coverage": 1.0,
+      "mean_per_trade": 64.76470085469855,
+      "share_won": 0.5641025641025641,
+      "median_trade": 67.90999999995627,
+      "worst_trade": -2210.09,
+      "not_priced": {
+       "signal_days": 117,
+       "priced": 117,
+       "no_spot": 0,
+       "no_quote": 0
+      }
+     },
+     "2026": {
+      "days": 201,
+      "mean_per_day": 55.48616915423087,
+      "nw_t_per_day": 1.5438076137080214,
+      "signal_days": 92,
+      "trades": 92,
+      "coverage": 1.0,
+      "mean_per_trade": 121.2252173913087,
+      "share_won": 0.5108695652173914,
+      "median_trade": 20.910000000012698,
+      "worst_trade": -1280.09,
+      "not_priced": {
+       "signal_days": 92,
+       "priced": 92,
+       "no_spot": 0,
+       "no_quote": 0
+      }
+     }
+    }
+   }
+  },
+  "threshold_profile": {
+   "label": "looked at after the decision",
+   "rows": {
+    "ITM10": [
+     {
+      "cell": [
+       "15:50",
+       0.4,
+       1,
+       10
+      ],
+      "name": "15:50 body>=0.40 with ITM10",
+      "test": {
+       "days": 697,
+       "mean_per_day": 34.629670014347035,
+       "nw_t_per_day": 1.69310110023892,
+       "signal_days": 468,
+       "trades": 468,
+       "coverage": 1.0,
+       "mean_per_trade": 51.574529914529656,
+       "share_won": 0.5128205128205128,
+       "median_trade": 28.91000000002363,
+       "worst_trade": -2210.09,
+       "not_priced": {
+        "signal_days": 468,
+        "priced": 468,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.4
+     },
+     {
+      "cell": [
+       "15:50",
+       0.45,
+       1,
+       10
+      ],
+      "name": "15:50 body>=0.45 with ITM10",
+      "test": {
+       "days": 697,
+       "mean_per_day": 33.24486370157811,
+       "nw_t_per_day": 1.6739498291978532,
+       "signal_days": 437,
+       "trades": 437,
+       "coverage": 1.0,
+       "mean_per_trade": 53.0244164759724,
+       "share_won": 0.5148741418764302,
+       "median_trade": 30.910000000040018,
+       "worst_trade": -2210.09,
+       "not_priced": {
+        "signal_days": 437,
+        "priced": 437,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.45
+     },
+     {
+      "cell": [
+       "15:50",
+       0.5,
+       1,
+       10
+      ],
+      "name": "15:50 body>=0.50 with ITM10",
+      "test": {
+       "days": 697,
+       "mean_per_day": 35.985121951219206,
+       "nw_t_per_day": 1.823558735294583,
+       "signal_days": 393,
+       "trades": 393,
+       "coverage": 1.0,
+       "mean_per_trade": 63.82094147582641,
+       "share_won": 0.5241730279898219,
+       "median_trade": 39.91000000003645,
+       "worst_trade": -2210.09,
+       "not_priced": {
+        "signal_days": 393,
+        "priced": 393,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.5
+     },
+     {
+      "cell": [
+       "15:50",
+       0.55,
+       1,
+       10
+      ],
+      "name": "15:50 body>=0.55 with ITM10",
+      "test": {
+       "days": 697,
+       "mean_per_day": 30.044806312768895,
+       "nw_t_per_day": 1.5990131734505568,
+       "signal_days": 353,
+       "trades": 353,
+       "coverage": 1.0,
+       "mean_per_trade": 59.32359773371081,
+       "share_won": 0.5240793201133145,
+       "median_trade": 38.90999999995991,
+       "worst_trade": -2210.09,
+       "not_priced": {
+        "signal_days": 353,
+        "priced": 353,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.55
+     },
+     {
+      "cell": [
+       "15:50",
+       0.6,
+       1,
+       10
+      ],
+      "name": "15:50 body>=0.60 with ITM10",
+      "test": {
+       "days": 697,
+       "mean_per_day": 29.973672883787163,
+       "nw_t_per_day": 1.6423382193184621,
+       "signal_days": 315,
+       "trades": 315,
+       "coverage": 1.0,
+       "mean_per_trade": 66.32269841269729,
+       "share_won": 0.526984126984127,
+       "median_trade": 39.91000000003645,
+       "worst_trade": -2210.09,
+       "not_priced": {
+        "signal_days": 315,
+        "priced": 315,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.6
+     },
+     {
+      "cell": [
+       "15:50",
+       0.65,
+       1,
+       10
+      ],
+      "name": "15:50 body>=0.65 with ITM10",
+      "test": {
+       "days": 697,
+       "mean_per_day": 26.2650071736004,
+       "nw_t_per_day": 1.573011335949636,
+       "signal_days": 281,
+       "trades": 281,
+       "coverage": 1.0,
+       "mean_per_trade": 65.1484341636992,
+       "share_won": 0.5338078291814946,
+       "median_trade": 44.909999999999926,
+       "worst_trade": -2210.09,
+       "not_priced": {
+        "signal_days": 281,
+        "priced": 281,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.65
+     },
+     {
+      "cell": [
+       "15:50",
+       0.7,
+       1,
+       10
+      ],
+      "name": "15:50 body>=0.70 with ITM10",
+      "test": {
+       "days": 697,
+       "mean_per_day": 32.16439024390168,
+       "nw_t_per_day": 2.042350710494492,
+       "signal_days": 238,
+       "trades": 238,
+       "coverage": 1.0,
+       "mean_per_trade": 94.19571428571203,
+       "share_won": 0.5504201680672269,
+       "median_trade": 62.91000000001091,
+       "worst_trade": -2210.09,
+       "not_priced": {
+        "signal_days": 238,
+        "priced": 238,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.7
+     },
+     {
+      "cell": [
+       "15:50",
+       0.75,
+       1,
+       10
+      ],
+      "name": "15:50 body>=0.75 with ITM10",
+      "test": {
+       "days": 697,
+       "mean_per_day": 24.56437589669941,
+       "nw_t_per_day": 1.633220909983781,
+       "signal_days": 207,
+       "trades": 207,
+       "coverage": 1.0,
+       "mean_per_trade": 82.71193236714726,
+       "share_won": 0.5265700483091788,
+       "median_trade": 39.91000000003645,
+       "worst_trade": -2210.09,
+       "not_priced": {
+        "signal_days": 207,
+        "priced": 207,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.75
+     },
+     {
+      "cell": [
+       "15:50",
+       0.8,
+       1,
+       10
+      ],
+      "name": "15:50 body>=0.80 with ITM10",
+      "test": {
+       "days": 697,
+       "mean_per_day": 13.256771879483084,
+       "nw_t_per_day": 0.9413645194983956,
+       "signal_days": 167,
+       "trades": 167,
+       "coverage": 1.0,
+       "mean_per_trade": 55.32916167664495,
+       "share_won": 0.5029940119760479,
+       "median_trade": 10.909999999985377,
+       "worst_trade": -2210.09,
+       "not_priced": {
+        "signal_days": 167,
+        "priced": 167,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.8
+     },
+     {
+      "cell": [
+       "15:50",
+       0.85,
+       1,
+       10
+      ],
+      "name": "15:50 body>=0.85 with ITM10",
+      "test": {
+       "days": 697,
+       "mean_per_day": 8.35050215207999,
+       "nw_t_per_day": 0.6632339691630059,
+       "signal_days": 130,
+       "trades": 130,
+       "coverage": 1.0,
+       "mean_per_trade": 44.77153846153651,
+       "share_won": 0.4846153846153846,
+       "median_trade": -42.09000000003455,
+       "worst_trade": -2210.09,
+       "not_priced": {
+        "signal_days": 130,
+        "priced": 130,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.85
+     },
+     {
+      "cell": [
+       "15:50",
+       0.9,
+       1,
+       10
+      ],
+      "name": "15:50 body>=0.90 with ITM10",
+      "test": {
+       "days": 697,
+       "mean_per_day": 16.357890961262292,
+       "nw_t_per_day": 1.5020859996021718,
+       "signal_days": 95,
+       "trades": 95,
+       "coverage": 1.0,
+       "mean_per_trade": 120.01526315789279,
+       "share_won": 0.5473684210526316,
+       "median_trade": 64.91000000003645,
+       "worst_trade": -2210.09,
+       "not_priced": {
+        "signal_days": 95,
+        "priced": 95,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.9
+     }
+    ],
+    "ATM": [
+     {
+      "cell": [
+       "15:50",
+       0.4,
+       1,
+       0
+      ],
+      "name": "15:50 body>=0.40 with ATM",
+      "test": {
+       "days": 696,
+       "mean_per_day": 19.76719827586168,
+       "nw_t_per_day": 1.3093898095348318,
+       "signal_days": 468,
+       "trades": 467,
+       "coverage": 0.9978632478632479,
+       "mean_per_trade": 29.460321199142886,
+       "share_won": 0.37687366167023556,
+       "median_trade": -135.09,
+       "worst_trade": -1640.0899999999997,
+       "not_priced": {
+        "signal_days": 468,
+        "priced": 467,
+        "no_spot": 0,
+        "no_quote": 1
+       }
+      },
+      "theta": 0.4
+     },
+     {
+      "cell": [
+       "15:50",
+       0.45,
+       1,
+       0
+      ],
+      "name": "15:50 body>=0.45 with ATM",
+      "test": {
+       "days": 696,
+       "mean_per_day": 19.28557471264327,
+       "nw_t_per_day": 1.312554385215151,
+       "signal_days": 437,
+       "trades": 436,
+       "coverage": 0.9977116704805492,
+       "mean_per_trade": 30.78614678899018,
+       "share_won": 0.37844036697247707,
+       "median_trade": -132.59,
+       "worst_trade": -1640.0899999999997,
+       "not_priced": {
+        "signal_days": 437,
+        "priced": 436,
+        "no_spot": 0,
+        "no_quote": 1
+       }
+      },
+      "theta": 0.45
+     },
+     {
+      "cell": [
+       "15:50",
+       0.5,
+       1,
+       0
+      ],
+      "name": "15:50 body>=0.50 with ATM",
+      "test": {
+       "days": 696,
+       "mean_per_day": 20.521149425286904,
+       "nw_t_per_day": 1.3947297386301978,
+       "signal_days": 393,
+       "trades": 392,
+       "coverage": 0.9974554707379135,
+       "mean_per_trade": 36.43551020408082,
+       "share_won": 0.38010204081632654,
+       "median_trade": -135.09,
+       "worst_trade": -1640.0899999999997,
+       "not_priced": {
+        "signal_days": 393,
+        "priced": 392,
+        "no_spot": 0,
+        "no_quote": 1
+       }
+      },
+      "theta": 0.5
+     },
+     {
+      "cell": [
+       "15:50",
+       0.55,
+       1,
+       0
+      ],
+      "name": "15:50 body>=0.55 with ATM",
+      "test": {
+       "days": 696,
+       "mean_per_day": 17.567988505746754,
+       "nw_t_per_day": 1.253114902059767,
+       "signal_days": 353,
+       "trades": 352,
+       "coverage": 0.9971671388101983,
+       "mean_per_trade": 34.73670454545382,
+       "share_won": 0.3693181818181818,
+       "median_trade": -140.09,
+       "worst_trade": -1640.0899999999997,
+       "not_priced": {
+        "signal_days": 353,
+        "priced": 352,
+        "no_spot": 0,
+        "no_quote": 1
+       }
+      },
+      "theta": 0.55
+     },
+     {
+      "cell": [
+       "15:50",
+       0.6,
+       1,
+       0
+      ],
+      "name": "15:50 body>=0.60 with ATM",
+      "test": {
+       "days": 696,
+       "mean_per_day": 15.84876436781562,
+       "nw_t_per_day": 1.1582758679132856,
+       "signal_days": 315,
+       "trades": 314,
+       "coverage": 0.9968253968253968,
+       "mean_per_trade": 35.12974522292889,
+       "share_won": 0.3662420382165605,
+       "median_trade": -145.0900000000091,
+       "worst_trade": -1640.0899999999997,
+       "not_priced": {
+        "signal_days": 315,
+        "priced": 314,
+        "no_spot": 0,
+        "no_quote": 1
+       }
+      },
+      "theta": 0.6
+     },
+     {
+      "cell": [
+       "15:50",
+       0.65,
+       1,
+       0
+      ],
+      "name": "15:50 body>=0.65 with ATM",
+      "test": {
+       "days": 696,
+       "mean_per_day": 11.363218390804231,
+       "nw_t_per_day": 0.900803753291375,
+       "signal_days": 281,
+       "trades": 280,
+       "coverage": 0.99644128113879,
+       "mean_per_trade": 28.245714285713365,
+       "share_won": 0.3607142857142857,
+       "median_trade": -145.0900000000091,
+       "worst_trade": -1640.0899999999997,
+       "not_priced": {
+        "signal_days": 281,
+        "priced": 280,
+        "no_spot": 0,
+        "no_quote": 1
+       }
+      },
+      "theta": 0.65
+     },
+     {
+      "cell": [
+       "15:50",
+       0.7,
+       1,
+       0
+      ],
+      "name": "15:50 body>=0.70 with ATM",
+      "test": {
+       "days": 696,
+       "mean_per_day": 18.216479885057208,
+       "nw_t_per_day": 1.5321509025061417,
+       "signal_days": 238,
+       "trades": 237,
+       "coverage": 0.9957983193277311,
+       "mean_per_trade": 53.49649789029458,
+       "share_won": 0.39662447257383965,
+       "median_trade": -130.09,
+       "worst_trade": -1640.0899999999997,
+       "not_priced": {
+        "signal_days": 238,
+        "priced": 237,
+        "no_spot": 0,
+        "no_quote": 1
+       }
+      },
+      "theta": 0.7
+     },
+     {
+      "cell": [
+       "15:50",
+       0.75,
+       1,
+       0
+      ],
+      "name": "15:50 body>=0.75 with ATM",
+      "test": {
+       "days": 696,
+       "mean_per_day": 16.565316091953644,
+       "nw_t_per_day": 1.4586203432241107,
+       "signal_days": 207,
+       "trades": 206,
+       "coverage": 0.9951690821256038,
+       "mean_per_trade": 55.96825242718319,
+       "share_won": 0.3932038834951456,
+       "median_trade": -137.59,
+       "worst_trade": -1640.0899999999997,
+       "not_priced": {
+        "signal_days": 207,
+        "priced": 206,
+        "no_spot": 0,
+        "no_quote": 1
+       }
+      },
+      "theta": 0.75
+     },
+     {
+      "cell": [
+       "15:50",
+       0.8,
+       1,
+       0
+      ],
+      "name": "15:50 body>=0.80 with ATM",
+      "test": {
+       "days": 697,
+       "mean_per_day": 10.139124820659745,
+       "nw_t_per_day": 0.9717539319767087,
+       "signal_days": 167,
+       "trades": 167,
+       "coverage": 1.0,
+       "mean_per_trade": 42.317185628741576,
+       "share_won": 0.3772455089820359,
+       "median_trade": -150.09,
+       "worst_trade": -1640.0899999999997,
+       "not_priced": {
+        "signal_days": 167,
+        "priced": 167,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.8
+     },
+     {
+      "cell": [
+       "15:50",
+       0.85,
+       1,
+       0
+      ],
+      "name": "15:50 body>=0.85 with ATM",
+      "test": {
+       "days": 697,
+       "mean_per_day": 3.925824964131827,
+       "nw_t_per_day": 0.4110037953714509,
+       "signal_days": 130,
+       "trades": 130,
+       "coverage": 1.0,
+       "mean_per_trade": 21.048461538460636,
+       "share_won": 0.3769230769230769,
+       "median_trade": -167.59,
+       "worst_trade": -1640.0899999999997,
+       "not_priced": {
+        "signal_days": 130,
+        "priced": 130,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.85
+     },
+     {
+      "cell": [
+       "15:50",
+       0.9,
+       1,
+       0
+      ],
+      "name": "15:50 body>=0.90 with ATM",
+      "test": {
+       "days": 697,
+       "mean_per_day": 7.910258249641201,
+       "nw_t_per_day": 0.9262922487846803,
+       "signal_days": 95,
+       "trades": 95,
+       "coverage": 1.0,
+       "mean_per_trade": 58.036315789472795,
+       "share_won": 0.43157894736842106,
+       "median_trade": -130.09,
+       "worst_trade": -1640.0899999999997,
+       "not_priced": {
+        "signal_days": 95,
+        "priced": 95,
+        "no_spot": 0,
+        "no_quote": 0
+       }
+      },
+      "theta": 0.9
+     }
+    ]
+   }
+  }
+ },
+ "forward": {
+  "price_basis": "Robinhood one-minute option bars: the 15:51 bar open + $0.10, held to the official close (the forward log's Exit A), $0.09 fee. Not the Databento ask, so not the same price basis as Parts 1-2.",
+  "fresh_after_et_date": "2026-11-09",
+  "current": {
+   "available": true,
+   "days": 7,
+   "traded": 4,
+   "fresh_days": 0,
+   "mean_pnl_traded": 303.41,
+   "rows": [
+    {
+     "date": "2026-10-22",
+     "status": "traded",
+     "kind": "call",
+     "strike": 7650.0,
+     "paid_incl_0.10": 9.75,
+     "exit_a_value": 13.43,
+     "pnl_fee_0.09": 367.91,
+     "provisional": "False",
+     "label": "previously available"
+    },
+    {
+     "date": "2026-10-27",
+     "status": "traded",
+     "kind": "put",
+     "strike": 7740.0,
+     "paid_incl_0.10": 10.1,
+     "exit_a_value": 17.4,
+     "pnl_fee_0.09": 729.91,
+     "provisional": "False",
+     "label": "previously available"
+    },
+    {
+     "date": "2026-10-29",
+     "status": "traded",
+     "kind": "call",
+     "strike": 7705.0,
+     "paid_incl_0.10": 11.0,
+     "exit_a_value": 15.39,
+     "pnl_fee_0.09": 438.91,
+     "provisional": "False",
+     "label": "previously available"
+    },
+    {
+     "date": "2026-10-30",
+     "status": "traded",
+     "kind": "call",
+     "strike": 7570.0,
+     "paid_incl_0.10": 13.3,
+     "exit_a_value": 10.07,
+     "pnl_fee_0.09": -323.09,
+     "provisional": "False",
+     "label": "previously available"
+    },
+    {
+     "date": "2026-11-02",
+     "status": "no_minute_option_bars",
+     "kind": "put",
+     "strike": 7555.0,
+     "paid_incl_0.10": null,
+     "exit_a_value": null,
+     "pnl_fee_0.09": null,
+     "provisional": "False",
+     "label": "previously available"
+    },
+    {
+     "date": "2026-11-03",
+     "status": "no_minute_option_bars",
+     "kind": "put",
+     "strike": 7570.0,
+     "paid_incl_0.10": null,
+     "exit_a_value": null,
+     "pnl_fee_0.09": null,
+     "provisional": "False",
+     "label": "previously available"
+    },
+    {
+     "date": "2026-11-06",
+     "status": "no_minute_option_bars",
+     "kind": "put",
+     "strike": 7395.0,
+     "paid_incl_0.10": null,
+     "exit_a_value": null,
+     "pnl_fee_0.09": null,
+     "provisional": "False",
+     "label": "previously available"
+    }
+   ]
+  },
+  "pick": {
+   "available": true,
+   "days": 7,
+   "traded": 4,
+   "fresh_days": 0,
+   "mean_pnl_traded": 373.41,
+   "rows": [
+    {
+     "date": "2026-10-22",
+     "status": "traded",
+     "kind": "call",
+     "strike": 7640.0,
+     "paid_incl_0.10": 19.2,
+     "exit_a_value": 23.43,
+     "pnl_fee_0.09": 422.91,
+     "provisional": "False",
+     "label": "previously available"
+    },
+    {
+     "date": "2026-10-27",
+     "status": "traded",
+     "kind": "put",
+     "strike": 7750.0,
+     "paid_incl_0.10": 19.95,
+     "exit_a_value": 27.4,
+     "pnl_fee_0.09": 744.91,
+     "provisional": "False",
+     "label": "previously available"
+    },
+    {
+     "date": "2026-10-29",
+     "status": "traded",
+     "kind": "call",
+     "strike": 7695.0,
+     "paid_incl_0.10": 20.3,
+     "exit_a_value": 25.39,
+     "pnl_fee_0.09": 508.91,
+     "provisional": "False",
+     "label": "previously available"
+    },
+    {
+     "date": "2026-10-30",
+     "status": "traded",
+     "kind": "call",
+     "strike": 7560.0,
+     "paid_incl_0.10": 21.9,
+     "exit_a_value": 20.07,
+     "pnl_fee_0.09": -183.09,
+     "provisional": "False",
+     "label": "previously available"
+    },
+    {
+     "date": "2026-11-02",
+     "status": "no_minute_option_bars",
+     "kind": "put",
+     "strike": 7565.0,
+     "paid_incl_0.10": null,
+     "exit_a_value": null,
+     "pnl_fee_0.09": null,
+     "provisional": "False",
+     "label": "previously available"
+    },
+    {
+     "date": "2026-11-03",
+     "status": "no_minute_option_bars",
+     "kind": "put",
+     "strike": 7580.0,
+     "paid_incl_0.10": null,
+     "exit_a_value": null,
+     "pnl_fee_0.09": null,
+     "provisional": "False",
+     "label": "previously available"
+    },
+    {
+     "date": "2026-11-06",
+     "status": "no_minute_option_bars",
+     "kind": "put",
+     "strike": 7405.0,
+     "paid_incl_0.10": null,
+     "exit_a_value": null,
+     "pnl_fee_0.09": null,
+     "provisional": "False",
+     "label": "previously available"
+    }
+   ],
+   "note": "the 15:50 candle direction log's contract at the pick's strike, on days the forward candle's body is at least the pick's threshold"
+  }
+ }
+}

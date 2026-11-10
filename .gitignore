@@ -1,0 +1,14 @@
+# raw and downloaded data are licensed and never committed
+data/
+cache/
+*.pkl
+*.csv.gz
+# local environment
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+# secrets
+*.key
+ntfy_topic.txt
+.env

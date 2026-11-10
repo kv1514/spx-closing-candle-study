@@ -1,0 +1,12 @@
+{
+ "what": "tune finished; every tuning artifact below was committed first",
+ "inputs_manifest_sha256": "d76f49e6b5b744fd64e49daabe84cb3224120b8b8e665c1b98199e31394c74d1",
+ "artifacts": {
+  "inputs_tune.json": "d76f49e6b5b744fd64e49daabe84cb3224120b8b8e665c1b98199e31394c74d1",
+  "selection.json": "075053105d4dd291d6e1107ef58d59157cd438d9ef532ae19108dd6836f3b376",
+  "selection.sha256": "459f35b308590a14dd97506be973424479ba293074d0e264248fff48cf46489b",
+  "tune_results.json": "69a28a2487148b351ec30dd04842752e8bfd4d45feb789fc107ddbf6e7bff658",
+  "tuning trade rows": "b734238b1f698d85e2ee8aecacd143cec5e0bda725645d776db49365d6756a98",
+  "RESULTS.md tuning section": "64eb71a74373488f727abe0a5d5792ac28858fa5107b46d251d8d3885ee2d4dd"
+ }
+}

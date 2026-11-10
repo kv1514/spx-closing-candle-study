@@ -1,0 +1,1927 @@
+{
+ "what": "The 15:50 candle on XSP and SPY 0DTE options at real prices (spx_candle_mini.md)",
+ "prereg_sha256": "4622d7f5d35e61600653a6cde60f2dc94197a99aa169eec1e5efdb7a0fa937ae",
+ "code_sha256": "3aea1d14ed9abda0b4e0e5b5cd09041f840bf375f2d20d06bd8f583febfe7d41",
+ "period": [
+  "2021-01-01",
+  "2026-10-20"
+ ],
+ "checks": {
+  "official_close_check": {
+   "overlap_days": 362,
+   "max_abs_diff": 0.0,
+   "realprice_float_check_agrees": true
+  },
+  "signal_check_1": {
+   "kept_days": 1446,
+   "equal_to_scan_F2": true
+  },
+  "spy_close_check": {
+   "days": 1270,
+   "ratio_min": 0.09912809592576577,
+   "ratio_max": 0.10053693488977258
+  },
+  "signal_check_2": {
+   "days_in_both": 586,
+   "same_sign": true,
+   "trade_list_days_not_in_d1": 0
+  },
+  "spx_reproduction": {
+   "expected": {
+    "days": 1321,
+    "trades": 585,
+    "mean_per_day": 29.87,
+    "t": 2.4
+   },
+   "got": {
+    "days": 1321,
+    "trades": 585,
+    "mean_per_day": 29.87,
+    "t": 2.4
+   },
+   "passed": true
+  }
+ },
+ "data": {
+  "quote_listing_sha256": {
+   "XSP": "5b420335c70497053dc0dfc39b1590bbfd7efdc9968117f94966ecf248312dcf",
+   "SPY": "c5ddda194336f7e853145c97fed7f338b8f8872a0b92e42c73c12470e63bbee1"
+  },
+  "xsp_bars_listing_sha256": "782a169d84741ba058b519250d6c5522afb58e82f0dd9d2608a90d3d07cd884f",
+  "quote_rows_parsed": {
+   "XSP": {
+    "rows": 2580322,
+    "invalid": 195053,
+    "other_expiry": 0,
+    "off_minute": 0
+   },
+   "SPY": {
+    "rows": 3234576,
+    "invalid": 133866,
+    "other_expiry": 0,
+    "off_minute": 0
+   }
+  },
+  "d1_center_vs_download_manifest": {
+   "XSP": {
+    "days": 1283,
+    "equal": 1283
+   },
+   "SPY": {
+    "days": 1270,
+    "equal": 1270
+   }
+  }
+ },
+ "verdicts": {
+  "xsp": {
+   "confirmed": false,
+   "stats": {
+    "days": 1025,
+    "mean_per_day": -15.16309268292693,
+    "nw_t_per_day": -5.481074331374678,
+    "trades": 313,
+    "mean_per_trade": -49.65549520766806,
+    "share_trades_won": 0.34824281150159747,
+    "median_trade": -31.790000000000283,
+    "worst_trade": -818.2900000000017,
+    "subperiods": {
+     "2021-2022": {
+      "days": 254,
+      "mean_per_day": -37.486653543307064,
+      "nw_t_per_day": -5.292758107804868,
+      "trades": 59,
+      "mean_per_trade": -161.38322033898294,
+      "share_trades_won": 0.13559322033898305,
+      "median_trade": -120.09,
+      "worst_trade": -818.2900000000017
+     },
+     "2023-2026": {
+      "days": 771,
+      "mean_per_day": -7.8087678339819835,
+      "nw_t_per_day": -3.0888003750104716,
+      "trades": 254,
+      "mean_per_trade": -23.702992125984682,
+      "share_trades_won": 0.39763779527559057,
+      "median_trade": -18.14000000000302,
+      "worst_trade": -489.09000000000225
+     }
+    }
+   },
+   "unpriced": {
+    "signal_days": 571,
+    "priced": 313,
+    "no_spot": 258,
+    "no_quote": 0
+   },
+   "line": "XSP (the primary test; ITM1 at the 15:51 ask, settled at SPX close / 10, $0.09): not confirmed on XSP at real prices: -15.16 a day, Newey-West t -5.48, 1025 days, 313 trades, -49.66 a trade, 35% won, median -31.79, worst -818.29"
+  },
+  "spy_b": {
+   "confirmed": false,
+   "stats": {
+    "days": 1262,
+    "mean_per_day": 0.2259904912836757,
+    "nw_t_per_day": 0.2344677857558132,
+    "trades": 560,
+    "mean_per_trade": 0.509285714285712,
+    "share_trades_won": 0.45357142857142857,
+    "median_trade": -4.679999999999998,
+    "worst_trade": -176.18000000000004,
+    "subperiods": {
+     "2021-2022": {
+      "days": 323,
+      "mean_per_day": 0.6661300309597515,
+      "nw_t_per_day": 0.36472078089559257,
+      "trades": 138,
+      "mean_per_trade": 1.5591304347826065,
+      "share_trades_won": 0.4782608695652174,
+      "median_trade": -2.6799999999999913,
+      "worst_trade": -110.18000000000002
+     },
+     "2023-2026": {
+      "days": 939,
+      "mean_per_day": 0.07458998935037185,
+      "nw_t_per_day": 0.06585439486696551,
+      "trades": 422,
+      "mean_per_trade": 0.16597156398103932,
+      "share_trades_won": 0.44549763033175355,
+      "median_trade": -6.679999999999994,
+      "worst_trade": -176.18000000000004
+     }
+    }
+   },
+   "unpriced": {
+    "signal_days": 568,
+    "priced": 560,
+    "no_spot": 4,
+    "no_quote": 3,
+    "no_exit_quote": 1
+   },
+   "line": "SPY (secondary; version (b): ITM1 at the 15:51 ask, sold at the 15:59 bid, $0.09 each side): not confirmed on SPY at real prices: +0.23 a day, Newey-West t +0.23, 1262 days, 560 trades, +0.51 a trade, 45% won, median -4.68, worst -176.18"
+  }
+ },
+ "primary": {
+  "xsp": {
+   "name": "XSP ITM1: 15:51 ask, settled at SPX close / 10",
+   "days": 1025,
+   "mean_per_day": -15.16309268292693,
+   "nw_t_per_day": -5.481074331374678,
+   "trades": 313,
+   "mean_per_trade": -49.65549520766806,
+   "share_trades_won": 0.34824281150159747,
+   "median_trade": -31.790000000000283,
+   "worst_trade": -818.2900000000017,
+   "subperiods": {
+    "2021-2022": {
+     "days": 254,
+     "mean_per_day": -37.486653543307064,
+     "nw_t_per_day": -5.292758107804868,
+     "trades": 59,
+     "mean_per_trade": -161.38322033898294,
+     "share_trades_won": 0.13559322033898305,
+     "median_trade": -120.09,
+     "worst_trade": -818.2900000000017
+    },
+    "2023-2026": {
+     "days": 771,
+     "mean_per_day": -7.8087678339819835,
+     "nw_t_per_day": -3.0888003750104716,
+     "trades": 254,
+     "mean_per_trade": -23.702992125984682,
+     "share_trades_won": 0.39763779527559057,
+     "median_trade": -18.14000000000302,
+     "worst_trade": -489.09000000000225
+    }
+   },
+   "unpriced": {
+    "signal_days": 571,
+    "priced": 313,
+    "no_spot": 258,
+    "no_quote": 0
+   }
+  },
+  "spy_b": {
+   "name": "SPY ITM1 (b): 15:51 ask, sold at the 15:59 bid",
+   "days": 1262,
+   "mean_per_day": 0.2259904912836757,
+   "nw_t_per_day": 0.2344677857558132,
+   "trades": 560,
+   "mean_per_trade": 0.509285714285712,
+   "share_trades_won": 0.45357142857142857,
+   "median_trade": -4.679999999999998,
+   "worst_trade": -176.18000000000004,
+   "subperiods": {
+    "2021-2022": {
+     "days": 323,
+     "mean_per_day": 0.6661300309597515,
+     "nw_t_per_day": 0.36472078089559257,
+     "trades": 138,
+     "mean_per_trade": 1.5591304347826065,
+     "share_trades_won": 0.4782608695652174,
+     "median_trade": -2.6799999999999913,
+     "worst_trade": -110.18000000000002
+    },
+    "2023-2026": {
+     "days": 939,
+     "mean_per_day": 0.07458998935037185,
+     "nw_t_per_day": 0.06585439486696551,
+     "trades": 422,
+     "mean_per_trade": 0.16597156398103932,
+     "share_trades_won": 0.44549763033175355,
+     "median_trade": -6.679999999999994,
+     "worst_trade": -176.18000000000004
+    }
+   },
+   "unpriced": {
+    "signal_days": 568,
+    "priced": 560,
+    "no_spot": 4,
+    "no_quote": 3,
+    "no_exit_quote": 1
+   }
+  },
+  "spy_a": {
+   "name": "SPY ITM1 (a): 15:51 ask, valued at Yahoo's SPY close",
+   "days": 1263,
+   "mean_per_day": -0.9900950118764671,
+   "nw_t_per_day": -0.7882180607607804,
+   "trades": 561,
+   "mean_per_trade": -2.2290374331550415,
+   "share_trades_won": 0.48484848484848486,
+   "median_trade": -3.0900000000004577,
+   "worst_trade": -220.09000000000003,
+   "subperiods": {
+    "2021-2022": {
+     "days": 323,
+     "mean_per_day": 1.936780185758539,
+     "nw_t_per_day": 0.7965589877389395,
+     "trades": 138,
+     "mean_per_trade": 4.533188405797159,
+     "share_trades_won": 0.5579710144927537,
+     "median_trade": 7.409999999997387,
+     "worst_trade": -148.09
+    },
+    "2023-2026": {
+     "days": 940,
+     "mean_per_day": -1.9958191489361554,
+     "nw_t_per_day": -1.3687824526721593,
+     "trades": 423,
+     "mean_per_trade": -4.435153664302568,
+     "share_trades_won": 0.46099290780141844,
+     "median_trade": -6.090000000000916,
+     "worst_trade": -220.09000000000003
+    }
+   },
+   "unpriced": {
+    "signal_days": 568,
+    "priced": 561,
+    "no_spot": 4,
+    "no_quote": 3
+   }
+  }
+ },
+ "spx_itm10": {
+  "name": "SPX ITM10 (SPXW), 15:51 ask, settled at the SPX close, $0.09: rebuilt from realprice_trades.csv, not repriced",
+  "days": 1321,
+  "mean_per_day": 29.873845571536712,
+  "nw_t_per_day": 2.3978578369404713,
+  "trades": 585,
+  "mean_per_trade": 67.45871794871793,
+  "share_trades_won": 0.5384615384615384,
+  "median_trade": 44.91,
+  "worst_trade": -2210.09,
+  "subperiods": {
+   "2021-2022": {
+    "days": 376,
+    "mean_per_day": 48.212420212765956,
+    "nw_t_per_day": 2.005352668758659,
+    "trades": 157,
+    "mean_per_trade": 115.46414012738853,
+    "share_trades_won": 0.5668789808917197,
+    "median_trade": 65.91,
+    "worst_trade": -1361.09
+   },
+   "2023-2026": {
+    "days": 945,
+    "mean_per_day": 22.57722751322751,
+    "nw_t_per_day": 1.5554278651193543,
+    "trades": 428,
+    "mean_per_trade": 49.849252336448565,
+    "share_trades_won": 0.5280373831775701,
+    "median_trade": 35.91,
+    "worst_trade": -2210.09
+   }
+  },
+  "calendar_days": 1322
+ },
+ "descriptive": {
+  "strikes_mid_fee": {
+   "xsp": {
+    "rows": {
+     "ITM2, ask, $0.09": {
+      "days": 1022,
+      "mean_per_day": -22.67426614481419,
+      "nw_t_per_day": -6.762677347380518,
+      "trades": 310,
+      "mean_per_trade": -74.7519354838713,
+      "share_trades_won": 0.33548387096774196,
+      "median_trade": -43.43999999999696,
+      "worst_trade": -841.689999999994
+     },
+     "ITM1, ask, $0.09": {
+      "days": 1025,
+      "mean_per_day": -15.16309268292693,
+      "nw_t_per_day": -5.481074331374678,
+      "trades": 313,
+      "mean_per_trade": -49.65549520766806,
+      "share_trades_won": 0.34824281150159747,
+      "median_trade": -31.790000000000283,
+      "worst_trade": -818.2900000000017
+     },
+     "ATM, ask, $0.09": {
+      "days": 1024,
+      "mean_per_day": -3.613847656250007,
+      "nw_t_per_day": -2.315512886897602,
+      "trades": 312,
+      "mean_per_trade": -11.860833333333357,
+      "share_trades_won": 0.3333333333333333,
+      "median_trade": -17.48999999999952,
+      "worst_trade": -918.2900000000017
+     },
+     "ITM1, mid, $0.09": {
+      "days": 1025,
+      "mean_per_day": 0.0510536585364837,
+      "nw_t_per_day": 0.030692077090072867,
+      "trades": 313,
+      "mean_per_trade": 0.16718849840222152,
+      "share_trades_won": 0.5111821086261981,
+      "median_trade": 2.4099999999959056,
+      "worst_trade": -318.2900000000016
+     },
+     "ITM1, ask, $0.74": {
+      "days": 1025,
+      "mean_per_day": -15.36158048780498,
+      "nw_t_per_day": -5.548645008735911,
+      "trades": 313,
+      "mean_per_trade": -50.30549520766808,
+      "share_trades_won": 0.34824281150159747,
+      "median_trade": -32.44000000000028,
+      "worst_trade": -818.9400000000016
+     }
+    },
+    "unpriced": {
+     "ITM2": {
+      "signal_days": 571,
+      "priced": 310,
+      "no_spot": 258,
+      "no_quote": 3
+     },
+     "ITM1": {
+      "signal_days": 571,
+      "priced": 313,
+      "no_spot": 258,
+      "no_quote": 0
+     },
+     "ATM": {
+      "signal_days": 571,
+      "priced": 312,
+      "no_spot": 258,
+      "no_quote": 1
+     }
+    }
+   },
+   "spy_b": {
+    "rows": {
+     "ITM2, ask, $0.09": {
+      "days": 1264,
+      "mean_per_day": -1.356930379746836,
+      "nw_t_per_day": -1.2689117083709995,
+      "trades": 562,
+      "mean_per_trade": -3.0518861209964436,
+      "share_trades_won": 0.4501779359430605,
+      "median_trade": -5.179999999999982,
+      "worst_trade": -221.18
+     },
+     "ITM1, ask, $0.09": {
+      "days": 1262,
+      "mean_per_day": 0.2259904912836757,
+      "nw_t_per_day": 0.2344677857558132,
+      "trades": 560,
+      "mean_per_trade": 0.509285714285712,
+      "share_trades_won": 0.45357142857142857,
+      "median_trade": -4.679999999999998,
+      "worst_trade": -176.18000000000004
+     },
+     "ATM, ask, $0.09": {
+      "days": 1261,
+      "mean_per_day": 0.2849960348929416,
+      "nw_t_per_day": 0.40332095342820384,
+      "trades": 559,
+      "mean_per_trade": 0.6428980322003566,
+      "share_trades_won": 0.3828264758497317,
+      "median_trade": -6.180000000000005,
+      "worst_trade": -137.18
+     },
+     "ITM1, mid, $0.09": {
+      "days": 1262,
+      "mean_per_day": 3.0845483359746426,
+      "nw_t_per_day": 3.0660648485809765,
+      "trades": 560,
+      "mean_per_trade": 6.951249999999998,
+      "share_trades_won": 0.5232142857142857,
+      "median_trade": 2.0699999999999963,
+      "worst_trade": -167.18
+     },
+     "ITM1, ask, $0.74": {
+      "days": 1262,
+      "mean_per_day": -0.35087163232963553,
+      "nw_t_per_day": -0.364556050573214,
+      "trades": 560,
+      "mean_per_trade": -0.7907142857142861,
+      "share_trades_won": 0.4446428571428571,
+      "median_trade": -5.979999999999999,
+      "worst_trade": -177.48000000000002
+     }
+    },
+    "unpriced": {
+     "ITM2": {
+      "signal_days": 568,
+      "priced": 562,
+      "no_spot": 4,
+      "no_quote": 2,
+      "no_exit_quote": 0
+     },
+     "ITM1": {
+      "signal_days": 568,
+      "priced": 560,
+      "no_spot": 4,
+      "no_quote": 3,
+      "no_exit_quote": 1
+     },
+     "ATM": {
+      "signal_days": 568,
+      "priced": 559,
+      "no_spot": 4,
+      "no_quote": 3,
+      "no_exit_quote": 2
+     }
+    }
+   },
+   "spy_a": {
+    "rows": {
+     "ITM2, ask, $0.09": {
+      "days": 1264,
+      "mean_per_day": 0.8357753164557313,
+      "nw_t_per_day": 0.6238429302714388,
+      "trades": 562,
+      "mean_per_trade": 1.8797508896797939,
+      "share_trades_won": 0.5142348754448398,
+      "median_trade": 1.910000000003299,
+      "worst_trade": -289.09
+     },
+     "ITM1, ask, $0.09": {
+      "days": 1263,
+      "mean_per_day": -0.9900950118764671,
+      "nw_t_per_day": -0.7882180607607804,
+      "trades": 561,
+      "mean_per_trade": -2.2290374331550415,
+      "share_trades_won": 0.48484848484848486,
+      "median_trade": -3.0900000000004577,
+      "worst_trade": -220.09000000000003
+     },
+     "ATM, ask, $0.09": {
+      "days": 1263,
+      "mean_per_day": -4.505534441805312,
+      "nw_t_per_day": -4.809736686186245,
+      "trades": 561,
+      "mean_per_trade": -10.143475935829072,
+      "share_trades_won": 0.29233511586452765,
+      "median_trade": -18.09,
+      "worst_trade": -162.09
+     },
+     "ITM1, mid, $0.09": {
+      "days": 1263,
+      "mean_per_day": 0.21418052256533793,
+      "nw_t_per_day": 0.16935208233966187,
+      "trades": 561,
+      "mean_per_trade": 0.48219251336902386,
+      "share_trades_won": 0.49554367201426025,
+      "median_trade": -0.5899999999949933,
+      "worst_trade": -212.59
+     },
+     "ITM1, ask, $0.74": {
+      "days": 1263,
+      "mean_per_day": -1.2788123515439245,
+      "nw_t_per_day": -1.018405358798176,
+      "trades": 561,
+      "mean_per_trade": -2.87903743315504,
+      "share_trades_won": 0.48484848484848486,
+      "median_trade": -3.7400000000004576,
+      "worst_trade": -220.74000000000004
+     }
+    },
+    "unpriced": {
+     "ITM2": {
+      "signal_days": 568,
+      "priced": 562,
+      "no_spot": 4,
+      "no_quote": 2
+     },
+     "ITM1": {
+      "signal_days": 568,
+      "priced": 561,
+      "no_spot": 4,
+      "no_quote": 3
+     },
+     "ATM": {
+      "signal_days": 568,
+      "priced": 561,
+      "no_spot": 4,
+      "no_quote": 3
+     }
+    }
+   }
+  },
+  "by_year": {
+   "xsp": {
+    "2021": {
+     "days": 100,
+     "mean_per_day": -32.380100000000006,
+     "nw_t_per_day": -2.844528148129626,
+     "trades": 9,
+     "mean_per_trade": -359.778888888889,
+     "share_trades_won": 0.0,
+     "median_trade": -303.4900000000019,
+     "worst_trade": -818.2900000000017
+    },
+    "2022": {
+     "days": 154,
+     "mean_per_day": -40.80259740259736,
+     "nw_t_per_day": -4.534177105731685,
+     "trades": 50,
+     "mean_per_trade": -125.67199999999984,
+     "share_trades_won": 0.16,
+     "median_trade": -80.84000000000069,
+     "worst_trade": -481.49000000000325
+    },
+    "2023": {
+     "days": 172,
+     "mean_per_day": -19.218779069767496,
+     "nw_t_per_day": -3.00523710042639,
+     "trades": 37,
+     "mean_per_trade": -89.34135135135162,
+     "share_trades_won": 0.1891891891891892,
+     "median_trade": -47.79000000000436,
+     "worst_trade": -489.09000000000225
+    },
+    "2024": {
+     "days": 201,
+     "mean_per_day": -13.723980099502965,
+     "nw_t_per_day": -2.4301925326531104,
+     "trades": 58,
+     "mean_per_trade": -47.56068965517408,
+     "share_trades_won": 0.3103448275862069,
+     "median_trade": -19.64000000000393,
+     "worst_trade": -414.1900000000008
+    },
+    "2025": {
+     "days": 224,
+     "mean_per_day": -1.1020535714286603,
+     "nw_t_per_day": -0.3214223782925506,
+     "trades": 94,
+     "mean_per_trade": -2.626170212766169,
+     "share_trades_won": 0.46808510638297873,
+     "median_trade": -7.439999999996726,
+     "worst_trade": -242.09
+    },
+    "2026": {
+     "days": 174,
+     "mean_per_day": 1.6692528735633074,
+     "nw_t_per_day": 0.47386056056182857,
+     "trades": 65,
+     "mean_per_trade": 4.468461538461774,
+     "share_trades_won": 0.49230769230769234,
+     "median_trade": -5.090000000004556,
+     "worst_trade": -129.09
+    },
+    "2021-2022": {
+     "days": 254,
+     "mean_per_day": -37.486653543307064,
+     "nw_t_per_day": -5.292758107804868,
+     "trades": 59,
+     "mean_per_trade": -161.38322033898294,
+     "share_trades_won": 0.13559322033898305,
+     "median_trade": -120.09,
+     "worst_trade": -818.2900000000017
+    },
+    "2023-2026": {
+     "days": 771,
+     "mean_per_day": -7.8087678339819835,
+     "nw_t_per_day": -3.0888003750104716,
+     "trades": 254,
+     "mean_per_trade": -23.702992125984682,
+     "share_trades_won": 0.39763779527559057,
+     "median_trade": -18.14000000000302,
+     "worst_trade": -489.09000000000225
+    }
+   },
+   "spy_b": {
+    "2021": {
+     "days": 156,
+     "mean_per_day": 3.602179487179487,
+     "nw_t_per_day": 1.3497137807424011,
+     "trades": 67,
+     "mean_per_trade": 8.387164179104477,
+     "share_trades_won": 0.5074626865671642,
+     "median_trade": 0.820000000000001,
+     "worst_trade": -91.18
+    },
+    "2022": {
+     "days": 167,
+     "mean_per_day": -2.076526946107785,
+     "nw_t_per_day": -0.8678272210766479,
+     "trades": 71,
+     "mean_per_trade": -4.884225352112679,
+     "share_trades_won": 0.4507042253521127,
+     "median_trade": -7.180000000000006,
+     "worst_trade": -110.18000000000002
+    },
+    "2023": {
+     "days": 244,
+     "mean_per_day": -0.6295901639344262,
+     "nw_t_per_day": -0.37097014614723023,
+     "trades": 109,
+     "mean_per_trade": -1.4093577981651402,
+     "share_trades_won": 0.45871559633027525,
+     "median_trade": -6.180000000000005,
+     "worst_trade": -97.18
+    },
+    "2024": {
+     "days": 249,
+     "mean_per_day": 0.2245783132530121,
+     "nw_t_per_day": 0.11986616261000246,
+     "trades": 106,
+     "mean_per_trade": 0.5275471698113195,
+     "share_trades_won": 0.42452830188679247,
+     "median_trade": -3.6800000000000033,
+     "worst_trade": -92.18
+    },
+    "2025": {
+     "days": 246,
+     "mean_per_day": -0.11333333333333494,
+     "nw_t_per_day": -0.04039155835716265,
+     "trades": 116,
+     "mean_per_trade": -0.2403448275862114,
+     "share_trades_won": 0.43103448275862066,
+     "median_trade": -7.180000000000006,
+     "worst_trade": -176.18000000000004
+    },
+    "2026": {
+     "days": 200,
+     "mean_per_day": 0.9780999999999982,
+     "nw_t_per_day": 0.38016456037906704,
+     "trades": 91,
+     "mean_per_trade": 2.149670329670326,
+     "share_trades_won": 0.4725274725274725,
+     "median_trade": -10.179999999999998,
+     "worst_trade": -115.18000000000002
+    },
+    "2021-2022": {
+     "days": 323,
+     "mean_per_day": 0.6661300309597515,
+     "nw_t_per_day": 0.36472078089559257,
+     "trades": 138,
+     "mean_per_trade": 1.5591304347826065,
+     "share_trades_won": 0.4782608695652174,
+     "median_trade": -2.6799999999999913,
+     "worst_trade": -110.18000000000002
+    },
+    "2023-2026": {
+     "days": 939,
+     "mean_per_day": 0.07458998935037185,
+     "nw_t_per_day": 0.06585439486696551,
+     "trades": 422,
+     "mean_per_trade": 0.16597156398103932,
+     "share_trades_won": 0.44549763033175355,
+     "median_trade": -6.679999999999994,
+     "worst_trade": -176.18000000000004
+    }
+   },
+   "spy_a": {
+    "2021": {
+     "days": 156,
+     "mean_per_day": 5.595961538461523,
+     "nw_t_per_day": 1.746534725363202,
+     "trades": 67,
+     "mean_per_trade": 13.029402985074588,
+     "share_trades_won": 0.5671641791044776,
+     "median_trade": 7.90999999999772,
+     "worst_trade": -129.09
+    },
+    "2022": {
+     "days": 167,
+     "mean_per_day": -1.4813772455089194,
+     "nw_t_per_day": -0.4213861088350885,
+     "trades": 71,
+     "mean_per_trade": -3.4843661971829514,
+     "share_trades_won": 0.5492957746478874,
+     "median_trade": 4.910000000002047,
+     "worst_trade": -148.09
+    },
+    "2023": {
+     "days": 244,
+     "mean_per_day": -1.818893442622948,
+     "nw_t_per_day": -0.8572652593658775,
+     "trades": 109,
+     "mean_per_trade": -4.0716513761467805,
+     "share_trades_won": 0.48623853211009177,
+     "median_trade": -3.0900000000004577,
+     "worst_trade": -109.09000000000002
+    },
+    "2024": {
+     "days": 249,
+     "mean_per_day": -2.263212851405745,
+     "nw_t_per_day": -0.8730567024062772,
+     "trades": 106,
+     "mean_per_trade": -5.316415094339909,
+     "share_trades_won": 0.42452830188679247,
+     "median_trade": -8.090000000000007,
+     "worst_trade": -141.09
+    },
+    "2025": {
+     "days": 247,
+     "mean_per_day": -1.892834008097193,
+     "nw_t_per_day": -0.5332877309895462,
+     "trades": 117,
+     "mean_per_trade": -3.9959829059829652,
+     "share_trades_won": 0.48717948717948717,
+     "median_trade": -4.090000000001369,
+     "worst_trade": -220.09000000000003
+    },
+    "2026": {
+     "days": 200,
+     "mean_per_day": -2.005949999999749,
+     "nw_t_per_day": -0.6168200426248411,
+     "trades": 91,
+     "mean_per_trade": -4.408681318680767,
+     "share_trades_won": 0.43956043956043955,
+     "median_trade": -11.089999999997723,
+     "worst_trade": -190.09
+    },
+    "2021-2022": {
+     "days": 323,
+     "mean_per_day": 1.936780185758539,
+     "nw_t_per_day": 0.7965589877389395,
+     "trades": 138,
+     "mean_per_trade": 4.533188405797159,
+     "share_trades_won": 0.5579710144927537,
+     "median_trade": 7.409999999997387,
+     "worst_trade": -148.09
+    },
+    "2023-2026": {
+     "days": 940,
+     "mean_per_day": -1.9958191489361554,
+     "nw_t_per_day": -1.3687824526721593,
+     "trades": 423,
+     "mean_per_trade": -4.435153664302568,
+     "share_trades_won": 0.46099290780141844,
+     "median_trade": -6.090000000000916,
+     "worst_trade": -220.09000000000003
+    }
+   },
+   "spx_itm10": {
+    "2021": {
+     "days": 158,
+     "mean_per_day": 74.05044303797467,
+     "nw_t_per_day": 2.328535354873285,
+     "trades": 67,
+     "mean_per_trade": 174.62641791044774,
+     "share_trades_won": 0.5671641791044776,
+     "median_trade": 52.91,
+     "worst_trade": -1210.09
+    },
+    "2022": {
+     "days": 218,
+     "mean_per_day": 29.48577981651376,
+     "nw_t_per_day": 0.8595398400331214,
+     "trades": 90,
+     "mean_per_trade": 71.42111111111109,
+     "share_trades_won": 0.5666666666666667,
+     "median_trade": 74.91,
+     "worst_trade": -1361.09
+    },
+    "2023": {
+     "days": 248,
+     "mean_per_day": 1.7896370967741846,
+     "nw_t_per_day": 0.08774731295152066,
+     "trades": 113,
+     "mean_per_trade": 3.9276991150442404,
+     "share_trades_won": 0.5309734513274337,
+     "median_trade": 24.91,
+     "worst_trade": -1340.09
+    },
+    "2024": {
+     "days": 249,
+     "mean_per_day": 8.680562248995987,
+     "nw_t_per_day": 0.3338053055091845,
+     "trades": 106,
+     "mean_per_trade": 20.39113207547169,
+     "share_trades_won": 0.5,
+     "median_trade": -11.09,
+     "worst_trade": -1170.09
+    },
+    "2025": {
+     "days": 247,
+     "mean_per_day": 30.678016194331978,
+     "nw_t_per_day": 0.931095769383698,
+     "trades": 117,
+     "mean_per_trade": 64.76470085470079,
+     "share_trades_won": 0.5641025641025641,
+     "median_trade": 67.91,
+     "worst_trade": -2210.09
+    },
+    "2026": {
+     "days": 201,
+     "mean_per_day": 55.48616915422886,
+     "nw_t_per_day": 1.543807613707964,
+     "trades": 92,
+     "mean_per_trade": 121.22521739130433,
+     "share_trades_won": 0.5108695652173914,
+     "median_trade": 20.91,
+     "worst_trade": -1280.09
+    },
+    "2021-2022": {
+     "days": 376,
+     "mean_per_day": 48.212420212765956,
+     "nw_t_per_day": 2.005352668758659,
+     "trades": 157,
+     "mean_per_trade": 115.46414012738853,
+     "share_trades_won": 0.5668789808917197,
+     "median_trade": 65.91,
+     "worst_trade": -1361.09
+    },
+    "2023-2026": {
+     "days": 945,
+     "mean_per_day": 22.57722751322751,
+     "nw_t_per_day": 1.5554278651193543,
+     "trades": 428,
+     "mean_per_trade": 49.849252336448565,
+     "share_trades_won": 0.5280373831775701,
+     "median_trade": 35.91,
+     "worst_trade": -2210.09
+    }
+   }
+  },
+  "spread_share": {
+   "xsp": {
+    "all": {
+     "root": {
+      "n": 313,
+      "mean": 0.665172420341933,
+      "median": 0.3054187192118226
+     },
+     "root_on_paired_days": {
+      "n": 313,
+      "mean": 0.665172420341933,
+      "median": 0.3054187192118226
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 313,
+      "mean": 0.06502232511998532,
+      "median": 0.052910052910052914
+     }
+    },
+    "2021": {
+     "root": {
+      "n": 9,
+      "mean": 1.8926959738295845,
+      "median": 1.944289693593315
+     },
+     "root_on_paired_days": {
+      "n": 9,
+      "mean": 1.8926959738295845,
+      "median": 1.944289693593315
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 9,
+      "mean": 0.14809470251879292,
+      "median": 0.12682926829268298
+     }
+    },
+    "2022": {
+     "root": {
+      "n": 50,
+      "mean": 1.4382703943570379,
+      "median": 1.4696940908227245
+     },
+     "root_on_paired_days": {
+      "n": 50,
+      "mean": 1.4382703943570379,
+      "median": 1.4696940908227245
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 50,
+      "mean": 0.1282595971103383,
+      "median": 0.10982183645500232
+     }
+    },
+    "2023": {
+     "root": {
+      "n": 37,
+      "mean": 0.8401305353918096,
+      "median": 0.47715736040609136
+     },
+     "root_on_paired_days": {
+      "n": 37,
+      "mean": 0.8401305353918096,
+      "median": 0.47715736040609136
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 37,
+      "mean": 0.06496976745109463,
+      "median": 0.0591715976331361
+     }
+    },
+    "2024": {
+     "root": {
+      "n": 58,
+      "mean": 0.7285244324686156,
+      "median": 0.4676034348165496
+     },
+     "root_on_paired_days": {
+      "n": 58,
+      "mean": 0.7285244324686156,
+      "median": 0.4676034348165496
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 58,
+      "mean": 0.058506001923661025,
+      "median": 0.05740115272806732
+     }
+    },
+    "2025": {
+     "root": {
+      "n": 94,
+      "mean": 0.32238302910644195,
+      "median": 0.24596425115852727
+     },
+     "root_on_paired_days": {
+      "n": 94,
+      "mean": 0.32238302910644195,
+      "median": 0.24596425115852727
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 94,
+      "mean": 0.04584776279717471,
+      "median": 0.04620663362561962
+     }
+    },
+    "2026": {
+     "root": {
+      "n": 65,
+      "mean": 0.24012203778499502,
+      "median": 0.2409638554216868
+     },
+     "root_on_paired_days": {
+      "n": 65,
+      "mean": 0.24012203778499502,
+      "median": 0.2409638554216868
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 65,
+      "mean": 0.03844979037187828,
+      "median": 0.041841004184100423
+     }
+    }
+   },
+   "spy_entry": {
+    "all": {
+     "root": {
+      "n": 561,
+      "mean": 0.047614203428983655,
+      "median": 0.04301075268817196
+     },
+     "root_on_paired_days": {
+      "n": 561,
+      "mean": 0.047614203428983655,
+      "median": 0.04301075268817196
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 561,
+      "mean": 0.07142907322829453,
+      "median": 0.056074766355140325
+     }
+    },
+    "2021": {
+     "root": {
+      "n": 67,
+      "mean": 0.06019988318048959,
+      "median": 0.048192771084337255
+     },
+     "root_on_paired_days": {
+      "n": 67,
+      "mean": 0.06019988318048959,
+      "median": 0.048192771084337255
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 67,
+      "mean": 0.14132562495575338,
+      "median": 0.10526315789473695
+     }
+    },
+    "2022": {
+     "root": {
+      "n": 71,
+      "mean": 0.06610089780846949,
+      "median": 0.0588235294117646
+     },
+     "root_on_paired_days": {
+      "n": 71,
+      "mean": 0.06610089780846949,
+      "median": 0.0588235294117646
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 71,
+      "mean": 0.12563883256176703,
+      "median": 0.10526315789473667
+     }
+    },
+    "2023": {
+     "root": {
+      "n": 109,
+      "mean": 0.04891632451105685,
+      "median": 0.048192771084337255
+     },
+     "root_on_paired_days": {
+      "n": 109,
+      "mean": 0.04891632451105685,
+      "median": 0.048192771084337255
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 109,
+      "mean": 0.061217707850769465,
+      "median": 0.05769230769230749
+     }
+    },
+    "2024": {
+     "root": {
+      "n": 106,
+      "mean": 0.051422262318554395,
+      "median": 0.047364963386691064
+     },
+     "root_on_paired_days": {
+      "n": 106,
+      "mean": 0.051422262318554395,
+      "median": 0.047364963386691064
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 106,
+      "mean": 0.05923792059146976,
+      "median": 0.05614983297676707
+     }
+    },
+    "2025": {
+     "root": {
+      "n": 117,
+      "mean": 0.03820418809959742,
+      "median": 0.03745318352059929
+     },
+     "root_on_paired_days": {
+      "n": 117,
+      "mean": 0.03820418809959742,
+      "median": 0.03745318352059929
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 117,
+      "mean": 0.04508820180018365,
+      "median": 0.04484304932735426
+     }
+    },
+    "2026": {
+     "root": {
+      "n": 91,
+      "mean": 0.030027285945503683,
+      "median": 0.027906976744186067
+     },
+     "root_on_paired_days": {
+      "n": 91,
+      "mean": 0.030027285945503683,
+      "median": 0.027906976744186067
+     },
+     "spx_itm10_on_paired_days": {
+      "n": 91,
+      "mean": 0.0379699642648477,
+      "median": 0.03809523809523796
+     }
+    }
+   },
+   "spy_b_exit_1559": {
+    "all": {
+     "n": 560,
+     "mean": 0.06514237772014218,
+     "median": 0.0571428571428572
+    },
+    "2021": {
+     "n": 67,
+     "mean": 0.08500897433470363,
+     "median": 0.05825242718446607
+    },
+    "2022": {
+     "n": 71,
+     "mean": 0.08498695862473739,
+     "median": 0.07407407407407397
+    },
+    "2023": {
+     "n": 109,
+     "mean": 0.06131022024002482,
+     "median": 0.05283018867924532
+    },
+    "2024": {
+     "n": 106,
+     "mean": 0.06561591153402616,
+     "median": 0.062004537568397224
+    },
+    "2025": {
+     "n": 116,
+     "mean": 0.05846029147974237,
+     "median": 0.05384695039867449
+    },
+    "2026": {
+     "n": 91,
+     "mean": 0.04758859055031356,
+     "median": 0.041237113402061897
+    }
+   }
+  },
+  "return_per_premium": {
+   "spx_itm10_all": {
+    "trades": 585,
+    "sum_pnl": 39463.34999999999,
+    "sum_premium": 643220.0,
+    "return_per_dollar": 0.06135280308448119,
+    "mean_pnl": 67.45871794871793,
+    "mean_premium": 1099.5213675213674
+   },
+   "xsp": {
+    "all": {
+     "trades": 313,
+     "sum_pnl": -15542.170000000102,
+     "sum_premium": 54534.0,
+     "return_per_dollar": -0.28499963325631905,
+     "mean_pnl": -49.65549520766806,
+     "mean_premium": 174.2300319488818
+    },
+    "on_days_shared_with_spx": {
+     "trades": 313,
+     "sum_pnl": -15542.170000000102,
+     "sum_premium": 54534.0,
+     "return_per_dollar": -0.28499963325631905,
+     "mean_pnl": -49.65549520766806,
+     "mean_premium": 174.2300319488818
+    },
+    "spx_itm10_on_the_same_days": {
+     "trades": 313,
+     "sum_pnl": 18809.82999999999,
+     "sum_premium": 355080.0,
+     "return_per_dollar": 0.052973498929818605,
+     "mean_pnl": 60.095303514376965,
+     "mean_premium": 1134.44089456869
+    },
+    "spx_itm10_on_days_in_root_sample": {
+     "trades": 571,
+     "sum_pnl": 33393.60999999999,
+     "sum_premium": 626910.0,
+     "return_per_dollar": 0.053266992072227265,
+     "mean_pnl": 58.48267950963221,
+     "mean_premium": 1097.9159369527144
+    }
+   },
+   "spy_b": {
+    "all": {
+     "trades": 560,
+     "sum_pnl": 285.19999999999874,
+     "sum_premium": 65897.0,
+     "return_per_dollar": 0.004327966371761973,
+     "mean_pnl": 0.509285714285712,
+     "mean_premium": 117.67321428571428
+    },
+    "on_days_shared_with_spx": {
+     "trades": 560,
+     "sum_pnl": 285.19999999999874,
+     "sum_premium": 65897.0,
+     "return_per_dollar": 0.004327966371761973,
+     "mean_pnl": 0.509285714285712,
+     "mean_premium": 117.67321428571428
+    },
+    "spx_itm10_on_the_same_days": {
+     "trades": 560,
+     "sum_pnl": 33164.59999999999,
+     "sum_premium": 615200.0,
+     "return_per_dollar": 0.05390864759427827,
+     "mean_pnl": 59.22249999999998,
+     "mean_premium": 1098.5714285714287
+    },
+    "spx_itm10_on_days_in_root_sample": {
+     "trades": 568,
+     "sum_pnl": 32576.879999999994,
+     "sum_premium": 623490.0,
+     "return_per_dollar": 0.05224924216908049,
+     "mean_pnl": 57.353661971830974,
+     "mean_premium": 1097.693661971831
+    }
+   },
+   "spy_a": {
+    "all": {
+     "trades": 561,
+     "sum_pnl": -1250.4899999999784,
+     "sum_premium": 66037.0,
+     "return_per_dollar": -0.01893620243196963,
+     "mean_pnl": -2.2290374331550415,
+     "mean_premium": 117.71301247771837
+    },
+    "on_days_shared_with_spx": {
+     "trades": 561,
+     "sum_pnl": -1250.4899999999784,
+     "sum_premium": 66037.0,
+     "return_per_dollar": -0.01893620243196963,
+     "mean_pnl": -2.2290374331550415,
+     "mean_premium": 117.71301247771837
+    },
+    "spx_itm10_on_the_same_days": {
+     "trades": 561,
+     "sum_pnl": 32682.50999999999,
+     "sum_premium": 616170.0,
+     "return_per_dollar": 0.053041384682798565,
+     "mean_pnl": 58.25759358288769,
+     "mean_premium": 1098.3422459893047
+    },
+    "spx_itm10_on_days_in_root_sample": {
+     "trades": 568,
+     "sum_pnl": 32576.879999999994,
+     "sum_premium": 623490.0,
+     "return_per_dollar": 0.05224924216908049,
+     "mean_pnl": 57.353661971830974,
+     "mean_premium": 1097.693661971831
+    }
+   }
+  },
+  "affordability": {
+   "xsp": {
+    "priced_trades": 313,
+    "affordable": 301,
+    "share_affordable": 0.9616613418530351,
+    "entries_skipped_as_unaffordable": 12,
+    "affordable_only": {
+     "days": 1025,
+     "mean_per_day": -9.997063414634237,
+     "nw_t_per_day": -4.80301616793679,
+     "trades": 301,
+     "mean_per_trade": -34.04315614617972,
+     "share_trades_won": 0.36212624584717606,
+     "median_trade": -27.990000000000325,
+     "worst_trade": -467.389999999999
+    }
+   },
+   "spy_b": {
+    "priced_trades": 560,
+    "affordable": 560,
+    "share_affordable": 1.0,
+    "entries_skipped_as_unaffordable": 0,
+    "affordable_only": {
+     "days": 1262,
+     "mean_per_day": 0.2259904912836757,
+     "nw_t_per_day": 0.2344677857558132,
+     "trades": 560,
+     "mean_per_trade": 0.509285714285712,
+     "share_trades_won": 0.45357142857142857,
+     "median_trade": -4.679999999999998,
+     "worst_trade": -176.18000000000004
+    }
+   },
+   "spy_a": {
+    "priced_trades": 561,
+    "affordable": 561,
+    "share_affordable": 1.0,
+    "entries_skipped_as_unaffordable": 0,
+    "affordable_only": {
+     "days": 1263,
+     "mean_per_day": -0.9900950118764671,
+     "nw_t_per_day": -0.7882180607607804,
+     "trades": 561,
+     "mean_per_trade": -2.2290374331550415,
+     "share_trades_won": 0.48484848484848486,
+     "median_trade": -3.0900000000004577,
+     "worst_trade": -220.09000000000003
+    }
+   }
+  },
+  "paired_with_spx": {
+   "xsp": {
+    "days_in_both_samples": 1283,
+    "after_fees": {
+     "n": 1025,
+     "mean": -16.998198048780594,
+     "t": -6.793224502409492
+    },
+    "before_fees": {
+     "n": 1025,
+     "mean": -16.97346341463425,
+     "t": -6.7844144951341345
+    },
+    "traded_days_in_both": 313
+   },
+   "spy_b": {
+    "days_in_both_samples": 1270,
+    "after_fees": {
+     "n": 1262,
+     "mean": -2.4019492868462766,
+     "t": -4.257177384248311
+    },
+    "before_fees": {
+     "n": 1262,
+     "mean": -2.326069730586371,
+     "t": -4.125925562574544
+    },
+    "traded_days_in_both": 560
+   },
+   "spy_a": {
+    "days_in_both_samples": 1270,
+    "after_fees": {
+     "n": 1263,
+     "mean": -3.5777838479809803,
+     "t": -7.4545266945388295
+    },
+    "before_fees": {
+     "n": 1263,
+     "mean": -3.5418052256531887,
+     "t": -7.383900465858594
+    },
+    "traded_days_in_both": 561
+   }
+  },
+  "no_spot_fallback": {
+   "xsp": {
+    "no_spot_signal_days": 258,
+    "priced": 256,
+    "no_quote": 2,
+    "no_exit_quote": 0,
+    "no_d1_atm": 0,
+    "fallback_trades": {
+     "n": 256,
+     "mean": -100.26539062500001,
+     "sum": -25667.940000000002,
+     "share_won": 0.29296875,
+     "median": -31.69000000000218,
+     "worst": -1000.09
+    },
+    "series_with_fallback": {
+     "days": 1281,
+     "mean_per_day": -32.17026541764255,
+     "nw_t_per_day": -7.312414749939431,
+     "trades": 569,
+     "mean_per_trade": -72.4255008787348,
+     "share_trades_won": 0.3233743409490334,
+     "median_trade": -31.790000000000283,
+     "worst_trade": -1000.09
+    }
+   },
+   "spy_b": {
+    "no_spot_signal_days": 4,
+    "priced": 4,
+    "no_quote": 0,
+    "no_exit_quote": 0,
+    "no_d1_atm": 0,
+    "fallback_trades": {
+     "n": 4,
+     "mean": -13.680000000000003,
+     "sum": -54.72000000000001,
+     "share_won": 0.25,
+     "median": -13.680000000000001,
+     "worst": -46.18
+    },
+    "series_with_fallback": {
+     "days": 1266,
+     "mean_per_day": 0.18205371248025173,
+     "nw_t_per_day": 0.19004608566534775,
+     "trades": 564,
+     "mean_per_trade": 0.40865248226950157,
+     "share_trades_won": 0.4521276595744681,
+     "median_trade": -4.679999999999998,
+     "worst_trade": -176.18000000000004
+    }
+   },
+   "spy_a": {
+    "no_spot_signal_days": 4,
+    "priced": 4,
+    "no_quote": 0,
+    "no_exit_quote": 0,
+    "no_d1_atm": 0,
+    "fallback_trades": {
+     "n": 4,
+     "mean": -8.089999999999375,
+     "sum": -32.3599999999975,
+     "share_won": 0.5,
+     "median": 3.9100000000006814,
+     "worst": -53.089999999998184
+    },
+    "series_with_fallback": {
+     "days": 1267,
+     "mean_per_day": -1.0125098658247638,
+     "nw_t_per_day": -0.8089987432445767,
+     "trades": 565,
+     "mean_per_trade": -2.2705309734512844,
+     "share_trades_won": 0.4849557522123894,
+     "median_trade": -3.089999999998404,
+     "worst_trade": -220.09000000000003
+    }
+   }
+  },
+  "spy_b_worst_case": {
+   "days": 1263,
+   "mean_per_day": 0.11482185273159055,
+   "nw_t_per_day": 0.11711131171727858,
+   "trades": 561,
+   "mean_per_trade": 0.2585026737967891,
+   "share_trades_won": 0.45276292335115864,
+   "median_trade": -5.179999999999993,
+   "worst_trade": -176.18000000000004,
+   "subperiods": {
+    "2021-2022": {
+     "days": 323,
+     "mean_per_day": 0.6661300309597515,
+     "nw_t_per_day": 0.36472078089559257,
+     "trades": 138,
+     "mean_per_trade": 1.5591304347826065,
+     "share_trades_won": 0.4782608695652174,
+     "median_trade": -2.6799999999999913,
+     "worst_trade": -110.18000000000002
+    },
+    "2023-2026": {
+     "days": 940,
+     "mean_per_day": -0.07461702127659661,
+     "nw_t_per_day": -0.06444065427774684,
+     "trades": 423,
+     "mean_per_trade": -0.16581560283688235,
+     "share_trades_won": 0.4444444444444444,
+     "median_trade": -7.179999999999984,
+     "worst_trade": -176.18000000000004
+    }
+   },
+   "trades_charged_full_premium": 1
+  },
+  "spy_entry_cohort": {
+   "all": {
+    "priced_entries": 561,
+    "with_1559_quote": 560,
+    "share": 0.9982174688057041
+   },
+   "2021": {
+    "priced_entries": 67,
+    "with_1559_quote": 67,
+    "share": 1.0
+   },
+   "2022": {
+    "priced_entries": 71,
+    "with_1559_quote": 71,
+    "share": 1.0
+   },
+   "2023": {
+    "priced_entries": 109,
+    "with_1559_quote": 109,
+    "share": 1.0
+   },
+   "2024": {
+    "priced_entries": 106,
+    "with_1559_quote": 106,
+    "share": 1.0
+   },
+   "2025": {
+    "priced_entries": 117,
+    "with_1559_quote": 116,
+    "share": 0.9914529914529915
+   },
+   "2026": {
+    "priced_entries": 91,
+    "with_1559_quote": 91,
+    "share": 1.0
+   }
+  },
+  "spy_b_exits_at_zero_bid": {
+   "n": 0,
+   "days": []
+  },
+  "xsp_settlement_cent": {
+   "days": 1025,
+   "mean_per_day": -15.160165853658553,
+   "nw_t_per_day": -5.481562619731111,
+   "trades": 313,
+   "mean_per_trade": -49.64591054313103,
+   "share_trades_won": 0.34824281150159747,
+   "median_trade": -32.09000000000273,
+   "worst_trade": -818.0900000000007,
+   "subperiods": {
+    "2021-2022": {
+     "days": 254,
+     "mean_per_day": -37.46185039370079,
+     "nw_t_per_day": -5.291719671161466,
+     "trades": 59,
+     "mean_per_trade": -161.2764406779661,
+     "share_trades_won": 0.13559322033898305,
+     "median_trade": -120.09,
+     "worst_trade": -818.0900000000007
+    },
+    "2023-2026": {
+     "days": 771,
+     "mean_per_day": -7.8130479896238825,
+     "nw_t_per_day": -3.0903185558595725,
+     "trades": 254,
+     "mean_per_trade": -23.715984251968564,
+     "share_trades_won": 0.39763779527559057,
+     "median_trade": -18.08999999999852,
+     "worst_trade": -489.09000000000225
+    }
+   },
+   "max_abs_change_per_trade": 0.5000000000109139
+  },
+  "counts": {
+   "XSP": {
+    "by_year": {
+     "2021": {
+      "d1_days": 251,
+      "file": 158,
+      "no_symbol_resolved": 93,
+      "file_no_official_close": 0,
+      "sample_days": 158,
+      "signal_days": 67,
+      "missing_candles": 0,
+      "priced": 9,
+      "no_spot": 58,
+      "no_quote": 0,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 0
+     },
+     "2022": {
+      "d1_days": 250,
+      "file": 180,
+      "no_symbol_resolved": 70,
+      "file_no_official_close": 0,
+      "sample_days": 180,
+      "signal_days": 76,
+      "missing_candles": 0,
+      "priced": 50,
+      "no_spot": 26,
+      "no_quote": 0,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 39
+     },
+     "2023": {
+      "d1_days": 248,
+      "file": 248,
+      "no_symbol_resolved": 0,
+      "file_no_official_close": 0,
+      "sample_days": 248,
+      "signal_days": 113,
+      "missing_candles": 0,
+      "priced": 37,
+      "no_spot": 76,
+      "no_quote": 0,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 0
+     },
+     "2024": {
+      "d1_days": 249,
+      "file": 249,
+      "no_symbol_resolved": 0,
+      "file_no_official_close": 0,
+      "sample_days": 249,
+      "signal_days": 106,
+      "missing_candles": 0,
+      "priced": 58,
+      "no_spot": 48,
+      "no_quote": 0,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 0
+     },
+     "2025": {
+      "d1_days": 247,
+      "file": 247,
+      "no_symbol_resolved": 0,
+      "file_no_official_close": 0,
+      "sample_days": 247,
+      "signal_days": 117,
+      "missing_candles": 0,
+      "priced": 94,
+      "no_spot": 23,
+      "no_quote": 0,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 0
+     },
+     "2026": {
+      "d1_days": 201,
+      "file": 201,
+      "no_symbol_resolved": 0,
+      "file_no_official_close": 0,
+      "sample_days": 201,
+      "signal_days": 92,
+      "missing_candles": 0,
+      "priced": 65,
+      "no_spot": 27,
+      "no_quote": 0,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 0
+     },
+     "all": {
+      "d1_days": 1446,
+      "file": 1283,
+      "no_symbol_resolved": 163,
+      "file_no_official_close": 0,
+      "sample_days": 1283,
+      "signal_days": 571,
+      "missing_candles": 0,
+      "priced": 313,
+      "no_spot": 258,
+      "no_quote": 0,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 39
+     }
+    },
+    "by_weekday": {
+     "in_sample_not_in_spx": {
+      "Mon": 0,
+      "Tue": 0,
+      "Wed": 0,
+      "Thu": 0,
+      "Fri": 0
+     },
+     "in_spx_not_in_sample": {
+      "Mon": 0,
+      "Tue": 19,
+      "Wed": 0,
+      "Thu": 20,
+      "Fri": 0
+     }
+    }
+   },
+   "SPY": {
+    "by_year": {
+     "2021": {
+      "d1_days": 251,
+      "file": 156,
+      "no_symbol_resolved": 95,
+      "file_no_official_close": 0,
+      "sample_days": 156,
+      "signal_days": 67,
+      "missing_candles": 0,
+      "priced (entry)": 67,
+      "no_spot": 0,
+      "no_quote": 0,
+      "priced (b)": 67,
+      "no_exit_quote": 0,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 2
+     },
+     "2022": {
+      "d1_days": 250,
+      "file": 169,
+      "no_symbol_resolved": 81,
+      "file_no_official_close": 0,
+      "sample_days": 169,
+      "signal_days": 73,
+      "missing_candles": 0,
+      "priced (entry)": 71,
+      "no_spot": 0,
+      "no_quote": 2,
+      "priced (b)": 71,
+      "no_exit_quote": 0,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 50
+     },
+     "2023": {
+      "d1_days": 248,
+      "file": 248,
+      "no_symbol_resolved": 0,
+      "file_no_official_close": 0,
+      "sample_days": 248,
+      "signal_days": 113,
+      "missing_candles": 0,
+      "priced (entry)": 109,
+      "no_spot": 4,
+      "no_quote": 0,
+      "priced (b)": 109,
+      "no_exit_quote": 0,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 0
+     },
+     "2024": {
+      "d1_days": 249,
+      "file": 249,
+      "no_symbol_resolved": 0,
+      "file_no_official_close": 0,
+      "sample_days": 249,
+      "signal_days": 106,
+      "missing_candles": 0,
+      "priced (entry)": 106,
+      "no_spot": 0,
+      "no_quote": 0,
+      "priced (b)": 106,
+      "no_exit_quote": 0,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 0
+     },
+     "2025": {
+      "d1_days": 247,
+      "file": 247,
+      "no_symbol_resolved": 0,
+      "file_no_official_close": 0,
+      "sample_days": 247,
+      "signal_days": 117,
+      "missing_candles": 0,
+      "priced (entry)": 117,
+      "no_spot": 0,
+      "no_quote": 0,
+      "priced (b)": 116,
+      "no_exit_quote": 1,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 0
+     },
+     "2026": {
+      "d1_days": 201,
+      "file": 201,
+      "no_symbol_resolved": 0,
+      "file_no_official_close": 0,
+      "sample_days": 201,
+      "signal_days": 92,
+      "missing_candles": 0,
+      "priced (entry)": 91,
+      "no_spot": 0,
+      "no_quote": 1,
+      "priced (b)": 91,
+      "no_exit_quote": 0,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 0
+     },
+     "all": {
+      "d1_days": 1446,
+      "file": 1270,
+      "no_symbol_resolved": 176,
+      "file_no_official_close": 0,
+      "sample_days": 1270,
+      "signal_days": 568,
+      "missing_candles": 0,
+      "priced (entry)": 561,
+      "no_spot": 4,
+      "no_quote": 3,
+      "priced (b)": 560,
+      "no_exit_quote": 1,
+      "in_sample_not_in_spx": 0,
+      "in_spx_not_in_sample": 52
+     }
+    },
+    "by_weekday": {
+     "in_sample_not_in_spx": {
+      "Mon": 0,
+      "Tue": 0,
+      "Wed": 0,
+      "Thu": 0,
+      "Fri": 0
+     },
+     "in_spx_not_in_sample": {
+      "Mon": 0,
+      "Tue": 27,
+      "Wed": 0,
+      "Thu": 25,
+      "Fri": 0
+     }
+    }
+   }
+  }
+ },
+ "fill_check": {
+  "folder": "data/spx_1549/databento/ohlcv-1m_1500-1601_xsp_k8",
+  "bar_files_at_start": 1283,
+  "none_markers_at_start": 163,
+  "note": null,
+  "periods": {
+   "2021-01-01..2026-10-20": {
+    "entries_priced": 313,
+    "entries_with_bar_file": 313,
+    "entries_traded": 233,
+    "share_traded": 0.744408945686901,
+    "share_low_le_ask_of_traded": 0.9484978540772532,
+    "mean_last_minus_mid": 0.015686695278969966,
+    "median_last_minus_mid": 0.040000000000000036,
+    "days_with_bar_file": 313,
+    "entries_no_bar_file": 0,
+    "entries_unreadable_file": 0,
+    "spx_itm10_same_days": {
+     "entries_priced": 313,
+     "entries_with_bar_file": 313,
+     "entries_traded": 313,
+     "share_traded": 1.0,
+     "share_low_le_ask_of_traded": 0.9648562300319489,
+     "mean_last_minus_mid": 0.11808306709265172,
+     "median_last_minus_mid": 0.10000000000000142
+    },
+    "matched_days": {
+     "days": 313,
+     "xsp_itm1": {
+      "entries_with_bar_file": 313,
+      "entries_traded": 233,
+      "share_traded": 0.744408945686901,
+      "share_low_le_ask_of_traded": 0.9484978540772532,
+      "mean_last_minus_mid": 0.015686695278969966,
+      "median_last_minus_mid": 0.040000000000000036
+     },
+     "spx_itm10": {
+      "entries_with_bar_file": 313,
+      "entries_traded": 313,
+      "share_traded": 1.0,
+      "share_low_le_ask_of_traded": 0.9648562300319489,
+      "mean_last_minus_mid": 0.11808306709265172,
+      "median_last_minus_mid": 0.10000000000000142
+     }
+    }
+   },
+   "2021-01-01..2022-12-31": {
+    "entries_priced": 59,
+    "entries_with_bar_file": 59,
+    "entries_traded": 16,
+    "share_traded": 0.2711864406779661,
+    "share_low_le_ask_of_traded": 1.0,
+    "mean_last_minus_mid": -0.22843750000000002,
+    "median_last_minus_mid": 0.015000000000000013,
+    "days_with_bar_file": 59,
+    "entries_no_bar_file": 0,
+    "entries_unreadable_file": 0,
+    "spx_itm10_same_days": {
+     "entries_priced": 59,
+     "entries_with_bar_file": 59,
+     "entries_traded": 59,
+     "share_traded": 1.0,
+     "share_low_le_ask_of_traded": 0.9491525423728814,
+     "mean_last_minus_mid": 0.22525423728813565,
+     "median_last_minus_mid": 0.019999999999999574
+    },
+    "matched_days": {
+     "days": 59,
+     "xsp_itm1": {
+      "entries_with_bar_file": 59,
+      "entries_traded": 16,
+      "share_traded": 0.2711864406779661,
+      "share_low_le_ask_of_traded": 1.0,
+      "mean_last_minus_mid": -0.22843750000000002,
+      "median_last_minus_mid": 0.015000000000000013
+     },
+     "spx_itm10": {
+      "entries_with_bar_file": 59,
+      "entries_traded": 59,
+      "share_traded": 1.0,
+      "share_low_le_ask_of_traded": 0.9491525423728814,
+      "mean_last_minus_mid": 0.22525423728813565,
+      "median_last_minus_mid": 0.019999999999999574
+     }
+    }
+   },
+   "2023-01-01..2026-10-20": {
+    "entries_priced": 254,
+    "entries_with_bar_file": 254,
+    "entries_traded": 217,
+    "share_traded": 0.8543307086614174,
+    "share_low_le_ask_of_traded": 0.9447004608294931,
+    "mean_last_minus_mid": 0.03368663594470047,
+    "median_last_minus_mid": 0.04499999999999993,
+    "days_with_bar_file": 254,
+    "entries_no_bar_file": 0,
+    "entries_unreadable_file": 0,
+    "spx_itm10_same_days": {
+     "entries_priced": 254,
+     "entries_with_bar_file": 254,
+     "entries_traded": 254,
+     "share_traded": 1.0,
+     "share_low_le_ask_of_traded": 0.968503937007874,
+     "mean_last_minus_mid": 0.09318897637795268,
+     "median_last_minus_mid": 0.10500000000000043
+    },
+    "matched_days": {
+     "days": 254,
+     "xsp_itm1": {
+      "entries_with_bar_file": 254,
+      "entries_traded": 217,
+      "share_traded": 0.8543307086614174,
+      "share_low_le_ask_of_traded": 0.9447004608294931,
+      "mean_last_minus_mid": 0.03368663594470047,
+      "median_last_minus_mid": 0.04499999999999993
+     },
+     "spx_itm10": {
+      "entries_with_bar_file": 254,
+      "entries_traded": 254,
+      "share_traded": 1.0,
+      "share_low_le_ask_of_traded": 0.968503937007874,
+      "mean_last_minus_mid": 0.09318897637795268,
+      "median_last_minus_mid": 0.10500000000000043
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,217 @@
+{
+ "what": "Selection from the tuning step of preregistration/spx_candle_refine.md (Part 1)",
+ "prereg_sha256": "7b99ae6cca0f853d2aa113d6a8edfeb2d5f90c8852a37c40c8578f98d35ae958",
+ "code_sha256": "b0cbd1a716b19662a316718a1862c0e2d192e520a1735b7d36c93dc22e5014f9",
+ "inputs_manifest_sha256": "d76f49e6b5b744fd64e49daabe84cb3224120b8b8e665c1b98199e31394c74d1",
+ "tuning_quote_listing": {
+  "window": [
+   "2021-01-01",
+   "2023-12-31"
+  ],
+  "files": 749,
+  "sha256": "e9bad4fa50af0ed040b616292f18e62bb59142a0e9f109f17b695b2742c50afc"
+ },
+ "tuning_closes_window_sha256": "2b4802ff75a0a42e874ab87c98e3a32f4459af0d826d87532a8674eecbc586d8",
+ "tuning_window": [
+  "2021-01-01",
+  "2023-12-31"
+ ],
+ "halves": {
+  "H1": [
+   "2021-01-01",
+   "2022-09-30"
+  ],
+  "H2": [
+   "2022-10-01",
+   "2023-12-31"
+  ]
+ },
+ "kept_days": 625,
+ "kept_days_by_half": {
+  "H1": 315,
+  "H2": 310
+ },
+ "decision": "no_test",
+ "decision_text": "No candidate advanced under the prespecified rules. Failed gate(s): luck diagnostic p <= 0.05. The current rule stays.",
+ "goes_to_test": false,
+ "gates": {
+  "not_in_current_family": true,
+  "p_le_alpha": false,
+  "paired_mean_gt_0": true
+ },
+ "failed_gates": [
+  "p_le_alpha"
+ ],
+ "pick": {
+  "cell": [
+   "15:50",
+   0.8,
+   1,
+   20
+  ],
+  "name": "15:50 body>=0.80 with ITM20"
+ },
+ "p": 0.20918367346938777,
+ "observed_best_score": 32.01837333333327,
+ "null": {
+  "status": "run",
+  "n_shifts": 195,
+  "shift_range": [
+   21,
+   604,
+   3
+  ],
+  "n_shifts_nothing_eligible": 0,
+  "median": 23.993461538462128,
+  "p95": 42.97884320000012
+ },
+ "tuning_stats": {
+  "pick": {
+   "cell": [
+    "15:50",
+    0.8,
+    1,
+    20
+   ],
+   "name": "15:50 body>=0.80 with ITM20",
+   "tuning": {
+    "days": 625,
+    "mean_per_day": 39.69764800000002,
+    "nw_t_per_day": 2.9419823324926746,
+    "signal_days": 133,
+    "trades": 133,
+    "coverage": 1.0,
+    "mean_per_trade": 186.54909774436098,
+    "share_won": 0.6240601503759399,
+    "median_trade": 135.91000000001273,
+    "worst_trade": -1687.0900000000163,
+    "not_priced": {
+     "signal_days": 133,
+     "priced": 133,
+     "no_spot": 0,
+     "no_quote": 0
+    }
+   },
+   "H1": {
+    "days": 315,
+    "mean_per_day": 75.60539682539674,
+    "nw_t_per_day": 3.6039517976802458,
+    "signal_days": 70,
+    "trades": 70,
+    "coverage": 1.0,
+    "mean_per_trade": 340.2242857142854,
+    "share_won": 0.6571428571428571,
+    "median_trade": 228.40999999996717,
+    "worst_trade": -1687.0900000000163,
+    "not_priced": {
+     "signal_days": 70,
+     "priced": 70,
+     "no_spot": 0,
+     "no_quote": 0
+    }
+   },
+   "H2": {
+    "days": 310,
+    "mean_per_day": 3.2107419354840014,
+    "nw_t_per_day": 0.20928150819119035,
+    "signal_days": 63,
+    "trades": 63,
+    "coverage": 1.0,
+    "mean_per_trade": 15.79888888888952,
+    "share_won": 0.5873015873015873,
+    "median_trade": 71.90999999997999,
+    "worst_trade": -1433.0899999999833,
+    "not_priced": {
+     "signal_days": 63,
+     "priced": 63,
+     "no_spot": 0,
+     "no_quote": 0
+    }
+   },
+   "score": 32.01837333333327,
+   "eligible": true
+  },
+  "current": {
+   "cell": [
+    "15:50",
+    0.6,
+    1,
+    10
+   ],
+   "name": "15:50 body>=0.60 with ITM10",
+   "tuning": {
+    "days": 624,
+    "mean_per_day": 29.76233974358959,
+    "nw_t_per_day": 1.7777801365118533,
+    "signal_days": 271,
+    "trades": 270,
+    "coverage": 0.996309963099631,
+    "mean_per_trade": 68.7840740740737,
+    "share_won": 0.5518518518518518,
+    "median_trade": 49.91,
+    "worst_trade": -1361.0899999999854,
+    "not_priced": {
+     "signal_days": 271,
+     "priced": 270,
+     "no_spot": 0,
+     "no_quote": 1
+    }
+   },
+   "H1": {
+    "days": 314,
+    "mean_per_day": 63.52238853503289,
+    "nw_t_per_day": 2.3110638048567798,
+    "signal_days": 134,
+    "trades": 133,
+    "coverage": 0.9925373134328358,
+    "mean_per_trade": 149.9701503759423,
+    "share_won": 0.5639097744360902,
+    "median_trade": 65.91000000000356,
+    "worst_trade": -1361.0899999999854,
+    "not_priced": {
+     "signal_days": 134,
+     "priced": 133,
+     "no_spot": 0,
+     "no_quote": 1
+    }
+   },
+   "H2": {
+    "days": 310,
+    "mean_per_day": -4.433322580646537,
+    "nw_t_per_day": -0.24705723564419824,
+    "signal_days": 137,
+    "trades": 137,
+    "coverage": 1.0,
+    "mean_per_trade": -10.031605839419168,
+    "share_won": 0.5401459854014599,
+    "median_trade": 28.909999999987303,
+    "worst_trade": -1340.09,
+    "not_priced": {
+     "signal_days": 137,
+     "priced": 137,
+     "no_spot": 0,
+     "no_quote": 0
+    }
+   },
+   "score": 23.912192675213557,
+   "eligible": false
+  }
+ },
+ "paired_tuning_difference": {
+  "paired_n": 624,
+  "dropped_days": 1,
+  "dropped_dates": [
+   "2022-04-26"
+  ],
+  "mean": 9.998926282051453,
+  "nw_t": 0.888409330639802
+ },
+ "close_check": {
+  "status": "checked",
+  "file": "robinhood_spx_daily_2021_2023.json",
+  "robinhood_days": 63,
+  "overlap_days": 63,
+  "max_abs_diff": 0.0,
+  "text": "checked against Robinhood (robinhood_spx_daily_2021_2023.json) on 63 tuning days, largest difference 0.0000"
+ }
+}

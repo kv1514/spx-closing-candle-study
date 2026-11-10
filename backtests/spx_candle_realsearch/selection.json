@@ -1,0 +1,29 @@
+{
+ "pick": [
+  0,
+  5,
+  8,
+  0,
+  0
+ ],
+ "pick_name": "index 15:50 body>=0.80 with ITM20",
+ "decision": {
+  "decision": "exclusion_family",
+  "goes_to_test": false,
+  "gates": {
+   "not_in_exclusion_family": false,
+   "p_le_0.05": false,
+   "paired_mean_gt_0": true
+  },
+  "failed_gates": [
+   "not_in_exclusion_family",
+   "p_le_0.05"
+  ],
+  "text": "No candidate advanced under the prespecified rules: the pick (index 15:50 body>=0.80 with ITM20) is examined, or closely related to settings examined, on 2024-2026; it can only be checked on future days. No runner-up is substituted."
+ },
+ "p": 0.05102040816326531,
+ "observed_score": 37.46020054200585,
+ "prereg_sha256": "85632f1a7d6c3ffc2c695d70a29d51174efa2fb226dd5604acb9ad52b2bc18b1",
+ "code_sha256": "7ee5cc1dd9b70b6171a5deba1b3077f3ee9ec45aa00b4741b7b55f215e8376e6",
+ "decided_at_utc": "2026-11-10T06:36:17+00:00"
+}

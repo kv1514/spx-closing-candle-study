@@ -1,0 +1,314 @@
+{
+  "rule": "D1 accepted only if corr(r_close D1, r_close ref) >= 0.90 for SPY (data/bars_1m) AND Robinhood SPX minute bars (preregistration/spx_1549_close.md)",
+  "definitions": {
+    "r_close": "ln(close of 15:59 ET bar / open of 15:49 ET bar)",
+    "r_0930_to_1549": "ln(open of 15:49 ET bar / open of 09:30 ET bar)"
+  },
+  "d1_file": "/Users/kv15/trading/data/spx_1549/d1_usa500_rth_1m.csv.gz",
+  "d1_days": 3298,
+  "sources": {
+    "spy_bars_1m": {
+      "files": [
+        "/Users/kv15/trading/data/bars_1m/SPY_1m_2026-09.csv",
+        "/Users/kv15/trading/data/bars_1m/SPY_1m_2026-10.csv"
+      ],
+      "required_by_prereg": true,
+      "ref_days_complete": 21,
+      "r_close_1549_to_1559": {
+        "n": 21,
+        "corr": 0.9976,
+        "spearman": 0.987,
+        "mean_abs_diff_bps": 0.72,
+        "max_abs_diff_bps": 1.777,
+        "mean_abs_ref_bps": 7.401,
+        "mean_abs_d1_bps": 7.369,
+        "sign_agreement": 0.9048,
+        "slope_d1_on_ref": 1.0219,
+        "first_day": "2026-09-22",
+        "last_day": "2026-10-20"
+      },
+      "r_0930_to_1549": {
+        "n": 21,
+        "corr": 0.9997,
+        "spearman": 0.9974,
+        "mean_abs_diff_bps": 0.94,
+        "max_abs_diff_bps": 3.125,
+        "mean_abs_ref_bps": 36.709,
+        "mean_abs_d1_bps": 36.566,
+        "sign_agreement": 1.0,
+        "slope_d1_on_ref": 1.0008,
+        "first_day": "2026-09-22",
+        "last_day": "2026-10-20"
+      },
+      "minute_return_lead_lag": {
+        "corr_by_lag_minutes": {
+          "-2": 0.0254,
+          "-1": 0.0227,
+          "0": 0.9728,
+          "1": 0.0127,
+          "2": 0.0163
+        },
+        "best_lag": 0,
+        "n_minutes_lag0": 8169
+      },
+      "passes_corr_0.90": true
+    },
+    "spy_yahoo_1m": {
+      "files": [
+        "/Users/kv15/trading/data/yahoo_1m/SPY_1m.csv"
+      ],
+      "required_by_prereg": false,
+      "ref_days_complete": 22,
+      "r_close_1549_to_1559": {
+        "n": 22,
+        "corr": 0.9976,
+        "spearman": 0.9876,
+        "mean_abs_diff_bps": 0.711,
+        "max_abs_diff_bps": 1.777,
+        "mean_abs_ref_bps": 7.499,
+        "mean_abs_d1_bps": 7.445,
+        "sign_agreement": 0.9091,
+        "slope_d1_on_ref": 1.0212,
+        "first_day": "2026-09-21",
+        "last_day": "2026-10-20"
+      },
+      "r_0930_to_1549": {
+        "n": 22,
+        "corr": 0.9997,
+        "spearman": 0.9977,
+        "mean_abs_diff_bps": 0.97,
+        "max_abs_diff_bps": 3.125,
+        "mean_abs_ref_bps": 39.756,
+        "mean_abs_d1_bps": 39.547,
+        "sign_agreement": 1.0,
+        "slope_d1_on_ref": 0.9975,
+        "first_day": "2026-09-21",
+        "last_day": "2026-10-20"
+      },
+      "minute_return_lead_lag": {
+        "corr_by_lag_minutes": {
+          "-2": 0.0248,
+          "-1": 0.0234,
+          "0": 0.9731,
+          "1": 0.0139,
+          "2": 0.016
+        },
+        "best_lag": 0,
+        "n_minutes_lag0": 8558
+      },
+      "passes_corr_0.90": true
+    },
+    "spx_robinhood_d2": {
+      "files": [
+        "/Users/kv15/trading/data/spx_1549/d2_chunk_A_spx_1m.csv",
+        "/Users/kv15/trading/data/spx_1549/d2_chunk_B_spx_1m.csv",
+        "/Users/kv15/trading/data/spx_1549/d2_chunk_C_spx_1m.csv"
+      ],
+      "required_by_prereg": true,
+      "interpolated_bars_removed": 4692,
+      "note": "D2 chunk files written by the D2 workflow; re-run this script once D2 is final.",
+      "ref_days_complete": 22,
+      "r_close_1549_to_1559": {
+        "n": 22,
+        "corr": 0.9744,
+        "spearman": 0.9334,
+        "mean_abs_diff_bps": 1.733,
+        "max_abs_diff_bps": 7.445,
+        "mean_abs_ref_bps": 7.687,
+        "mean_abs_d1_bps": 7.445,
+        "sign_agreement": 0.9091,
+        "slope_d1_on_ref": 1.0263,
+        "first_day": "2026-09-21",
+        "last_day": "2026-10-20"
+      },
+      "r_0930_to_1549": {
+        "n": 22,
+        "corr": 0.9909,
+        "spearman": 0.9853,
+        "mean_abs_diff_bps": 6.01,
+        "max_abs_diff_bps": 16.173,
+        "mean_abs_ref_bps": 40.17,
+        "mean_abs_d1_bps": 39.547,
+        "sign_agreement": 1.0,
+        "slope_d1_on_ref": 0.9989,
+        "first_day": "2026-09-21",
+        "last_day": "2026-10-20"
+      },
+      "minute_return_lead_lag": {
+        "corr_by_lag_minutes": {
+          "-2": 0.0191,
+          "-1": 0.0236,
+          "0": 0.946,
+          "1": 0.0624,
+          "2": 0.0189
+        },
+        "best_lag": 0,
+        "n_minutes_lag0": 8558
+      },
+      "passes_corr_0.90": true
+    }
+  },
+  "required_checks": {
+    "spy_bars_1m": true,
+    "spx_robinhood_d2": true
+  },
+  "d1_accepted": true,
+  "clock_check_by_year": {
+    "2013": {
+      "days": 169,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.56,
+      "bar_0930_vs_median_0931_0959": 2.59,
+      "widest_3_bars_of_day": {
+        "09:30": 10.61,
+        "10:00": 5.86,
+        "09:31": 5.83
+      }
+    },
+    "2014": {
+      "days": 201,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.5,
+      "bar_0930_vs_median_0931_0959": 1.5,
+      "widest_3_bars_of_day": {
+        "09:30": 7.56,
+        "10:00": 7.2,
+        "09:35": 6.56
+      }
+    },
+    "2015": {
+      "days": 245,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.27,
+      "bar_0930_vs_median_0931_0959": 1.36,
+      "widest_3_bars_of_day": {
+        "09:30": 9.61,
+        "09:31": 9.22,
+        "09:35": 8.85
+      }
+    },
+    "2016": {
+      "days": 251,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.33,
+      "bar_0930_vs_median_0931_0959": 1.38,
+      "widest_3_bars_of_day": {
+        "09:30": 8.33,
+        "15:59": 8.22,
+        "09:35": 8.02
+      }
+    },
+    "2017": {
+      "days": 247,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.28,
+      "bar_0930_vs_median_0931_0959": 1.7,
+      "widest_3_bars_of_day": {
+        "15:59": 5.72,
+        "09:30": 5.54,
+        "09:35": 4.42
+      }
+    },
+    "2018": {
+      "days": 248,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.23,
+      "bar_0930_vs_median_0931_0959": 1.36,
+      "widest_3_bars_of_day": {
+        "15:59": 10.08,
+        "15:45": 9.23,
+        "09:30": 8.55
+      }
+    },
+    "2019": {
+      "days": 249,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.44,
+      "bar_0930_vs_median_0931_0959": 1.47,
+      "widest_3_bars_of_day": {
+        "15:59": 8.85,
+        "09:30": 7.8,
+        "15:55": 7.08
+      }
+    },
+    "2020": {
+      "days": 251,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.4,
+      "bar_0930_vs_median_0931_0959": 1.54,
+      "widest_3_bars_of_day": {
+        "15:50": 20.33,
+        "15:59": 17.01,
+        "09:30": 16.08
+      }
+    },
+    "2021": {
+      "days": 251,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.39,
+      "bar_0930_vs_median_0931_0959": 1.52,
+      "widest_3_bars_of_day": {
+        "15:59": 9.33,
+        "09:30": 9.03,
+        "15:50": 8.55
+      }
+    },
+    "2022": {
+      "days": 250,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.6,
+      "bar_0930_vs_median_0931_0959": 1.31,
+      "widest_3_bars_of_day": {
+        "10:00": 17.04,
+        "15:50": 16.13,
+        "09:30": 14.87
+      }
+    },
+    "2023": {
+      "days": 248,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.58,
+      "bar_0930_vs_median_0931_0959": 1.51,
+      "widest_3_bars_of_day": {
+        "10:00": 9.99,
+        "09:30": 9.75,
+        "09:31": 8.22
+      }
+    },
+    "2024": {
+      "days": 249,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.52,
+      "bar_0930_vs_median_0931_0959": 1.62,
+      "widest_3_bars_of_day": {
+        "15:59": 9.5,
+        "09:30": 8.37,
+        "10:00": 7.95
+      }
+    },
+    "2025": {
+      "days": 247,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.56,
+      "bar_0930_vs_median_0931_0959": 1.54,
+      "widest_3_bars_of_day": {
+        "09:30": 11.17,
+        "10:00": 10.88,
+        "15:50": 9.96
+      }
+    },
+    "2026": {
+      "days": 201,
+      "widest_bar_0945_1015": "10:00",
+      "bar_1000_vs_median_0945_1015": 1.39,
+      "bar_0930_vs_median_0931_0959": 1.65,
+      "widest_3_bars_of_day": {
+        "09:30": 10.98,
+        "09:31": 8.9,
+        "10:00": 8.43
+      }
+    }
+  },
+  "clock_check_note": "years without reference data: if the bar clock is right, the 10:00 bar (10:00 ET data releases) is the widest bar of 09:45-10:15",
+  "validated_at_utc": "2026-10-21T18:51:50+00:00"
+}

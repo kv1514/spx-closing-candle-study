@@ -1,0 +1,6 @@
+2026-11-10T06:35:46+00:00 tune started; plan 85632f1a7d6c3ffc2c695d70a29d51174efa2fb226dd5604acb9ad52b2bc18b1; code 7ee5cc1dd9b70b6171a5deba1b3077f3ee9ec45aa00b4741b7b55f215e8376e6; reused realindex.py 103ba4422fb26efe470a98dbd3a14f01121a7a4f41cfc75588fbb33a0bcf9c2a, spycandle.py 5ca12bb502866e625bc6146f5e6b46acaf4bfb957ee5e1f4396f29ae0395ff62, audit.py 57d5d51439edc94ee7615285d30907fb5c5b6ec71a80c2bfb9f934d4b0833d0f, build_cache.py d3ee7d3cd6fc5aa9f7eccd282322c8c6f03a25b6d6b52adbcdda56b6bbed06f4; manifests index 50d1fc7a3a597f19a64887149f280f5b54e0699e47f0412a3a3f2ce6ab6ca5e9 SPY cfe31add76511c279ac30cfed6687c43103a8c635ab440768840ba1bc6b8912a
+2026-11-10T06:36:17+00:00 tuning decision written: exclusion_family; pick index 15:50 body>=0.80 with ITM20
+2026-11-10T06:36:17+00:00 tune finished
+2026-11-10T06:36:28+00:00 test started; plan 85632f1a7d6c3ffc2c695d70a29d51174efa2fb226dd5604acb9ad52b2bc18b1; code 7ee5cc1dd9b70b6171a5deba1b3077f3ee9ec45aa00b4741b7b55f215e8376e6
+2026-11-10T06:36:28+00:00 Part 2 decision written: skipped
+2026-11-10T06:38:23+00:00 test finished

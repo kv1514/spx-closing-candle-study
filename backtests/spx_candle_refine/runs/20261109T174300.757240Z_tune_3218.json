@@ -1,0 +1,35 @@
+{
+ "code_sha256": "b0cbd1a716b19662a316718a1862c0e2d192e520a1735b7d36c93dc22e5014f9",
+ "prereg_sha256": "7b99ae6cca0f853d2aa113d6a8edfeb2d5f90c8852a37c40c8578f98d35ae958",
+ "inputs": {
+  "window": [
+   "2021-01-01",
+   "2023-12-31"
+  ],
+  "quote_listing": {
+   "window": [
+    "2021-01-01",
+    "2023-12-31"
+   ],
+   "files": 749,
+   "sha256": "e9bad4fa50af0ed040b616292f18e62bb59142a0e9f109f17b695b2742c50afc"
+  },
+  "closes_csv": {
+   "file": "/Users/kv15/trading/data/spx_1549/spx_official_closes_cboe.csv",
+   "bytes": 293585
+  },
+  "robinhood": [
+   {
+    "file": "/Users/kv15/trading/data/spx_1549/robinhood_spx_daily_2021_2023.json",
+    "bytes": 1857
+   }
+  ],
+  "days_listing": {
+   "file": "/Users/kv15/trading/data/spx_1549/d1_days.csv",
+   "bytes": 475584
+  }
+ },
+ "command": "tune",
+ "utc": "2026-11-09T17:43:00.757240+00:00",
+ "pid": 3218
+}

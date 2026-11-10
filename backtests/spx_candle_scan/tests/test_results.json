@@ -1,0 +1,57 @@
+{
+ "economics_identity": {
+  "mean_pnl_usd_fee_0.09": 50.08815744612332,
+  "markup_zero_pnl_fee_0.09": 1.3213542253508819
+ },
+ "planted_in_memory": {
+  "plants": [
+   [
+    "F1_1m_15:40",
+    3.0
+   ],
+   [
+    "F2_1m_1550_strong_body",
+    -4.0
+   ]
+  ],
+  "candidates": {
+   "F1_1m_15:40": 1,
+   "F2_1m_1550_strong_body": -1,
+   "F3_5m_15:40": 1,
+   "F2_5m_1545_engulfing": -1
+  },
+  "holdout": {
+   "F1_1m_15:40": {
+    "nw_t": 9.711176055995896,
+    "p_holm": 5.4040248583498415e-22
+   },
+   "F2_1m_1550_strong_body": {
+    "nw_t": 6.392680510961755,
+    "p_holm": 2.4450392767872845e-10
+   }
+  }
+ },
+ "planted_end_to_end": {
+  "candidates": {
+   "F1_1m_15:40": 1,
+   "F3_5m_15:40": 1
+  },
+  "holdout_nw_t": 11.888379662285162,
+  "holdout_p_holm": 1.3601979443127992e-32,
+  "discovery_stopped_at": "2021-01-04"
+ },
+ "noise": {
+  "n_sims": 200,
+  "panel_days_each_half": 700,
+  "sims_with_discovery_candidates": 76,
+  "share_sims_any_holm_pass_pipeline": 0.03,
+  "share_sims_any_holm_pass_8_forced": 0.06,
+  "single_one_sided_rejection_rate": 0.051875,
+  "n_single_tests": 1600
+ },
+ "summary": {
+  "n_tests": 8,
+  "n_failed": 0,
+  "runtime_s": 53.2
+ }
+}

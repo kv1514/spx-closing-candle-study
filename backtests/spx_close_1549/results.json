@@ -1,0 +1,7095 @@
+{
+ "meta": {
+  "prereg": "/Users/kv15/trading/preregistration/spx_1549_close.md",
+  "script": "/Users/kv15/trading/backtests/spx_close_1549/analysis.py",
+  "generated_utc": "2026-10-21T19:37:13+00:00",
+  "seed": 20261021,
+  "n_boot": 10000,
+  "decisions_and_interpretations": [
+   {
+    "id": "D1-day-rule",
+    "kind": "DEVIATION from the literal pre-registration wording",
+    "text": "The pre-registration says 'days with any missing bar 15:19-15:59 are dropped'. Primary D1 day set = build_d1.py default `keep`, which treats a run of 1-4 no-update (flat, zero-volume) Dukascopy minutes as a valid carry-forward bar (runs >= 5 or starting 09:30 are missing). This is looser than the literal wording: the strict reading (`keep_strict`: any no-update minute in 15:19-15:59 counts as missing) drops 374 more days (mostly the sparse-feed years 2013-14 and 2017). Kept as primary because it was fixed before any H1/H2 number was computed and switching after seeing both results would itself be a post-hoc choice; the strict reading is reported in full for H1/H2 and gives the same H1/H2 conclusions.",
+    "source": "this analysis; relabelled from 'interpretation' to 'deviation' after audit finding 7"
+   },
+   {
+    "id": "S2-best-predictor",
+    "text": "S2 'best full-sample D1 t-stat' = the H2 predictor with the largest |Newey-West t| on the full D1 sample (as pre-registered); trade direction: buy the ATM call if sign(t) x P > 0, else (including P = 0) buy the ATM put, as the pre-registration's 'else ATM put' says. If the predictor is undefined (a bar it needs is missing) the day is excluded from the S2 mean, not booked as $0. Look-ahead check: the same selection repeated on D1 dates before the first D2 session is reported next to it.",
+    "source": "workflow clarification (labelled); zero/undefined handling changed after audit finding 3"
+   },
+   {
+    "id": "S2-P3-entry",
+    "kind": "DEVIATION forced by the no-look-ahead rule",
+    "text": "If P3 is the selected predictor its value is only known at the 15:51 open, so S2 enters at the 15:51 bar open (strike nearest SPX then) instead of the pre-registered t0 = 15:49 ('same entry/exit'). The other reading of the rule (best |t| among the predictors known at t0, i.e. P1/P2/P4, entering at 15:49) is reported next to it as 'S2-alt' with its own pass rule evaluation.",
+    "source": "this analysis; S2-alt added after audit finding 3"
+   },
+   {
+    "id": "lookahead-cutoff",
+    "text": "The implied-vs-realized model is fitted on D1 days from 2023-01-01 up to the day before the first D2 session collected, so no D2 test day (or any day in the D2 window) is inside the fit that predicts it. Its out-of-sample calibration on D1 days inside the D2 window is reported.",
+    "source": "this analysis; added after audit finding 5 (before: fit ran through 2026-10-20)"
+   },
+   {
+    "id": "evaluability",
+    "text": "Pass-rule conditions are three-valued: yes / no / not evaluable. Condition 1 for S1/S3 needs a bootstrap CI over D2 days, so it is not evaluable with fewer than 2 usable D2 days. Condition 2 requires CIs to be reported, so it is not evaluable with fewer than 2 usable D2 days. A strategy is a candidate only if both are 'yes'; anything else is FAIL, and a FAIL caused by 'not evaluable' is labelled 'D2 test not run'.",
+    "source": "this analysis; added after audit findings 1 and 2"
+   },
+   {
+    "id": "settlement-gap",
+    "text": "The realized-move model is fitted to the D1 move to the 15:59 bar close (16:00:00), while the straddle settles on the SPX official close. In D2 the 15:59-close -> official-close gap averages about 1.3 bps in absolute value (exploratory (iii)), so the model slightly understates the move the option actually pays on; this works against the S1/S3 premise.",
+    "source": "this analysis; added after audit finding 9"
+   },
+   {
+    "id": "option-marks",
+    "text": "Robinhood option bar opens look like sampled prints/marks, not clean bid-ask mids (bar open is not the previous close; put-call parity is off by up to ~1.6 points at 15:49-15:50 on the one real day). If they are trade prints, adding a $0.10 half-spread may double-count part of the cost; if they are mids it is the right charge. Parity per usable day is reported as a data-quality line.",
+    "source": "this analysis; added after audit finding 4"
+   },
+   {
+    "id": "windows",
+    "text": "11-minute window starting at bar s = open of bar s to close of bar s+10 (same length as r_close: 15:49:00-16:00:00). The 15:38 window is open 15:38 -> close 15:48. Same-day median uses every available window starting 10:00..15:38 (339 when no bar is missing).",
+    "source": "this analysis (reading of 'every 11-minute window')"
+   },
+   {
+    "id": "strike",
+    "text": "Strike nearest SPX = nearest point on the 5-point grid, ties rounded up; the contract must have a real (non-interpolated) 1-minute bar at entry or the day is not usable.",
+    "source": "this analysis"
+   },
+   {
+    "id": "fees",
+    "text": "Fees are charged per executed trade: entry always; exit only when a leg is sold before expiry (cash settlement is not a trade). Half-spread is added to the entry mark and subtracted from a sale price; settlement value is intrinsic at the SPX official close.",
+    "source": "this analysis (reading of '$0.09/contract per side')"
+   },
+   {
+    "id": "S3-trigger",
+    "text": "S3 / exploratory (i): a leg is sold at multiple x entry mark minus half-spread (floored at 0) if the close of any real bar beginning 15:49..15:58 is >= multiple x entry mark (the 15:49 bar's close at 15:49:59 is later than the 15:49:00 entry).",
+    "source": "this analysis (reading of 'any later bar's close ... before 15:59')"
+   },
+   {
+    "id": "implied-vs-realized",
+    "text": "Realized vol to t0 = sqrt(sum of squared 1-minute log changes of bar opens 09:30..15:49, rescaled for missing pairs), from D1 on the D2 date. Model fitted on D1 2023-01-01 .. the day before the first D2 session: |P_end/P_t0 - 1| = a + b*rv (OLS). Predicted move (points) = prediction x SPX at t0; compared with the D2 15:49 ATM straddle mark (C+P open). Pass-rule statistic = mean over usable D2 days of (predicted - implied); 95% CI from a day bootstrap that resamples D1 days (refitting, 20-day moving blocks) and D2 days (iid). The ratio model (sum|r|/sum rv) and the unconditional mean are reported as descriptive alternatives.",
+    "source": "this analysis (pre-registration says 'ratio and regression'; workflow asked for the regression)"
+   },
+   {
+    "id": "bootstrap",
+    "text": "Day-block bootstrap for every D1 resample = circular moving-block bootstrap with blocks of 20 consecutive trading days (keeps volatility clustering), 10000 replications, percentile 95% CI, seed 20261021; the 1-day-block (iid) version is reported as a sensitivity. Samples of D2 trades (<= ~35 days) are resampled iid, since a 20-day block on 22 days would leave almost nothing to resample. For the implied-vs-realized premise the CI must lie above zero under BOTH the 20-day-block and the iid D1 resample (conservative: for the regression the block CI is narrower than the iid one, because the regression score has lag-1 autocorrelation of about -0.76, driven by back-to-back extreme-volatility days).",
+    "source": "this analysis; block length changed 1 -> 20 after audit finding 6"
+   },
+   {
+    "id": "fees-actual",
+    "text": "An extra fee case of $1.13 per contract per side (upper end of Robinhood's actual SPXW fee: contract fee + exchange fee + regulatory, research/SPX_1549_RESEARCH.md section F) is added to the cost grid as a labelled, not pre-registered sensitivity.",
+    "source": "this analysis; added after the literature review"
+   },
+   {
+    "id": "nw",
+    "text": "Newey-West: Bartlett weights, lag 5, p-value from the normal distribution; days where the predictor or target is undefined are dropped from that predictor's series.",
+    "source": "this analysis"
+   }
+  ],
+  "runtime_s": 10.177904
+ },
+ "d1": {
+  "file": "/Users/kv15/trading/data/spx_1549/d1_usa500_rth_1m.csv.gz",
+  "usable_days": 3307,
+  "first": "2013-02-28",
+  "last": "2026-10-20",
+  "weekday_files_by_reason": {
+   "usable": 3307,
+   "delayed_clock_feed": 377,
+   "nyse_holiday": 127,
+   "missing_bar_1519_1559": 80,
+   "half_day_calendar": 29,
+   "half_day_data_only": 12,
+   "no_ticks_in_session": 5
+  },
+  "note": "weekends (never downloaded) and NYSE holidays are not trading days; delayed_clock_feed = 2011-09-19..2013-02-26 dropped by build_d1.py (feed clock ~15-20 min late)",
+  "strict_rule_usable_days": 2933,
+  "days_without_0930_bar": 9,
+  "days_without_1000_bar": 2
+ },
+ "validation": {
+  "file": "/Users/kv15/trading/backtests/spx_close_1549/d1_validation.json",
+  "corr_r_close": {
+   "spy_bars_1m": 0.9976,
+   "spy_yahoo_1m": 0.9976,
+   "spx_robinhood_d2": 0.9744
+  },
+  "n_overlap": {
+   "spy_bars_1m": 21,
+   "spy_yahoo_1m": 22,
+   "spx_robinhood_d2": 22
+  },
+  "validated_at_utc": "2026-10-21T18:51:50+00:00",
+  "d1_accepted": true,
+  "rule": "corr >= 0.90 vs SPY data/bars_1m AND vs Robinhood SPX minute bars",
+  "recheck_in_analysis": {
+   "n": 22,
+   "corr_r_close_d1_vs_d2_spx": 0.9744171788277513,
+   "p3_sign_agreement_d1_vs_d2_spx": {
+    "n": 22,
+    "agree": 21
+   }
+  }
+ },
+ "lookahead_selfcheck": {
+  "d1": [
+   "P1: entry bar 379 (r_close starts bar 379); masked == full, scrambled-future == full",
+   "P2: entry bar 379 (r_close starts bar 379); masked == full, scrambled-future == full",
+   "P3: entry bar 381 (r_1551 starts bar 381); masked == full, scrambled-future == full",
+   "P4: entry bar 379 (r_close starts bar 379); masked == full, scrambled-future == full",
+   "rv(09:30..15:49 opens): masked at t0 == full"
+  ],
+  "passed": true,
+  "d2": [
+   "2026-10-20: K0 and every S2 variant's strike/direction identical from data truncated at entry"
+  ]
+ },
+ "h1": {
+  "primary_keep": {
+   "n_days_input": 3307,
+   "n_days_full_339_windows": 3167,
+   "min_windows_on_a_day": 195,
+   "a_vs_1538_1549_window": {
+    "n_days": 3307,
+    "n_dropped_undefined": 0,
+    "mean_abs_r_close_bps": 12.092344143444448,
+    "mean_baseline_bps": 8.675659006163366,
+    "ratio_of_means": 1.3938242771936749,
+    "mean_log_diff": 0.3534618673204739,
+    "geometric_ratio": 1.4239886854118535,
+    "t": 13.643466351452068,
+    "p_two_sided": 2.8368499946690695e-41,
+    "boot95_mean_log_diff": [
+     0.2995656230645719,
+     0.40864607442294065
+    ],
+    "boot95_mean_log_diff_block": 20,
+    "boot95_mean_log_diff_iid_sensitivity": [
+     0.3039820592645288,
+     0.4038735714635067
+    ],
+    "mean_diff_bps": 3.416685137281083,
+    "boot95_mean_diff_bps": [
+     2.6852513229486976,
+     4.334305215491644
+    ],
+    "share_days_r_close_larger": 0.6093135772603568,
+    "passes": true
+   },
+   "b_vs_same_day_median_window": {
+    "n_days": 3307,
+    "n_dropped_undefined": 0,
+    "mean_abs_r_close_bps": 12.092344143444448,
+    "mean_baseline_bps": 6.308990530483777,
+    "ratio_of_means": 1.9166844656077178,
+    "mean_log_diff": 0.24896588888765434,
+    "geometric_ratio": 1.282698278058481,
+    "t": 13.239559012839075,
+    "p_two_sided": 5.0200260918818154e-39,
+    "boot95_mean_log_diff": [
+     0.20273300158877075,
+     0.29465352299642544
+    ],
+    "boot95_mean_log_diff_block": 20,
+    "boot95_mean_log_diff_iid_sensitivity": [
+     0.21063632951583,
+     0.285146201676853
+    ],
+    "mean_diff_bps": 5.783353612960671,
+    "boot95_mean_diff_bps": [
+     4.89556819253342,
+     6.943718316095997
+    ],
+    "share_days_r_close_larger": 0.6685817961899002,
+    "passes": true
+   }
+  },
+  "sensitivity_keep_strict": {
+   "n_days_input": 2933,
+   "n_days_full_339_windows": 2844,
+   "min_windows_on_a_day": 216,
+   "a_vs_1538_1549_window": {
+    "n_days": 2933,
+    "n_dropped_undefined": 0,
+    "mean_abs_r_close_bps": 12.87504288248178,
+    "mean_baseline_bps": 9.171489541474292,
+    "ratio_of_means": 1.403811542744468,
+    "mean_log_diff": 0.3550111052174265,
+    "geometric_ratio": 1.4261964924156783,
+    "t": 13.136629680376238,
+    "p_two_sided": 2.4064902098728184e-38,
+    "boot95_mean_log_diff": [
+     0.2992901156494119,
+     0.4133877908529186
+    ],
+    "boot95_mean_log_diff_block": 20,
+    "boot95_mean_log_diff_iid_sensitivity": [
+     0.3012293471170708,
+     0.40817136054520853
+    ],
+    "mean_diff_bps": 3.7035533410074875,
+    "boot95_mean_diff_bps": [
+     2.879294089874583,
+     4.701005750895692
+    ],
+    "share_days_r_close_larger": 0.6123423116263211,
+    "passes": true
+   },
+   "b_vs_same_day_median_window": {
+    "n_days": 2933,
+    "n_dropped_undefined": 0,
+    "mean_abs_r_close_bps": 12.87504288248178,
+    "mean_baseline_bps": 6.698290176209836,
+    "ratio_of_means": 1.9221387165652775,
+    "mean_log_diff": 0.2520370211328751,
+    "geometric_ratio": 1.2866436694093857,
+    "t": 12.711427179823227,
+    "p_two_sided": 4.494344688049133e-36,
+    "boot95_mean_log_diff": [
+     0.2048445848643178,
+     0.2994554261777414
+    ],
+    "boot95_mean_log_diff_block": 20,
+    "boot95_mean_log_diff_iid_sensitivity": [
+     0.21259911875581383,
+     0.2907369628904027
+    ],
+    "mean_diff_bps": 6.176752706271944,
+    "boot95_mean_diff_bps": [
+     5.1818350391678445,
+     7.447518450406222
+    ],
+    "share_days_r_close_larger": 0.6706443914081146,
+    "passes": true
+   }
+  }
+ },
+ "h2": {
+  "primary_keep": {
+   "full_sample": {
+    "P1": {
+     "n": 3298,
+     "mean_bps": 0.8083413367162986,
+     "nw_se_bps": 0.3650929945512643,
+     "nw_t": 2.214069699446933,
+     "p": 0.0268239846429643,
+     "hit_rate": 0.504260499087036,
+     "n_zero_sign": 1,
+     "n_dropped_undefined": 9,
+     "desc": "sign r(09:30 open -> 15:49 open)  intraday momentum",
+     "target": "r_close",
+     "p_holm": 0.08047195392889289,
+     "same_sign_2023_2026": false,
+     "passes_direction": false
+    },
+    "P2": {
+     "n": 3307,
+     "mean_bps": -0.009184868035504567,
+     "nw_se_bps": 0.3186759753993087,
+     "nw_t": -0.02882196570982706,
+     "p": 0.9770065820527919,
+     "hit_rate": 0.5003046922608165,
+     "n_zero_sign": 14,
+     "n_dropped_undefined": 0,
+     "desc": "sign r(15:19 open -> 15:49 open)  last-30-minute momentum",
+     "target": "r_close",
+     "p_holm": 0.9770065820527919,
+     "same_sign_2023_2026": true,
+     "passes_direction": false
+    },
+    "P3": {
+     "n": 3307,
+     "mean_bps": 0.9981739125509843,
+     "nw_se_bps": 0.24421332597531456,
+     "nw_t": 4.087303215598813,
+     "p": 4.364165760522863e-05,
+     "hit_rate": 0.5259920024607813,
+     "n_zero_sign": 39,
+     "n_dropped_undefined": 0,
+     "desc": "sign r(15:50 open -> 15:51 open)  first reaction to the 15:50 imbalance",
+     "target": "r_1551",
+     "p_holm": 0.00017456663042091452,
+     "same_sign_2023_2026": true,
+     "passes_direction": true
+    },
+    "P4": {
+     "n": 3298,
+     "mean_bps": -0.3571366387755967,
+     "nw_se_bps": 0.3567459921343778,
+     "nw_t": -1.001095027413992,
+     "p": 0.3167808688528674,
+     "hit_rate": 0.4824961948249619,
+     "n_zero_sign": 2,
+     "n_dropped_undefined": 9,
+     "desc": "sign r(09:30 open -> 10:00 open)  first half-hour",
+     "target": "r_close",
+     "p_holm": 0.6335617377057348,
+     "same_sign_2023_2026": true,
+     "passes_direction": false
+    }
+   },
+   "subperiods": {
+    "P1": {
+     "start-2019": {
+      "n": 1603,
+      "mean_bps": 0.7785769465011517,
+      "nw_se_bps": 0.331714733582,
+      "nw_t": 2.347128022001734,
+      "p": 0.01891875313157391,
+      "hit_rate": 0.5119346733668342,
+      "n_zero_sign": 1,
+      "first": "2013-02-28",
+      "last": "2019-12-31"
+     },
+     "2020-2022": {
+      "n": 750,
+      "mean_bps": 2.6492694481620327,
+      "nw_se_bps": 1.281001533610858,
+      "nw_t": 2.068123556959633,
+      "p": 0.038628406079199776,
+      "hit_rate": 0.5300400534045394,
+      "n_zero_sign": 0,
+      "first": "2020-01-02",
+      "last": "2022-12-30"
+     },
+     "2023-2026": {
+      "n": 945,
+      "mean_bps": -0.6022234951031932,
+      "nw_se_bps": 0.4957410369686334,
+      "nw_t": -1.2147945201100976,
+      "p": 0.2244444714092206,
+      "hit_rate": 0.4708994708994709,
+      "n_zero_sign": 0,
+      "first": "2023-01-03",
+      "last": "2026-10-20"
+     }
+    },
+    "P2": {
+     "start-2019": {
+      "n": 1610,
+      "mean_bps": -0.3197989528776604,
+      "nw_se_bps": 0.3332492535893179,
+      "nw_t": -0.9596389172165017,
+      "p": 0.3372369753088372,
+      "hit_rate": 0.4924433249370277,
+      "n_zero_sign": 12,
+      "first": "2013-02-28",
+      "last": "2019-12-31"
+     },
+     "2020-2022": {
+      "n": 752,
+      "mean_bps": 0.754285710351384,
+      "nw_se_bps": 0.998223075634184,
+      "nw_t": 0.75562840487551,
+      "p": 0.4498720205416154,
+      "hit_rate": 0.52,
+      "n_zero_sign": 1,
+      "first": "2020-01-02",
+      "last": "2022-12-30"
+     },
+     "2023-2026": {
+      "n": 945,
+      "mean_bps": -0.08753534248107973,
+      "nw_se_bps": 0.5363218091788153,
+      "nw_t": -0.1632142138972658,
+      "p": 0.8703497752000565,
+      "hit_rate": 0.4978813559322034,
+      "n_zero_sign": 1,
+      "first": "2023-01-03",
+      "last": "2026-10-20"
+     }
+    },
+    "P3": {
+     "start-2019": {
+      "n": 1610,
+      "mean_bps": 0.8884630563352216,
+      "nw_se_bps": 0.27186872493844455,
+      "nw_t": 3.267985519615704,
+      "p": 0.0010831590724599235,
+      "hit_rate": 0.5166666666666667,
+      "n_zero_sign": 34,
+      "first": "2013-02-28",
+      "last": "2019-12-31"
+     },
+     "2020-2022": {
+      "n": 752,
+      "mean_bps": 1.8710968211201064,
+      "nw_se_bps": 0.7579497980357744,
+      "nw_t": 2.468628959291302,
+      "p": 0.013563177124708134,
+      "hit_rate": 0.5379494007989347,
+      "n_zero_sign": 1,
+      "first": "2020-01-02",
+      "last": "2022-12-30"
+     },
+     "2023-2026": {
+      "n": 945,
+      "mean_bps": 0.490445289549289,
+      "nw_se_bps": 0.3844652016107894,
+      "nw_t": 1.2756558655880326,
+      "p": 0.20207719640089855,
+      "hit_rate": 0.5319148936170213,
+      "n_zero_sign": 4,
+      "first": "2023-01-03",
+      "last": "2026-10-20"
+     }
+    },
+    "P4": {
+     "start-2019": {
+      "n": 1603,
+      "mean_bps": -0.10317579139006085,
+      "nw_se_bps": 0.3199186803028842,
+      "nw_t": -0.32250630470336644,
+      "p": 0.7470691622461321,
+      "hit_rate": 0.5034569453174105,
+      "n_zero_sign": 2,
+      "first": "2013-02-28",
+      "last": "2019-12-31"
+     },
+     "2020-2022": {
+      "n": 750,
+      "mean_bps": -0.6577404722958614,
+      "nw_se_bps": 1.2511303782963343,
+      "nw_t": -0.52571697059383,
+      "p": 0.5990848708133925,
+      "hit_rate": 0.45660881174899864,
+      "n_zero_sign": 0,
+      "first": "2020-01-02",
+      "last": "2022-12-30"
+     },
+     "2023-2026": {
+      "n": 945,
+      "mean_bps": -0.5493550125521212,
+      "nw_se_bps": 0.5157721406153927,
+      "nw_t": -1.065111837751956,
+      "p": 0.2868253229628445,
+      "hit_rate": 0.4677248677248677,
+      "n_zero_sign": 0,
+      "first": "2023-01-03",
+      "last": "2026-10-20"
+     }
+    }
+   },
+   "weekday": {
+    "P1": {
+     "Mon": {
+      "n": 617,
+      "mean_bps": -0.5427879282431753,
+      "nw_se_bps": 0.6950498498591614,
+      "nw_t": -0.7809338112268652,
+      "p": 0.4348414246961263,
+      "hit_rate": 0.474025974025974,
+      "n_zero_sign": 0
+     },
+     "Tue": {
+      "n": 686,
+      "mean_bps": 0.9526855044755068,
+      "nw_se_bps": 0.8510590497352258,
+      "nw_t": 1.1194117550032494,
+      "p": 0.2629645183844747,
+      "hit_rate": 0.5233236151603499,
+      "n_zero_sign": 0
+     },
+     "Wed": {
+      "n": 673,
+      "mean_bps": 0.9013148345246982,
+      "nw_se_bps": 0.8744712385931491,
+      "nw_t": 1.030696945476143,
+      "p": 0.3026829576116587,
+      "hit_rate": 0.5,
+      "n_zero_sign": 0
+     },
+     "Thu": {
+      "n": 666,
+      "mean_bps": 0.8392752885297194,
+      "nw_se_bps": 0.8428685808444351,
+      "nw_t": 0.9957368296833231,
+      "p": 0.3193780303963786,
+      "hit_rate": 0.49697885196374625,
+      "n_zero_sign": 1
+     },
+     "Fri": {
+      "n": 656,
+      "mean_bps": 1.8014106682168898,
+      "nw_se_bps": 1.0177602681237679,
+      "nw_t": 1.7699754300074757,
+      "p": 0.07673123384066137,
+      "hit_rate": 0.5245398773006135,
+      "n_zero_sign": 0
+     }
+    },
+    "P2": {
+     "Mon": {
+      "n": 621,
+      "mean_bps": 0.9641468681987501,
+      "nw_se_bps": 0.7216846333096724,
+      "nw_t": 1.3359670189694035,
+      "p": 0.18156005354897956,
+      "hit_rate": 0.5348460291734197,
+      "n_zero_sign": 3
+     },
+     "Tue": {
+      "n": 686,
+      "mean_bps": -0.3311818301348592,
+      "nw_se_bps": 0.7093633271606691,
+      "nw_t": -0.4668719363608253,
+      "p": 0.6405915046483905,
+      "hit_rate": 0.5,
+      "n_zero_sign": 2
+     },
+     "Wed": {
+      "n": 678,
+      "mean_bps": 0.9421054030525544,
+      "nw_se_bps": 0.6832482545050109,
+      "nw_t": 1.378862509842892,
+      "p": 0.16793714910395444,
+      "hit_rate": 0.5059347181008902,
+      "n_zero_sign": 1
+     },
+     "Thu": {
+      "n": 666,
+      "mean_bps": -0.9761960789440013,
+      "nw_se_bps": 0.6934452701248655,
+      "nw_t": -1.4077478367805756,
+      "p": 0.15920575136856802,
+      "hit_rate": 0.4795144157814871,
+      "n_zero_sign": 4
+     },
+     "Fri": {
+      "n": 656,
+      "mean_bps": -0.5953044252519066,
+      "nw_se_bps": 0.77131713179888,
+      "nw_t": -0.7718024152575566,
+      "p": 0.4402314610287202,
+      "hit_rate": 0.48302469135802467,
+      "n_zero_sign": 4
+     }
+    },
+    "P3": {
+     "Mon": {
+      "n": 621,
+      "mean_bps": 1.6467173678335034,
+      "nw_se_bps": 0.7095306945196684,
+      "nw_t": 2.320854306307753,
+      "p": 0.020294708387274,
+      "hit_rate": 0.5402298850574713,
+      "n_zero_sign": 7
+     },
+     "Tue": {
+      "n": 686,
+      "mean_bps": 1.4602608605899354,
+      "nw_se_bps": 0.5710155092036336,
+      "nw_t": 2.55730507675087,
+      "p": 0.01054866588635996,
+      "hit_rate": 0.5339233038348082,
+      "n_zero_sign": 6
+     },
+     "Wed": {
+      "n": 678,
+      "mean_bps": 1.1739388450592838,
+      "nw_se_bps": 0.6870086257778812,
+      "nw_t": 1.708768712663636,
+      "p": 0.08749380037711292,
+      "hit_rate": 0.5299401197604791,
+      "n_zero_sign": 8
+     },
+     "Thu": {
+      "n": 666,
+      "mean_bps": 0.3812637393638937,
+      "nw_se_bps": 0.6168765163835931,
+      "nw_t": 0.6180552010620096,
+      "p": 0.5365389516083787,
+      "hit_rate": 0.5114155251141552,
+      "n_zero_sign": 5
+     },
+     "Fri": {
+      "n": 656,
+      "mean_bps": 0.34566845373514654,
+      "nw_se_bps": 0.6441078320113003,
+      "nw_t": 0.5366623980580353,
+      "p": 0.5915008340715897,
+      "hit_rate": 0.514866979655712,
+      "n_zero_sign": 13
+     }
+    },
+    "P4": {
+     "Mon": {
+      "n": 617,
+      "mean_bps": -1.0854417707874766,
+      "nw_se_bps": 0.713459415300239,
+      "nw_t": -1.5213784379461857,
+      "p": 0.12816489662326402,
+      "hit_rate": 0.46915584415584416,
+      "n_zero_sign": 0
+     },
+     "Tue": {
+      "n": 686,
+      "mean_bps": 0.025916187189972073,
+      "nw_se_bps": 0.5945719143102857,
+      "nw_t": 0.0435879774443018,
+      "p": 0.9652328351999797,
+      "hit_rate": 0.4846715328467153,
+      "n_zero_sign": 1
+     },
+     "Wed": {
+      "n": 673,
+      "mean_bps": 0.2251816756226045,
+      "nw_se_bps": 0.9182845058491363,
+      "nw_t": 0.2452199445686817,
+      "p": 0.8062861342263359,
+      "hit_rate": 0.4828101644245142,
+      "n_zero_sign": 1
+     },
+     "Thu": {
+      "n": 666,
+      "mean_bps": -0.19886008282546958,
+      "nw_se_bps": 0.791391591418579,
+      "nw_t": -0.2512789938404709,
+      "p": 0.8015984147378709,
+      "hit_rate": 0.48717948717948717,
+      "n_zero_sign": 0
+     },
+     "Fri": {
+      "n": 656,
+      "mean_bps": -0.8307988095283777,
+      "nw_se_bps": 0.8084539400446182,
+      "nw_t": -1.0276390136493445,
+      "p": 0.30411966522930084,
+      "hit_rate": 0.48773006134969327,
+      "n_zero_sign": 0
+     }
+    }
+   },
+   "best_abs_t": {
+    "predictor": "P3",
+    "nw_t": 4.087303215598813,
+    "trade_sign_multiplier": 1
+   },
+   "best_abs_t_known_at_t0": {
+    "predictor": "P1",
+    "nw_t": 2.214069699446933,
+    "trade_sign_multiplier": 1,
+    "candidates": [
+     "P1",
+     "P2",
+     "P4"
+    ]
+   }
+  },
+  "sensitivity_keep_strict": {
+   "full_sample": {
+    "P1": {
+     "n": 2924,
+     "mean_bps": 0.9191965779834911,
+     "nw_se_bps": 0.40806355837103847,
+     "nw_t": 2.2525818812462948,
+     "p": 0.024285524602289936,
+     "hit_rate": 0.5068587105624143,
+     "n_zero_sign": 0,
+     "n_dropped_undefined": 9,
+     "desc": "sign r(09:30 open -> 15:49 open)  intraday momentum",
+     "target": "r_close",
+     "p_holm": 0.0728565738068698,
+     "same_sign_2023_2026": false,
+     "passes_direction": false
+    },
+    "P2": {
+     "n": 2933,
+     "mean_bps": 0.0926093810965577,
+     "nw_se_bps": 0.35180979053217926,
+     "nw_t": 0.26323707750278463,
+     "p": 0.7923678545213516,
+     "hit_rate": 0.5020604395604396,
+     "n_zero_sign": 13,
+     "n_dropped_undefined": 0,
+     "desc": "sign r(15:19 open -> 15:49 open)  last-30-minute momentum",
+     "target": "r_close",
+     "p_holm": 0.7923678545213516,
+     "same_sign_2023_2026": false,
+     "passes_direction": false
+    },
+    "P3": {
+     "n": 2933,
+     "mean_bps": 1.0353641717094897,
+     "nw_se_bps": 0.2755821717162811,
+     "nw_t": 3.757007085260304,
+     "p": 0.00017195762979634006,
+     "hit_rate": 0.5224602626123013,
+     "n_zero_sign": 26,
+     "n_dropped_undefined": 0,
+     "desc": "sign r(15:50 open -> 15:51 open)  first reaction to the 15:50 imbalance",
+     "target": "r_1551",
+     "p_holm": 0.0006878305191853602,
+     "same_sign_2023_2026": true,
+     "passes_direction": true
+    },
+    "P4": {
+     "n": 2924,
+     "mean_bps": -0.4047566874722367,
+     "nw_se_bps": 0.39836090662810864,
+     "nw_t": -1.016055242213059,
+     "p": 0.30960308099852857,
+     "hit_rate": 0.48284145504461223,
+     "n_zero_sign": 2,
+     "n_dropped_undefined": 9,
+     "desc": "sign r(09:30 open -> 10:00 open)  first half-hour",
+     "target": "r_close",
+     "p_holm": 0.6192061619970571,
+     "same_sign_2023_2026": true,
+     "passes_direction": false
+    }
+   },
+   "subperiods": {
+    "P1": {
+     "start-2019": {
+      "n": 1235,
+      "mean_bps": 1.0997929439564296,
+      "nw_se_bps": 0.41275792085318563,
+      "nw_t": 2.6644987010379295,
+      "p": 0.007710316415931456,
+      "hit_rate": 0.5211726384364821,
+      "n_zero_sign": 0,
+      "first": "2013-02-28",
+      "last": "2019-12-31"
+     },
+     "2020-2022": {
+      "n": 747,
+      "mean_bps": 2.640883204623745,
+      "nw_se_bps": 1.2860460745101798,
+      "nw_t": 2.0534903507478037,
+      "p": 0.04002504462388952,
+      "hit_rate": 0.5294906166219839,
+      "n_zero_sign": 0,
+      "first": "2020-01-03",
+      "last": "2022-12-30"
+     },
+     "2023-2026": {
+      "n": 942,
+      "mean_bps": -0.6828590717796181,
+      "nw_se_bps": 0.4921136984230207,
+      "nw_t": -1.3876042751255275,
+      "p": 0.1652575789451944,
+      "hit_rate": 0.470276008492569,
+      "n_zero_sign": 0,
+      "first": "2023-01-03",
+      "last": "2026-10-20"
+     }
+    },
+    "P2": {
+     "start-2019": {
+      "n": 1242,
+      "mean_bps": -0.20465453436496903,
+      "nw_se_bps": 0.40698590449935984,
+      "nw_t": -0.5028541089567168,
+      "p": 0.6150668478418376,
+      "hit_rate": 0.4950980392156863,
+      "n_zero_sign": 11,
+      "first": "2013-02-28",
+      "last": "2019-12-31"
+     },
+     "2020-2022": {
+      "n": 749,
+      "mean_bps": 0.7134487347639963,
+      "nw_se_bps": 1.0012972583845927,
+      "nw_t": 0.7125244065034327,
+      "p": 0.47614010349187463,
+      "hit_rate": 0.5180722891566265,
+      "n_zero_sign": 1,
+      "first": "2020-01-03",
+      "last": "2022-12-30"
+     },
+     "2023-2026": {
+      "n": 942,
+      "mean_bps": -0.00909645000078344,
+      "nw_se_bps": 0.5264435744832077,
+      "nw_t": -0.01727905979233031,
+      "p": 0.9862139909753056,
+      "hit_rate": 0.49840595111583424,
+      "n_zero_sign": 1,
+      "first": "2023-01-03",
+      "last": "2026-10-20"
+     }
+    },
+    "P3": {
+     "start-2019": {
+      "n": 1242,
+      "mean_bps": 0.8903571695333157,
+      "nw_se_bps": 0.3422415699334747,
+      "nw_t": 2.601545948104388,
+      "p": 0.00928046322306745,
+      "hit_rate": 0.5053763440860215,
+      "n_zero_sign": 21,
+      "first": "2013-02-28",
+      "last": "2019-12-31"
+     },
+     "2020-2022": {
+      "n": 749,
+      "mean_bps": 1.8591198373957656,
+      "nw_se_bps": 0.7611966054094877,
+      "nw_t": 2.4423648557860385,
+      "p": 0.014591391604541867,
+      "hit_rate": 0.5374331550802139,
+      "n_zero_sign": 1,
+      "first": "2020-01-03",
+      "last": "2022-12-30"
+     },
+     "2023-2026": {
+      "n": 942,
+      "mean_bps": 0.5715698013313446,
+      "nw_se_bps": 0.40214346506416615,
+      "nw_t": 1.4213081921899309,
+      "p": 0.1552271829678752,
+      "hit_rate": 0.5325506937033084,
+      "n_zero_sign": 4,
+      "first": "2023-01-03",
+      "last": "2026-10-20"
+     }
+    },
+    "P4": {
+     "start-2019": {
+      "n": 1235,
+      "mean_bps": -0.014223387043926936,
+      "nw_se_bps": 0.4047411603942873,
+      "nw_t": -0.03514193374864794,
+      "p": 0.9719665637516686,
+      "hit_rate": 0.5130505709624796,
+      "n_zero_sign": 2,
+      "first": "2013-02-28",
+      "last": "2019-12-31"
+     },
+     "2020-2022": {
+      "n": 747,
+      "mean_bps": -0.7043575717107139,
+      "nw_se_bps": 1.255490103774346,
+      "nw_t": -0.5610220021593342,
+      "p": 0.5747825381987692,
+      "hit_rate": 0.4544235924932976,
+      "n_zero_sign": 0,
+      "first": "2020-01-03",
+      "last": "2022-12-30"
+     },
+     "2023-2026": {
+      "n": 942,
+      "mean_bps": -0.6791800054157827,
+      "nw_se_bps": 0.5025734739290232,
+      "nw_t": -1.3514044028350392,
+      "p": 0.1765659242013926,
+      "hit_rate": 0.46602972399150744,
+      "n_zero_sign": 0,
+      "first": "2023-01-03",
+      "last": "2026-10-20"
+     }
+    }
+   },
+   "weekday": {
+    "P1": {
+     "Mon": {
+      "n": 527,
+      "mean_bps": -0.5736167599232485,
+      "nw_se_bps": 0.7987910149181079,
+      "nw_t": -0.7181061744692455,
+      "p": 0.4726918233505458,
+      "hit_rate": 0.48098859315589354,
+      "n_zero_sign": 0
+     },
+     "Tue": {
+      "n": 603,
+      "mean_bps": 1.0513067883019878,
+      "nw_se_bps": 0.9545664227653452,
+      "nw_t": 1.1013448233978198,
+      "p": 0.2707466098418833,
+      "hit_rate": 0.5257048092868989,
+      "n_zero_sign": 0
+     },
+     "Wed": {
+      "n": 614,
+      "mean_bps": 1.0816115685560015,
+      "nw_se_bps": 0.9512679547584582,
+      "nw_t": 1.137020923647785,
+      "p": 0.25552953882492513,
+      "hit_rate": 0.5040916530278232,
+      "n_zero_sign": 0
+     },
+     "Thu": {
+      "n": 605,
+      "mean_bps": 0.9490417685737367,
+      "nw_se_bps": 0.9218213263193028,
+      "nw_t": 1.0295289786396253,
+      "p": 0.30323116960599705,
+      "hit_rate": 0.5008291873963516,
+      "n_zero_sign": 0
+     },
+     "Fri": {
+      "n": 575,
+      "mean_bps": 1.9440157566551055,
+      "nw_se_bps": 1.1497164776827877,
+      "nw_t": 1.6908653519285028,
+      "p": 0.09086252207516589,
+      "hit_rate": 0.5200698080279232,
+      "n_zero_sign": 0
+     }
+    },
+    "P2": {
+     "Mon": {
+      "n": 531,
+      "mean_bps": 1.3349810403333857,
+      "nw_se_bps": 0.8175748890683884,
+      "nw_t": 1.6328547490671736,
+      "p": 0.10249954913948257,
+      "hit_rate": 0.5483870967741935,
+      "n_zero_sign": 3
+     },
+     "Tue": {
+      "n": 603,
+      "mean_bps": -0.2973025630904379,
+      "nw_se_bps": 0.7998594811138244,
+      "nw_t": -0.3716934913072939,
+      "p": 0.710121071559827,
+      "hit_rate": 0.49584026622296173,
+      "n_zero_sign": 2
+     },
+     "Wed": {
+      "n": 619,
+      "mean_bps": 1.2067516254056967,
+      "nw_se_bps": 0.7391799820058378,
+      "nw_t": 1.6325545263429038,
+      "p": 0.10256272176394392,
+      "hit_rate": 0.5154471544715448,
+      "n_zero_sign": 1
+     },
+     "Thu": {
+      "n": 605,
+      "mean_bps": -1.036765997690903,
+      "nw_se_bps": 0.7577133099992751,
+      "nw_t": -1.3682826789619082,
+      "p": 0.17122361038765102,
+      "hit_rate": 0.475,
+      "n_zero_sign": 3
+     },
+     "Fri": {
+      "n": 575,
+      "mean_bps": -0.6568939124181219,
+      "nw_se_bps": 0.8613790400124914,
+      "nw_t": -0.7626072633582955,
+      "p": 0.44569765155207064,
+      "hit_rate": 0.4797891036906854,
+      "n_zero_sign": 4
+     }
+    },
+    "P3": {
+     "Mon": {
+      "n": 531,
+      "mean_bps": 1.950694328842985,
+      "nw_se_bps": 0.801176737883802,
+      "nw_t": 2.434786529119,
+      "p": 0.014900577431677678,
+      "hit_rate": 0.5371428571428571,
+      "n_zero_sign": 2
+     },
+     "Tue": {
+      "n": 603,
+      "mean_bps": 1.5577902093884157,
+      "nw_se_bps": 0.6425602597588521,
+      "nw_t": 2.424348822899571,
+      "p": 0.015335866999713121,
+      "hit_rate": 0.5308848080133556,
+      "n_zero_sign": 3
+     },
+     "Wed": {
+      "n": 619,
+      "mean_bps": 1.2507719031312983,
+      "nw_se_bps": 0.7486965516570081,
+      "nw_t": 1.6705992572866828,
+      "p": 0.09480085930168904,
+      "hit_rate": 0.5335515548281505,
+      "n_zero_sign": 6
+     },
+     "Thu": {
+      "n": 605,
+      "mean_bps": 0.2544270381602631,
+      "nw_se_bps": 0.6674894839893896,
+      "nw_t": 0.3811701071897448,
+      "p": 0.7030770287786582,
+      "hit_rate": 0.5050167224080268,
+      "n_zero_sign": 4
+     },
+     "Fri": {
+      "n": 575,
+      "mean_bps": 0.2320013297771495,
+      "nw_se_bps": 0.7321332843527919,
+      "nw_t": 0.3168840083294934,
+      "p": 0.7513316166956647,
+      "hit_rate": 0.5062388591800356,
+      "n_zero_sign": 11
+     }
+    },
+    "P4": {
+     "Mon": {
+      "n": 527,
+      "mean_bps": -1.2029172775990284,
+      "nw_se_bps": 0.8094798291100932,
+      "nw_t": -1.4860373715815294,
+      "p": 0.13726923624574183,
+      "hit_rate": 0.4695817490494297,
+      "n_zero_sign": 0
+     },
+     "Tue": {
+      "n": 603,
+      "mean_bps": 0.04414144320047914,
+      "nw_se_bps": 0.6614775095158822,
+      "nw_t": 0.06673158582940346,
+      "p": 0.9467953884923584,
+      "hit_rate": 0.4850498338870432,
+      "n_zero_sign": 1
+     },
+     "Wed": {
+      "n": 614,
+      "mean_bps": 0.29130908403031,
+      "nw_se_bps": 1.002173850226119,
+      "nw_t": 0.2906771953434849,
+      "p": 0.7712982143377964,
+      "hit_rate": 0.48360655737704916,
+      "n_zero_sign": 1
+     },
+     "Thu": {
+      "n": 605,
+      "mean_bps": -0.3498802288537434,
+      "nw_se_bps": 0.8657796591355179,
+      "nw_t": -0.40412156275777983,
+      "p": 0.6861233293618076,
+      "hit_rate": 0.4792703150912106,
+      "n_zero_sign": 0
+     },
+     "Fri": {
+      "n": 575,
+      "mean_bps": -0.9449994404558548,
+      "nw_se_bps": 0.9133698196975406,
+      "nw_t": -1.0346295882305245,
+      "p": 0.30084193048799984,
+      "hit_rate": 0.4956369982547993,
+      "n_zero_sign": 0
+     }
+    }
+   },
+   "best_abs_t": {
+    "predictor": "P3",
+    "nw_t": 3.757007085260304,
+    "trade_sign_multiplier": 1
+   },
+   "best_abs_t_known_at_t0": {
+    "predictor": "P1",
+    "nw_t": 2.2525818812462948,
+    "trade_sign_multiplier": 1,
+    "candidates": [
+     "P1",
+     "P2",
+     "P4"
+    ]
+   }
+  }
+ },
+ "s2_selection": {
+  "predictor": "P3",
+  "nw_t": 4.087303215598813,
+  "trade_sign_multiplier": 1,
+  "rule": "largest |NW t| on full-sample D1 (primary day set), as pre-registered; call if sign(t) x P > 0 else put (P = 0 -> put); undefined P -> day excluded",
+  "label": "workflow clarification, made before D2 results were computed",
+  "entry_bar": "15:51",
+  "check_on_d1_before_first_d2_session": {
+   "cutoff_exclusive": "2026-09-02",
+   "n_days": 3273,
+   "predictor": "P3",
+   "nw_t": 4.070751686400088,
+   "same_choice": true,
+   "alt_known_at_t0_predictor": "P1"
+  },
+  "alt_reading_known_at_t0": {
+   "predictor": "P1",
+   "nw_t": 2.214069699446933,
+   "trade_sign_multiplier": 1,
+   "candidates": [
+    "P1",
+    "P2",
+    "P4"
+   ],
+   "entry_bar": "15:49",
+   "label": "sensitivity: largest abs NW t among predictors known at t0 (audit finding 3)"
+  }
+ },
+ "d2": {
+  "spx_files": [
+   "d2_chunk_A_spx_1m.csv",
+   "d2_chunk_B_spx_1m.csv",
+   "d2_chunk_C_spx_1m.csv"
+  ],
+  "option_files": [
+   "d2_chunk_A_options_1m.csv",
+   "d2_chunk_B_options_1m.csv",
+   "d2_chunk_C_options_1m.csv"
+  ],
+  "sessions_collected": 34,
+  "first": "2026-09-02",
+  "last": "2026-10-20",
+  "spx_bars_total": 13294,
+  "spx_bars_interpolated_discarded": 4692,
+  "option_bars_total": 223080,
+  "option_bars_interpolated_discarded": 212940,
+  "usable_days_h3": [
+   "2026-10-20"
+  ],
+  "n_usable_h3": 1,
+  "planned_days": 35,
+  "dropped": {
+   "no_real_spx_minute_bars": [
+    "2026-09-02",
+    "2026-09-03",
+    "2026-09-04",
+    "2026-09-08",
+    "2026-09-09",
+    "2026-09-10",
+    "2026-09-11",
+    "2026-09-14",
+    "2026-09-15",
+    "2026-09-16",
+    "2026-09-17",
+    "2026-09-18"
+   ],
+   "no_real_option_minute_bar_at_15_49": [
+    "2026-09-21",
+    "2026-09-22",
+    "2026-09-23",
+    "2026-09-24",
+    "2026-09-25",
+    "2026-09-28",
+    "2026-09-29",
+    "2026-09-30",
+    "2026-10-01",
+    "2026-10-02",
+    "2026-10-05",
+    "2026-10-06",
+    "2026-10-07",
+    "2026-10-08",
+    "2026-10-09",
+    "2026-10-12",
+    "2026-10-13",
+    "2026-10-14",
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-19"
+   ],
+   "no_official_close": []
+  },
+  "settlement": "SPX official daily close (Robinhood daily bars, interpolated rows dropped)",
+  "status_by_day": {
+   "2026-09-02": {
+    "spx_complete_1519_1559": false,
+    "spx_real_bars": 0,
+    "settle": 7666.6,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-03": {
+    "spx_complete_1519_1559": false,
+    "spx_real_bars": 0,
+    "settle": 7747.71,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-04": {
+    "spx_complete_1519_1559": false,
+    "spx_real_bars": 0,
+    "settle": 7718.6,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-08": {
+    "spx_complete_1519_1559": false,
+    "spx_real_bars": 0,
+    "settle": 7673.52,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-09": {
+    "spx_complete_1519_1559": false,
+    "spx_real_bars": 0,
+    "settle": 7636.36,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-10": {
+    "spx_complete_1519_1559": false,
+    "spx_real_bars": 0,
+    "settle": 7591.7,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-11": {
+    "spx_complete_1519_1559": false,
+    "spx_real_bars": 0,
+    "settle": 7656.98,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-14": {
+    "spx_complete_1519_1559": false,
+    "spx_real_bars": 0,
+    "settle": 7619.98,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-15": {
+    "spx_complete_1519_1559": false,
+    "spx_real_bars": 0,
+    "settle": 7585.73,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-16": {
+    "spx_complete_1519_1559": false,
+    "spx_real_bars": 0,
+    "settle": 7551.81,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-17": {
+    "spx_complete_1519_1559": false,
+    "spx_real_bars": 0,
+    "settle": 7637.76,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-18": {
+    "spx_complete_1519_1559": false,
+    "spx_real_bars": 0,
+    "settle": 7650.5,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-21": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7764.7,
+    "S0": 7773.29,
+    "K0": 7775.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-22": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7764.64,
+    "S0": 7776.79,
+    "K0": 7775.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-23": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7706.03,
+    "S0": 7708.81,
+    "K0": 7710.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-24": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7704.13,
+    "S0": 7705.5,
+    "K0": 7705.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-25": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7743.41,
+    "S0": 7747.0,
+    "K0": 7745.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-28": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7683.69,
+    "S0": 7683.93,
+    "K0": 7685.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-29": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7670.84,
+    "S0": 7671.38,
+    "K0": 7670.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-09-30": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7651.54,
+    "S0": 7684.59,
+    "K0": 7685.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-01": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7666.45,
+    "S0": 7676.42,
+    "K0": 7675.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-02": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7722.72,
+    "S0": 7725.26,
+    "K0": 7725.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-05": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7773.95,
+    "S0": 7779.82,
+    "K0": 7780.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-06": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7818.93,
+    "S0": 7824.0,
+    "K0": 7825.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-07": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7801.77,
+    "S0": 7796.15,
+    "K0": 7795.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-08": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7765.36,
+    "S0": 7761.52,
+    "K0": 7760.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-09": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7811.54,
+    "S0": 7813.17,
+    "K0": 7815.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-12": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7807.24,
+    "S0": 7805.1,
+    "K0": 7805.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-13": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7805.45,
+    "S0": 7809.83,
+    "K0": 7810.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-14": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7718.94,
+    "S0": 7712.29,
+    "K0": 7710.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-15": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7744.06,
+    "S0": 7749.61,
+    "K0": 7750.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-16": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7659.44,
+    "S0": 7653.31,
+    "K0": 7655.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-19": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7690.73,
+    "S0": 7704.72,
+    "K0": 7705.0,
+    "call_mark": null,
+    "put_mark": null,
+    "options_real_at_t0": false,
+    "n_contracts_real_at_t0": 0,
+    "usable_h3": false
+   },
+   "2026-10-20": {
+    "spx_complete_1519_1559": true,
+    "spx_real_bars": 390,
+    "settle": 7712.57,
+    "S0": 7710.93,
+    "K0": 7710.0,
+    "call_mark": 3.05,
+    "put_mark": 2.85,
+    "options_real_at_t0": true,
+    "n_contracts_real_at_t0": 26,
+    "usable_h3": true
+   }
+  }
+ },
+ "h3": {
+  "implied_vs_realized": {
+   "fit_sample": {
+    "first": "2023-01-03",
+    "last": "2026-09-01",
+    "n_days": 911,
+    "fit_end_exclusive": "2026-09-02"
+   },
+   "regression": {
+    "a": 0.00028044251352884043,
+    "b": 0.1348043282123118,
+    "r2": 0.16798779708295486
+   },
+   "ratio_k": 0.17935264793438813,
+   "mean_abs_move_frac_2023_2026": 0.0011290685643940755,
+   "mean_rv_frac_2023_2026": 0.006295243351004877,
+   "days": [
+    {
+     "date": "2026-10-20",
+     "S0": 7710.93,
+     "implied_pts": 5.9,
+     "rv_d1": 0.005800636211276623,
+     "pred_regression_pts": 8.192040994850213,
+     "pred_ratio_pts": 8.022139003257173,
+     "pred_unconditional_pts": 8.70616866524321,
+     "diff_regression_pts": 2.292040994850213,
+     "ratio_regression": 1.3884815245508835,
+     "diff_ratio_pts": 2.122139003257173,
+     "ratio_ratio": 1.3596845768232497,
+     "diff_unconditional_pts": 2.8061686652432094,
+     "ratio_unconditional": 1.4756218076683405,
+     "realized_abs_move_official_pts": 1.639999999999418
+    }
+   ],
+   "n_d2_days": 1,
+   "bootstrap": {
+    "d1_block_days": 20,
+    "d2": "iid days",
+    "n_boot": 10000
+   },
+   "calibration_out_of_sample": {
+    "first": "2026-09-02",
+    "last": "2026-10-20",
+    "n_days": 34,
+    "mean_pred_regression_bps": 8.816189006746887,
+    "mean_realized_abs_r_close_bps": 6.464946409756067,
+    "mean_rv_bps": 44.59622291941679,
+    "note": "D1 move to the 15:59 bar close; model fitted only on days before this window"
+   },
+   "stat": null,
+   "descriptive_single_day": {
+    "regression": {
+     "pred_minus_implied_pts": 2.292040994850213,
+     "pred_over_implied": 1.3884815245508835
+    },
+    "ratio": {
+     "pred_minus_implied_pts": 2.122139003257173,
+     "pred_over_implied": 1.3596845768232497
+    },
+    "unconditional": {
+     "pred_minus_implied_pts": 2.8061686652432094,
+     "pred_over_implied": 1.4756218076683405
+    }
+   },
+   "size_premise_passes": null,
+   "evaluable": false,
+   "not_evaluable_reason": "1 usable D2 day: the D2 side of the bootstrap cannot be resampled, so a CI over D2 days does not exist (a CI from the D1 refit alone would only measure model uncertainty around one fixed implied value)"
+  },
+  "per_day": {
+   "2026-10-20": {
+    "S0": 7710.93,
+    "K0": 7710.0,
+    "settle": 7712.57,
+    "call_mark": 3.05,
+    "put_mark": 2.85,
+    "straddle_mark": 5.9,
+    "realized_abs_move_pts": 1.639999999999418,
+    "spx_1559_close": 7711.7,
+    "decisions": {
+     "K0": 7710.0,
+     "S2_predictor": "P3",
+     "S2_entry_bar": 381,
+     "S2_predictor_value": -1.0,
+     "S2_direction": -1,
+     "S2_strike": 7710.0,
+     "S2_alt_predictor": "P1",
+     "S2_alt_entry_bar": 379,
+     "S2_alt_predictor_value": 1.0,
+     "S2_alt_direction": 1,
+     "S2_alt_strike": 7710.0
+    },
+    "parity_check": {
+     "15:49": {
+      "spx_open": 7710.93,
+      "K_atm": 7710.0,
+      "n_strikes": 13,
+      "signed_dev_median": -0.7400000000002933,
+      "abs_dev_max": 0.820000000000288,
+      "atm_dev": -0.7300000000002913,
+      "option_implied_spx_median": 7710.19
+     },
+     "15:50": {
+      "spx_open": 7711.31,
+      "K_atm": 7710.0,
+      "n_strikes": 13,
+      "signed_dev_median": -1.5600000000004002,
+      "abs_dev_max": 3.1500000000004,
+      "atm_dev": -0.010000000000399911,
+      "option_implied_spx_median": 7709.75
+     },
+     "15:51": {
+      "spx_open": 7708.99,
+      "K_atm": 7710.0,
+      "n_strikes": 13,
+      "signed_dev_median": -0.07999999999978158,
+      "abs_dev_max": 2.9000000000002153,
+      "atm_dev": -0.1099999999997816,
+      "option_implied_spx_median": 7708.91
+     }
+    },
+    "pnl": {
+     "hs0.05_fee0.09": {
+      "S1": {
+       "pnl_points": -3.4300000000002906,
+       "pnl_usd": -343.18000000002905
+      },
+      "S2": {
+       "pnl_points": -2.9499999999999997,
+       "pnl_usd": -295.09,
+       "kind": "put",
+       "strike": 7710.0,
+       "entry_mark": 2.9
+      },
+      "S2_alt": {
+       "pnl_points": -0.5300000000002907,
+       "pnl_usd": -53.09000000002907,
+       "kind": "call",
+       "strike": 7710.0,
+       "entry_mark": 3.05
+      },
+      "S3": {
+       "pnl_points": -2.46,
+       "pnl_usd": -246.18,
+       "legs": {
+        "call": {
+         "pnl_points": -1.18,
+         "pnl_usd": -118.09,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7715.0,
+         "entry_mark": 1.13
+        },
+        "put": {
+         "pnl_points": -1.28,
+         "pnl_usd": -128.09,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7705.0,
+         "entry_mark": 1.23
+        }
+       }
+      }
+     },
+     "hs0.05_fee0.74": {
+      "S1": {
+       "pnl_points": -3.4300000000002906,
+       "pnl_usd": -344.48000000002907
+      },
+      "S2": {
+       "pnl_points": -2.9499999999999997,
+       "pnl_usd": -295.74,
+       "kind": "put",
+       "strike": 7710.0,
+       "entry_mark": 2.9
+      },
+      "S2_alt": {
+       "pnl_points": -0.5300000000002907,
+       "pnl_usd": -53.74000000002907,
+       "kind": "call",
+       "strike": 7710.0,
+       "entry_mark": 3.05
+      },
+      "S3": {
+       "pnl_points": -2.46,
+       "pnl_usd": -247.48000000000002,
+       "legs": {
+        "call": {
+         "pnl_points": -1.18,
+         "pnl_usd": -118.74,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7715.0,
+         "entry_mark": 1.13
+        },
+        "put": {
+         "pnl_points": -1.28,
+         "pnl_usd": -128.74,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7705.0,
+         "entry_mark": 1.23
+        }
+       }
+      }
+     },
+     "hs0.05_fee1.13": {
+      "S1": {
+       "pnl_points": -3.4300000000002906,
+       "pnl_usd": -345.2600000000291
+      },
+      "S2": {
+       "pnl_points": -2.9499999999999997,
+       "pnl_usd": -296.13,
+       "kind": "put",
+       "strike": 7710.0,
+       "entry_mark": 2.9
+      },
+      "S2_alt": {
+       "pnl_points": -0.5300000000002907,
+       "pnl_usd": -54.13000000002907,
+       "kind": "call",
+       "strike": 7710.0,
+       "entry_mark": 3.05
+      },
+      "S3": {
+       "pnl_points": -2.46,
+       "pnl_usd": -248.26,
+       "legs": {
+        "call": {
+         "pnl_points": -1.18,
+         "pnl_usd": -119.13,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7715.0,
+         "entry_mark": 1.13
+        },
+        "put": {
+         "pnl_points": -1.28,
+         "pnl_usd": -129.13,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7705.0,
+         "entry_mark": 1.23
+        }
+       }
+      }
+     },
+     "hs0.10_fee0.09": {
+      "S1": {
+       "pnl_points": -3.530000000000291,
+       "pnl_usd": -353.18000000002905
+      },
+      "S2": {
+       "pnl_points": -3.0,
+       "pnl_usd": -300.09,
+       "kind": "put",
+       "strike": 7710.0,
+       "entry_mark": 2.9
+      },
+      "S2_alt": {
+       "pnl_points": -0.580000000000291,
+       "pnl_usd": -58.0900000000291,
+       "kind": "call",
+       "strike": 7710.0,
+       "entry_mark": 3.05
+      },
+      "S3": {
+       "pnl_points": -2.56,
+       "pnl_usd": -256.18,
+       "legs": {
+        "call": {
+         "pnl_points": -1.23,
+         "pnl_usd": -123.09,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7715.0,
+         "entry_mark": 1.13
+        },
+        "put": {
+         "pnl_points": -1.33,
+         "pnl_usd": -133.09,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7705.0,
+         "entry_mark": 1.23
+        }
+       }
+      }
+     },
+     "hs0.10_fee0.74": {
+      "S1": {
+       "pnl_points": -3.530000000000291,
+       "pnl_usd": -354.4800000000291
+      },
+      "S2": {
+       "pnl_points": -3.0,
+       "pnl_usd": -300.74,
+       "kind": "put",
+       "strike": 7710.0,
+       "entry_mark": 2.9
+      },
+      "S2_alt": {
+       "pnl_points": -0.580000000000291,
+       "pnl_usd": -58.7400000000291,
+       "kind": "call",
+       "strike": 7710.0,
+       "entry_mark": 3.05
+      },
+      "S3": {
+       "pnl_points": -2.56,
+       "pnl_usd": -257.48,
+       "legs": {
+        "call": {
+         "pnl_points": -1.23,
+         "pnl_usd": -123.74,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7715.0,
+         "entry_mark": 1.13
+        },
+        "put": {
+         "pnl_points": -1.33,
+         "pnl_usd": -133.74,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7705.0,
+         "entry_mark": 1.23
+        }
+       }
+      }
+     },
+     "hs0.10_fee1.13": {
+      "S1": {
+       "pnl_points": -3.530000000000291,
+       "pnl_usd": -355.2600000000291
+      },
+      "S2": {
+       "pnl_points": -3.0,
+       "pnl_usd": -301.13,
+       "kind": "put",
+       "strike": 7710.0,
+       "entry_mark": 2.9
+      },
+      "S2_alt": {
+       "pnl_points": -0.580000000000291,
+       "pnl_usd": -59.1300000000291,
+       "kind": "call",
+       "strike": 7710.0,
+       "entry_mark": 3.05
+      },
+      "S3": {
+       "pnl_points": -2.56,
+       "pnl_usd": -258.26,
+       "legs": {
+        "call": {
+         "pnl_points": -1.23,
+         "pnl_usd": -124.13,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7715.0,
+         "entry_mark": 1.13
+        },
+        "put": {
+         "pnl_points": -1.33,
+         "pnl_usd": -134.13,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7705.0,
+         "entry_mark": 1.23
+        }
+       }
+      }
+     },
+     "hs0.25_fee0.09": {
+      "S1": {
+       "pnl_points": -3.830000000000291,
+       "pnl_usd": -383.18000000002905
+      },
+      "S2": {
+       "pnl_points": -3.15,
+       "pnl_usd": -315.09,
+       "kind": "put",
+       "strike": 7710.0,
+       "entry_mark": 2.9
+      },
+      "S2_alt": {
+       "pnl_points": -0.7300000000002909,
+       "pnl_usd": -73.0900000000291,
+       "kind": "call",
+       "strike": 7710.0,
+       "entry_mark": 3.05
+      },
+      "S3": {
+       "pnl_points": -2.86,
+       "pnl_usd": -286.18,
+       "legs": {
+        "call": {
+         "pnl_points": -1.38,
+         "pnl_usd": -138.09,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7715.0,
+         "entry_mark": 1.13
+        },
+        "put": {
+         "pnl_points": -1.48,
+         "pnl_usd": -148.09,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7705.0,
+         "entry_mark": 1.23
+        }
+       }
+      }
+     },
+     "hs0.25_fee0.74": {
+      "S1": {
+       "pnl_points": -3.830000000000291,
+       "pnl_usd": -384.4800000000291
+      },
+      "S2": {
+       "pnl_points": -3.15,
+       "pnl_usd": -315.74,
+       "kind": "put",
+       "strike": 7710.0,
+       "entry_mark": 2.9
+      },
+      "S2_alt": {
+       "pnl_points": -0.7300000000002909,
+       "pnl_usd": -73.74000000002908,
+       "kind": "call",
+       "strike": 7710.0,
+       "entry_mark": 3.05
+      },
+      "S3": {
+       "pnl_points": -2.86,
+       "pnl_usd": -287.48,
+       "legs": {
+        "call": {
+         "pnl_points": -1.38,
+         "pnl_usd": -138.74,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7715.0,
+         "entry_mark": 1.13
+        },
+        "put": {
+         "pnl_points": -1.48,
+         "pnl_usd": -148.74,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7705.0,
+         "entry_mark": 1.23
+        }
+       }
+      }
+     },
+     "hs0.25_fee1.13": {
+      "S1": {
+       "pnl_points": -3.830000000000291,
+       "pnl_usd": -385.2600000000291
+      },
+      "S2": {
+       "pnl_points": -3.15,
+       "pnl_usd": -316.13,
+       "kind": "put",
+       "strike": 7710.0,
+       "entry_mark": 2.9
+      },
+      "S2_alt": {
+       "pnl_points": -0.7300000000002909,
+       "pnl_usd": -74.13000000002909,
+       "kind": "call",
+       "strike": 7710.0,
+       "entry_mark": 3.05
+      },
+      "S3": {
+       "pnl_points": -2.86,
+       "pnl_usd": -288.26,
+       "legs": {
+        "call": {
+         "pnl_points": -1.38,
+         "pnl_usd": -139.13,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7715.0,
+         "entry_mark": 1.13
+        },
+        "put": {
+         "pnl_points": -1.48,
+         "pnl_usd": -149.13,
+         "sold": false,
+         "hit_bar_offset": null,
+         "strike": 7705.0,
+         "entry_mark": 1.23
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "pnl_summary": {
+   "S1": {
+    "hs0.05_fee0.09": {
+     "n_days": 1,
+     "mean_usd": -343.18000000002905,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.05_fee0.74": {
+     "n_days": 1,
+     "mean_usd": -344.48000000002907,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.05_fee1.13": {
+     "n_days": 1,
+     "mean_usd": -345.2600000000291,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.10_fee0.09": {
+     "n_days": 1,
+     "mean_usd": -353.18000000002905,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.10_fee0.74": {
+     "n_days": 1,
+     "mean_usd": -354.4800000000291,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.10_fee1.13": {
+     "n_days": 1,
+     "mean_usd": -355.2600000000291,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.25_fee0.09": {
+     "n_days": 1,
+     "mean_usd": -383.18000000002905,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.25_fee0.74": {
+     "n_days": 1,
+     "mean_usd": -384.4800000000291,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.25_fee1.13": {
+     "n_days": 1,
+     "mean_usd": -385.2600000000291,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    }
+   },
+   "S2": {
+    "hs0.05_fee0.09": {
+     "n_days": 1,
+     "mean_usd": -295.09,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.05_fee0.74": {
+     "n_days": 1,
+     "mean_usd": -295.74,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.05_fee1.13": {
+     "n_days": 1,
+     "mean_usd": -296.13,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.10_fee0.09": {
+     "n_days": 1,
+     "mean_usd": -300.09,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.10_fee0.74": {
+     "n_days": 1,
+     "mean_usd": -300.74,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.10_fee1.13": {
+     "n_days": 1,
+     "mean_usd": -301.13,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.25_fee0.09": {
+     "n_days": 1,
+     "mean_usd": -315.09,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.25_fee0.74": {
+     "n_days": 1,
+     "mean_usd": -315.74,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.25_fee1.13": {
+     "n_days": 1,
+     "mean_usd": -316.13,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    }
+   },
+   "S2_alt": {
+    "hs0.05_fee0.09": {
+     "n_days": 1,
+     "mean_usd": -53.09000000002907,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.05_fee0.74": {
+     "n_days": 1,
+     "mean_usd": -53.74000000002907,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.05_fee1.13": {
+     "n_days": 1,
+     "mean_usd": -54.13000000002907,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.10_fee0.09": {
+     "n_days": 1,
+     "mean_usd": -58.0900000000291,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.10_fee0.74": {
+     "n_days": 1,
+     "mean_usd": -58.7400000000291,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.10_fee1.13": {
+     "n_days": 1,
+     "mean_usd": -59.1300000000291,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.25_fee0.09": {
+     "n_days": 1,
+     "mean_usd": -73.0900000000291,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.25_fee0.74": {
+     "n_days": 1,
+     "mean_usd": -73.74000000002908,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.25_fee1.13": {
+     "n_days": 1,
+     "mean_usd": -74.13000000002909,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    }
+   },
+   "S3": {
+    "hs0.05_fee0.09": {
+     "n_days": 1,
+     "mean_usd": -246.18,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.05_fee0.74": {
+     "n_days": 1,
+     "mean_usd": -247.48000000000002,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.05_fee1.13": {
+     "n_days": 1,
+     "mean_usd": -248.26,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.10_fee0.09": {
+     "n_days": 1,
+     "mean_usd": -256.18,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.10_fee0.74": {
+     "n_days": 1,
+     "mean_usd": -257.48,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.10_fee1.13": {
+     "n_days": 1,
+     "mean_usd": -258.26,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.25_fee0.09": {
+     "n_days": 1,
+     "mean_usd": -286.18,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.25_fee0.74": {
+     "n_days": 1,
+     "mean_usd": -287.48,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    },
+    "hs0.25_fee1.13": {
+     "n_days": 1,
+     "mean_usd": -288.26,
+     "t_ci95_usd": null,
+     "boot95_usd": null
+    }
+   }
+  }
+ },
+ "power_diagnostic": {
+  "sample": {
+   "first": "2023-01-03",
+   "last": "2026-09-01",
+   "n_days": 911
+  },
+  "S1": {
+   "payoff_sd_pts": 6.476011844894083,
+   "mean_payoff_pts": 6.38031284302963,
+   "days_needed_t2": {
+    "edge_0.25_pts": 2684.078682573342,
+    "edge_0.50_pts": 671.0196706433355,
+    "edge_1.00_pts": 167.75491766083388
+   },
+   "min_detectable_edge_pts_t2": {
+    "n_1": 12.952023689788167,
+    "n_35": 2.189291585753802,
+    "n_250": 0.8191579033637749
+   }
+  },
+  "S2": {
+   "predictor": "P3",
+   "entry_bar": "15:51",
+   "payoff_sd_pts": 4.713045418264433,
+   "edge_over_random_direction_pts_gross": 0.1304385290889061,
+   "edge_after_base_half_spread_pts": 0.030438529088906097,
+   "days_needed_t2": 95899.40611870115,
+   "min_detectable_edge_pts_t2": {
+    "n_1": 9.426090836528866,
+    "n_35": 1.5933001551899706,
+    "n_250": 0.5961583295014621
+   }
+  },
+  "note": "SD of the payoff is used as the SD of per-trade P&L (entry price varies little relative to it)."
+ },
+ "verdicts": {
+  "S1": {
+   "cond1": null,
+   "cond1_test": "D1 realized move (regression on rv, 2023-01..pre-D2) - D2 implied straddle: bootstrap 95% CI over D2 days > 0",
+   "cond2": null,
+   "cond2_test": "mean D2 P&L after base costs (hs $0.10, fee $0.09) > 0, with CI",
+   "d2_days": 1,
+   "d2_mean_usd_base": -353.18000000002905,
+   "d2_t_ci95_usd": null,
+   "verdict": "FAIL",
+   "verdict_label": "FAIL by rule; D2 test not run (1 of ~35 planned days)",
+   "reasons": [
+    "cond 1 not evaluable (fewer than 2 usable D2 days)",
+    "cond 2 not evaluable (1 of ~35 planned D2 days; no CI possible)"
+   ]
+  },
+  "S2": {
+   "cond1": true,
+   "cond1_test": "P3 Holm p < 0.05 and same sign in 2023-2026 (entry 15:51)",
+   "cond2": null,
+   "cond2_test": "mean D2 P&L after base costs (hs $0.10, fee $0.09) > 0, with CI",
+   "d2_days": 1,
+   "d2_mean_usd_base": -300.09,
+   "d2_t_ci95_usd": null,
+   "verdict": "FAIL",
+   "verdict_label": "FAIL by rule; D2 test not run (1 of ~35 planned days)",
+   "reasons": [
+    "cond 2 not evaluable (1 of ~35 planned D2 days; no CI possible)"
+   ]
+  },
+  "S2_alt": {
+   "cond1": false,
+   "cond1_test": "sensitivity: P1 (largest abs t among predictors known at t0) Holm p < 0.05 and same sign in 2023-2026 (entry 15:49)",
+   "cond2": null,
+   "cond2_test": "mean D2 P&L after base costs (hs $0.10, fee $0.09) > 0, with CI",
+   "d2_days": 1,
+   "d2_mean_usd_base": -58.0900000000291,
+   "d2_t_ci95_usd": null,
+   "verdict": "FAIL",
+   "verdict_label": "FAIL by rule; D2 test not run (1 of ~35 planned days)",
+   "reasons": [
+    "cond 1 not met",
+    "cond 2 not evaluable (1 of ~35 planned D2 days; no CI possible)"
+   ]
+  },
+  "S3": {
+   "cond1": null,
+   "cond1_test": "same size premise as S1",
+   "cond2": null,
+   "cond2_test": "mean D2 P&L after base costs (hs $0.10, fee $0.09) > 0, with CI",
+   "d2_days": 1,
+   "d2_mean_usd_base": -256.18,
+   "d2_t_ci95_usd": null,
+   "verdict": "FAIL",
+   "verdict_label": "FAIL by rule; D2 test not run (1 of ~35 planned days)",
+   "reasons": [
+    "cond 1 not evaluable (fewer than 2 usable D2 days)",
+    "cond 2 not evaluable (1 of ~35 planned D2 days; no CI possible)"
+   ]
+  }
+ },
+ "exploratory": {
+  "label": "EXPLORATORY - not part of the pre-registered pass/fail; counted below",
+  "i_otm_multiples": {
+   "n_days": 1,
+   "rows": [
+    {
+     "date": "2026-10-20",
+     "offset": 5,
+     "kind": "call",
+     "strike": 7715.0,
+     "mark": 1.13,
+     "max_close_1549_1558": 1.35,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "pnl_usd_sell2x_else_hold": -123.09,
+     "pnl_usd_hold": -123.09
+    },
+    {
+     "date": "2026-10-20",
+     "offset": 5,
+     "kind": "put",
+     "strike": 7705.0,
+     "mark": 1.23,
+     "max_close_1549_1558": 1.05,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "pnl_usd_sell2x_else_hold": -133.09,
+     "pnl_usd_hold": -133.09
+    },
+    {
+     "date": "2026-10-20",
+     "offset": 10,
+     "kind": "call",
+     "strike": 7720.0,
+     "mark": 0.33,
+     "max_close_1549_1558": 0.43,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "pnl_usd_sell2x_else_hold": -43.09000000000001,
+     "pnl_usd_hold": -43.09000000000001
+    },
+    {
+     "date": "2026-10-20",
+     "offset": 10,
+     "kind": "put",
+     "strike": 7700.0,
+     "mark": 0.48,
+     "max_close_1549_1558": 0.43,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "pnl_usd_sell2x_else_hold": -58.089999999999996,
+     "pnl_usd_hold": -58.089999999999996
+    },
+    {
+     "date": "2026-10-20",
+     "offset": 15,
+     "kind": "call",
+     "strike": 7725.0,
+     "mark": 0.13,
+     "max_close_1549_1558": 0.13,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "pnl_usd_sell2x_else_hold": -23.09,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-20",
+     "offset": 15,
+     "kind": "put",
+     "strike": 7695.0,
+     "mark": 0.23,
+     "max_close_1549_1558": 0.23,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "pnl_usd_sell2x_else_hold": -33.09,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-20",
+     "offset": 20,
+     "kind": "call",
+     "strike": 7730.0,
+     "mark": 0.01,
+     "max_close_1549_1558": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "pnl_usd_sell2x_else_hold": -11.09,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-20",
+     "offset": 20,
+     "kind": "put",
+     "strike": 7690.0,
+     "mark": 0.08,
+     "max_close_1549_1558": 0.13,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "pnl_usd_sell2x_else_hold": -18.09,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-20",
+     "offset": 25,
+     "kind": "call",
+     "strike": 7735.0,
+     "mark": 0.01,
+     "max_close_1549_1558": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "pnl_usd_sell2x_else_hold": -11.09,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-20",
+     "offset": 25,
+     "kind": "put",
+     "strike": 7685.0,
+     "mark": 0.08,
+     "max_close_1549_1558": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "pnl_usd_sell2x_else_hold": -18.09,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-20",
+     "offset": 30,
+     "kind": "call",
+     "strike": 7740.0,
+     "mark": 0.01,
+     "max_close_1549_1558": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "pnl_usd_sell2x_else_hold": -11.09,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-20",
+     "offset": 30,
+     "kind": "put",
+     "strike": 7680.0,
+     "mark": 0.01,
+     "max_close_1549_1558": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "pnl_usd_sell2x_else_hold": -11.09,
+     "pnl_usd_hold": -11.09
+    }
+   ],
+   "table": {
+    "call_5": {
+     "n": 1,
+     "mean_mark": 1.13,
+     "share_reach_2x": 0.0,
+     "share_reach_3x": 0.0,
+     "share_reach_5x": 0.0,
+     "mean_pnl_usd_sell2x_else_hold": -123.09,
+     "mean_pnl_usd_hold": -123.09
+    },
+    "put_5": {
+     "n": 1,
+     "mean_mark": 1.23,
+     "share_reach_2x": 0.0,
+     "share_reach_3x": 0.0,
+     "share_reach_5x": 0.0,
+     "mean_pnl_usd_sell2x_else_hold": -133.09,
+     "mean_pnl_usd_hold": -133.09
+    },
+    "call_10": {
+     "n": 1,
+     "mean_mark": 0.33,
+     "share_reach_2x": 0.0,
+     "share_reach_3x": 0.0,
+     "share_reach_5x": 0.0,
+     "mean_pnl_usd_sell2x_else_hold": -43.09000000000001,
+     "mean_pnl_usd_hold": -43.09000000000001
+    },
+    "put_10": {
+     "n": 1,
+     "mean_mark": 0.48,
+     "share_reach_2x": 0.0,
+     "share_reach_3x": 0.0,
+     "share_reach_5x": 0.0,
+     "mean_pnl_usd_sell2x_else_hold": -58.089999999999996,
+     "mean_pnl_usd_hold": -58.089999999999996
+    },
+    "call_15": {
+     "n": 1,
+     "mean_mark": 0.13,
+     "share_reach_2x": 0.0,
+     "share_reach_3x": 0.0,
+     "share_reach_5x": 0.0,
+     "mean_pnl_usd_sell2x_else_hold": -23.09,
+     "mean_pnl_usd_hold": -23.09
+    },
+    "put_15": {
+     "n": 1,
+     "mean_mark": 0.23,
+     "share_reach_2x": 0.0,
+     "share_reach_3x": 0.0,
+     "share_reach_5x": 0.0,
+     "mean_pnl_usd_sell2x_else_hold": -33.09,
+     "mean_pnl_usd_hold": -33.09
+    },
+    "call_20": {
+     "n": 1,
+     "mean_mark": 0.01,
+     "share_reach_2x": 0.0,
+     "share_reach_3x": 0.0,
+     "share_reach_5x": 0.0,
+     "mean_pnl_usd_sell2x_else_hold": -11.09,
+     "mean_pnl_usd_hold": -11.09
+    },
+    "put_20": {
+     "n": 1,
+     "mean_mark": 0.08,
+     "share_reach_2x": 0.0,
+     "share_reach_3x": 0.0,
+     "share_reach_5x": 0.0,
+     "mean_pnl_usd_sell2x_else_hold": -18.09,
+     "mean_pnl_usd_hold": -18.09
+    },
+    "call_25": {
+     "n": 1,
+     "mean_mark": 0.01,
+     "share_reach_2x": 0.0,
+     "share_reach_3x": 0.0,
+     "share_reach_5x": 0.0,
+     "mean_pnl_usd_sell2x_else_hold": -11.09,
+     "mean_pnl_usd_hold": -11.09
+    },
+    "put_25": {
+     "n": 1,
+     "mean_mark": 0.08,
+     "share_reach_2x": 0.0,
+     "share_reach_3x": 0.0,
+     "share_reach_5x": 0.0,
+     "mean_pnl_usd_sell2x_else_hold": -18.09,
+     "mean_pnl_usd_hold": -18.09
+    },
+    "call_30": {
+     "n": 1,
+     "mean_mark": 0.01,
+     "share_reach_2x": 0.0,
+     "share_reach_3x": 0.0,
+     "share_reach_5x": 0.0,
+     "mean_pnl_usd_sell2x_else_hold": -11.09,
+     "mean_pnl_usd_hold": -11.09
+    },
+    "put_30": {
+     "n": 1,
+     "mean_mark": 0.01,
+     "share_reach_2x": 0.0,
+     "share_reach_3x": 0.0,
+     "share_reach_5x": 0.0,
+     "mean_pnl_usd_sell2x_else_hold": -11.09,
+     "mean_pnl_usd_hold": -11.09
+    }
+   }
+  },
+  "ii_minute_profile_d1_2023_2026": {
+   "sample": {
+    "first": "2023-01-03",
+    "last": "2026-10-20",
+    "n_days": 945
+   },
+   "definition": "mean over days of |ln(close bar m / close bar m-1)| in bps",
+   "median_bar_10_00_15_29_bps": 2.1363258411459958,
+   "profile": {
+    "15:30": {
+     "mean_abs_bps": 2.588975871475163,
+     "vs_median_bar_10_00_15_29": 1.2118824860941395,
+     "n": 945
+    },
+    "15:31": {
+     "mean_abs_bps": 2.1928000681071342,
+     "vs_median_bar_10_00_15_29": 1.026435212210345,
+     "n": 945
+    },
+    "15:32": {
+     "mean_abs_bps": 2.2434245998215725,
+     "vs_median_bar_10_00_15_29": 1.0501322207562331,
+     "n": 945
+    },
+    "15:33": {
+     "mean_abs_bps": 2.125569601547957,
+     "vs_median_bar_10_00_15_29": 0.9949650753687139,
+     "n": 945
+    },
+    "15:34": {
+     "mean_abs_bps": 1.9799567051077291,
+     "vs_median_bar_10_00_15_29": 0.9268046413957222,
+     "n": 945
+    },
+    "15:35": {
+     "mean_abs_bps": 2.4147280271265443,
+     "vs_median_bar_10_00_15_29": 1.130318222350952,
+     "n": 945
+    },
+    "15:36": {
+     "mean_abs_bps": 2.1887833388476117,
+     "vs_median_bar_10_00_15_29": 1.024555007804182,
+     "n": 945
+    },
+    "15:37": {
+     "mean_abs_bps": 2.1537283852276907,
+     "vs_median_bar_10_00_15_29": 1.0081460158120634,
+     "n": 945
+    },
+    "15:38": {
+     "mean_abs_bps": 2.0681137147633444,
+     "vs_median_bar_10_00_15_29": 0.9680703546861278,
+     "n": 945
+    },
+    "15:39": {
+     "mean_abs_bps": 2.0029299886912812,
+     "vs_median_bar_10_00_15_29": 0.9375582835326485,
+     "n": 945
+    },
+    "15:40": {
+     "mean_abs_bps": 2.343161433453403,
+     "vs_median_bar_10_00_15_29": 1.0968183730794803,
+     "n": 945
+    },
+    "15:41": {
+     "mean_abs_bps": 2.154442509778537,
+     "vs_median_bar_10_00_15_29": 1.0084802927922376,
+     "n": 945
+    },
+    "15:42": {
+     "mean_abs_bps": 2.231940352244291,
+     "vs_median_bar_10_00_15_29": 1.0447565204037434,
+     "n": 945
+    },
+    "15:43": {
+     "mean_abs_bps": 2.0671902133618367,
+     "vs_median_bar_10_00_15_29": 0.9676380697866425,
+     "n": 945
+    },
+    "15:44": {
+     "mean_abs_bps": 2.163389731736305,
+     "vs_median_bar_10_00_15_29": 1.0126684282280605,
+     "n": 945
+    },
+    "15:45": {
+     "mean_abs_bps": 2.4950601730324746,
+     "vs_median_bar_10_00_15_29": 1.1679211686612572,
+     "n": 945
+    },
+    "15:46": {
+     "mean_abs_bps": 2.2735053445377686,
+     "vs_median_bar_10_00_15_29": 1.0642128184519761,
+     "n": 945
+    },
+    "15:47": {
+     "mean_abs_bps": 2.2844354169822636,
+     "vs_median_bar_10_00_15_29": 1.069329113089236,
+     "n": 945
+    },
+    "15:48": {
+     "mean_abs_bps": 2.197624677601576,
+     "vs_median_bar_10_00_15_29": 1.0286935800124468,
+     "n": 945
+    },
+    "15:49": {
+     "mean_abs_bps": 2.171802798838989,
+     "vs_median_bar_10_00_15_29": 1.0166065293082642,
+     "n": 945
+    },
+    "15:50": {
+     "mean_abs_bps": 5.137730536035981,
+     "vs_median_bar_10_00_15_29": 2.4049376911903724,
+     "n": 945
+    },
+    "15:51": {
+     "mean_abs_bps": 2.79663146949131,
+     "vs_median_bar_10_00_15_29": 1.309084698423675,
+     "n": 945
+    },
+    "15:52": {
+     "mean_abs_bps": 2.46036261356866,
+     "vs_median_bar_10_00_15_29": 1.1516794705103788,
+     "n": 945
+    },
+    "15:53": {
+     "mean_abs_bps": 2.5067174324652584,
+     "vs_median_bar_10_00_15_29": 1.173377854719284,
+     "n": 945
+    },
+    "15:54": {
+     "mean_abs_bps": 3.2053525813449997,
+     "vs_median_bar_10_00_15_29": 1.5004043482550127,
+     "n": 945
+    },
+    "15:55": {
+     "mean_abs_bps": 3.6037292435245756,
+     "vs_median_bar_10_00_15_29": 1.6868818295955341,
+     "n": 945
+    },
+    "15:56": {
+     "mean_abs_bps": 2.312399164828236,
+     "vs_median_bar_10_00_15_29": 1.0824187585484566,
+     "n": 945
+    },
+    "15:57": {
+     "mean_abs_bps": 2.3239552236146883,
+     "vs_median_bar_10_00_15_29": 1.0878280732531147,
+     "n": 945
+    },
+    "15:58": {
+     "mean_abs_bps": 2.265554092073263,
+     "vs_median_bar_10_00_15_29": 1.0604908897502008,
+     "n": 945
+    },
+    "15:59": {
+     "mean_abs_bps": 4.904333273024273,
+     "vs_median_bar_10_00_15_29": 2.2956859756905934,
+     "n": 945
+    }
+   },
+   "top5": [
+    "15:50",
+    "15:59",
+    "15:55",
+    "15:54",
+    "15:51"
+   ]
+  },
+  "ii_b_yearly_close_spikes": {
+   "2013": {
+    "n_days": 169,
+    "median_bar_bps": 1.650588029490625,
+    "x_1545": 1.5155831687675352,
+    "x_1550": 1.397067435970909,
+    "x_1555": 1.436509227564406,
+    "x_1559": 1.9991667264128414
+   },
+   "2014": {
+    "n_days": 201,
+    "median_bar_bps": 1.7530123677190481,
+    "x_1545": 1.6159104252160246,
+    "x_1550": 1.3595529448927712,
+    "x_1555": 1.191997144679398,
+    "x_1559": 1.8336327033451374
+   },
+   "2015": {
+    "n_days": 245,
+    "median_bar_bps": 2.3033802781728956,
+    "x_1545": 1.562074137695713,
+    "x_1550": 1.3563776251397588,
+    "x_1555": 1.4187433307057107,
+    "x_1559": 2.3123983261502357
+   },
+   "2016": {
+    "n_days": 251,
+    "median_bar_bps": 2.070123848036335,
+    "x_1545": 1.5970512787565547,
+    "x_1550": 1.484155266966593,
+    "x_1555": 1.335560662687946,
+    "x_1559": 2.204426505738217
+   },
+   "2017": {
+    "n_days": 247,
+    "median_bar_bps": 1.1222151363632402,
+    "x_1545": 1.7322385492271286,
+    "x_1550": 2.2144865533527853,
+    "x_1555": 1.3812208051204573,
+    "x_1559": 2.597433769972758
+   },
+   "2018": {
+    "n_days": 248,
+    "median_bar_bps": 2.677363876273426,
+    "x_1545": 2.216990050011652,
+    "x_1550": 2.0310054742788153,
+    "x_1555": 1.5586116002976942,
+    "x_1559": 2.2120890536986835
+   },
+   "2019": {
+    "n_days": 249,
+    "median_bar_bps": 1.775790634975034,
+    "x_1545": 1.60627779203042,
+    "x_1550": 1.7396775546748058,
+    "x_1555": 2.336473959217735,
+    "x_1559": 2.7393199668690658
+   },
+   "2020": {
+    "n_days": 251,
+    "median_bar_bps": 3.7810682765589707,
+    "x_1545": 1.724242894399196,
+    "x_1550": 3.4354143371517623,
+    "x_1555": 1.8264073141242971,
+    "x_1559": 2.6684389057779465
+   },
+   "2021": {
+    "n_days": 251,
+    "median_bar_bps": 1.8719446407472167,
+    "x_1545": 1.4536125860912683,
+    "x_1550": 2.7093491147841076,
+    "x_1555": 2.0011126053205937,
+    "x_1559": 2.7247400366625216
+   },
+   "2022": {
+    "n_days": 250,
+    "median_bar_bps": 3.819973488004112,
+    "x_1545": 1.3484310541912248,
+    "x_1550": 2.4031381937214196,
+    "x_1555": 1.6547620103175635,
+    "x_1559": 1.8259751469181258
+   },
+   "2023": {
+    "n_days": 248,
+    "median_bar_bps": 2.2755313530178345,
+    "x_1545": 1.2478862417207488,
+    "x_1550": 2.110944067031953,
+    "x_1555": 1.794524515238561,
+    "x_1559": 2.1224353420197923
+   },
+   "2024": {
+    "n_days": 249,
+    "median_bar_bps": 1.848244627525379,
+    "x_1545": 1.16686339416424,
+    "x_1550": 2.4108095211933898,
+    "x_1555": 1.9447272195769285,
+    "x_1559": 3.024879627370888
+   },
+   "2025": {
+    "n_days": 247,
+    "median_bar_bps": 2.4929581962779572,
+    "x_1545": 1.1442209176605236,
+    "x_1550": 2.6483696936061865,
+    "x_1555": 1.487397258975988,
+    "x_1559": 1.9524396230799068
+   },
+   "2026": {
+    "n_days": 201,
+    "median_bar_bps": 1.970991830887903,
+    "x_1545": 1.0400556021547327,
+    "x_1550": 2.3314144443649494,
+    "x_1555": 1.468936455454057,
+    "x_1559": 2.1266486647893164
+   }
+  },
+  "iii_d2_1559_close_to_official_close": {
+   "n_days": 22,
+   "mean_bps": -0.5618164361125279,
+   "mean_abs_bps": 1.2598254858251066,
+   "median_abs_bps": 1.025566883216849,
+   "max_abs_bps": 3.3030168501572024,
+   "mean_abs_r_close_official_bps": 8.082957476372602,
+   "share_of_abs_move": 0.15586194651001428,
+   "corr_gap_with_r_1549_1559": 0.19001148991620162,
+   "rows": [
+    {
+     "date": "2026-09-21",
+     "close_1559": 7764.22,
+     "official": 7764.7,
+     "gap_bps": 0.6182013947565647,
+     "r_close_official_bps": -11.056772304683491
+    },
+    {
+     "date": "2026-09-22",
+     "close_1559": 7764.27,
+     "official": 7764.64,
+     "gap_bps": 0.476530548596643,
+     "r_close_official_bps": -15.635630022832594
+    },
+    {
+     "date": "2026-09-23",
+     "close_1559": 7708.55,
+     "official": 7706.03,
+     "gap_bps": -3.2696317673924873,
+     "r_close_official_bps": -3.606913896141224
+    },
+    {
+     "date": "2026-09-24",
+     "close_1559": 7703.83,
+     "official": 7704.13,
+     "gap_bps": 0.38940911066531986,
+     "r_close_official_bps": -1.7781088885451237
+    },
+    {
+     "date": "2026-09-25",
+     "close_1559": 7742.32,
+     "official": 7743.41,
+     "gap_bps": 1.4077476512906086,
+     "r_close_official_bps": -4.6351259447287765
+    },
+    {
+     "date": "2026-09-28",
+     "close_1559": 7684.5,
+     "official": 7683.69,
+     "gap_bps": -1.054125437998951,
+     "r_close_official_bps": -0.31234504759983306
+    },
+    {
+     "date": "2026-09-29",
+     "close_1559": 7671.85,
+     "official": 7670.84,
+     "gap_bps": -1.3165879014162862,
+     "r_close_official_bps": -0.7039398473268892
+    },
+    {
+     "date": "2026-09-30",
+     "close_1559": 7653.56,
+     "official": 7651.54,
+     "gap_bps": -2.6396430101461443,
+     "r_close_official_bps": -43.10090115798396
+    },
+    {
+     "date": "2026-10-01",
+     "close_1559": 7668.82,
+     "official": 7666.45,
+     "gap_bps": -3.0909139765634834,
+     "r_close_official_bps": -12.996266543745566
+    },
+    {
+     "date": "2026-10-02",
+     "close_1559": 7723.49,
+     "official": 7722.72,
+     "gap_bps": -0.9970083284347471,
+     "r_close_official_bps": -3.2884558665790746
+    },
+    {
+     "date": "2026-10-05",
+     "close_1559": 7774.22,
+     "official": 7773.95,
+     "gap_bps": -0.3473077539378698,
+     "r_close_official_bps": -7.5480096191341275
+    },
+    {
+     "date": "2026-10-06",
+     "close_1559": 7819.83,
+     "official": 7818.93,
+     "gap_bps": -1.1509863966115463,
+     "r_close_official_bps": -6.4821618169071575
+    },
+    {
+     "date": "2026-10-07",
+     "close_1559": 7800.26,
+     "official": 7801.77,
+     "gap_bps": 1.9356455598586801,
+     "r_close_official_bps": 7.206089328828219
+    },
+    {
+     "date": "2026-10-08",
+     "close_1559": 7765.7,
+     "official": 7765.36,
+     "gap_bps": -0.43783231801833644,
+     "r_close_official_bps": 4.94626103671736
+    },
+    {
+     "date": "2026-10-09",
+     "close_1559": 7811.09,
+     "official": 7811.54,
+     "gap_bps": 0.5760873810928031,
+     "r_close_official_bps": -2.086438731871777
+    },
+    {
+     "date": "2026-10-12",
+     "close_1559": 7807.79,
+     "official": 7807.24,
+     "gap_bps": -0.7044494954249819,
+     "r_close_official_bps": 2.7414212262883297
+    },
+    {
+     "date": "2026-10-13",
+     "close_1559": 7805.59,
+     "official": 7805.45,
+     "gap_bps": -0.17936024762496117,
+     "r_close_official_bps": -5.6098899473700445
+    },
+    {
+     "date": "2026-10-14",
+     "close_1559": 7721.49,
+     "official": 7718.94,
+     "gap_bps": -3.3030168501572024,
+     "r_close_official_bps": 8.618885742306887
+    },
+    {
+     "date": "2026-10-15",
+     "close_1559": 7743.88,
+     "official": 7744.06,
+     "gap_bps": 0.2324389169995224,
+     "r_close_official_bps": -7.164216402416799
+    },
+    {
+     "date": "2026-10-16",
+     "close_1559": 7658.74,
+     "official": 7659.44,
+     "gap_bps": 0.9139466966533448,
+     "r_close_official_bps": 8.006400323201538
+    },
+    {
+     "date": "2026-10-19",
+     "close_1559": 7691.92,
+     "official": 7690.73,
+     "gap_bps": -1.5471976575869804,
+     "r_close_official_bps": -18.17420582154888
+    },
+    {
+     "date": "2026-10-20",
+     "close_1559": 7711.7,
+     "official": 7712.57,
+     "gap_bps": 1.1280922869248813,
+     "r_close_official_bps": 2.1266249634395717
+    }
+   ]
+  },
+  "iv_s1_with_10m_standin_entry": {
+   "files": [
+    "d2_chunk_B_options_10m.csv",
+    "d2_chunk_C_options_10m.csv"
+   ],
+   "n_days": 22,
+   "mean_pnl_usd_base": 47.09272727272182,
+   "t_ci95_usd": [
+    -246.04403567054524,
+    340.2294902159889
+   ],
+   "boot95_usd": [
+    -186.54363636363655,
+    355.1915909090832
+   ],
+   "share_days_positive": 0.4090909090909091,
+   "total_pnl_usd": 1036.03999999988,
+   "largest_day_pnl_usd": 2490.8200000000033,
+   "largest_day": "2026-09-30",
+   "mean_pnl_usd_excluding_largest_day": -69.27523809524396,
+   "median_pnl_usd": -51.18000000004001,
+   "mean_straddle_mark_pts": 5.989545454545453,
+   "mean_abs_move_pts": 5.895454545454413,
+   "mean_implied_bps": 7.745758950645355,
+   "mean_realized_abs_move_official_bps": 7.630987934989686,
+   "mean_pred_regression_bps": 9.045703745954627,
+   "implied_vs_realized": {
+    "stat": {
+     "regression": {
+      "mean_pred_minus_implied_pts": 1.004100281150104,
+      "mean_ratio_pred_over_implied": 1.1869347007956523,
+      "boot95_pts": [
+       0.11162778162334734,
+       1.7960270823815074
+      ],
+      "boot95_pts_iid_d1_sensitivity": [
+       -0.09772388895819192,
+       1.799809443584473
+      ],
+      "ci_block_above_zero": true,
+      "ci_iid_above_zero": false,
+      "ci_excludes_zero_positive": false
+     },
+     "ratio": {
+      "mean_pred_minus_implied_pts": 0.42754960932228003,
+      "mean_ratio_pred_over_implied": 1.075540561477341,
+      "boot95_pts": [
+       -0.3041954881571574,
+       1.1760518553909287
+      ],
+      "boot95_pts_iid_d1_sensitivity": [
+       -0.3204315167011604,
+       1.2153948329055253
+      ],
+      "ci_block_above_zero": false,
+      "ci_iid_above_zero": false,
+      "ci_excludes_zero_positive": false
+     },
+     "unconditional": {
+      "mean_pred_minus_implied_pts": 2.748757015253393,
+      "mean_ratio_pred_over_implied": 1.5240161487891248,
+      "boot95_pts": [
+       1.7358225456625958,
+       3.948062424950879
+      ],
+      "boot95_pts_iid_d1_sensitivity": [
+       1.9908345264033664,
+       3.5814135445448154
+      ],
+      "ci_block_above_zero": true,
+      "ci_iid_above_zero": true,
+      "ci_excludes_zero_positive": true
+     }
+    },
+    "n_d2_days": 22,
+    "evaluable": true
+   },
+   "parity_filtered": {
+    "rule": "|ATM C - P - (S - K)| <= 0.5 pts (15:40-bar closes vs SPX 15:49-bar close)",
+    "n_days": 11,
+    "mean_pnl_usd_base": 309.3654545454558,
+    "t_ci95_usd": [
+     -240.9464909545644,
+     859.677400045476
+    ],
+    "boot95_usd": [
+     -76.09136363636718,
+     849.0177272727262
+    ],
+    "share_days_positive": 0.5454545454545454,
+    "total_pnl_usd": 3403.020000000014,
+    "largest_day_pnl_usd": 2490.8200000000033,
+    "largest_day": "2026-09-30",
+    "mean_pnl_usd_excluding_largest_day": 91.22000000000108,
+    "median_pnl_usd": 91.81999999997092,
+    "mean_straddle_mark_pts": 5.917272727272726,
+    "mean_abs_move_pts": 8.411818181818076,
+    "mean_implied_bps": 7.64774923518218,
+    "mean_realized_abs_move_official_bps": 10.894457619934048,
+    "mean_pred_regression_bps": 8.597997522777026,
+    "implied_vs_realized": {
+     "stat": {
+      "regression": {
+       "mean_pred_minus_implied_pts": 0.7334586196884968,
+       "mean_ratio_pred_over_implied": 1.1450314002793507,
+       "boot95_pts": [
+        -0.3758937373092357,
+        1.7309415784706415
+       ],
+       "boot95_pts_iid_d1_sensitivity": [
+        -0.7388240208770247,
+        1.7558612629310058
+       ],
+       "ci_block_above_zero": false,
+       "ci_iid_above_zero": false,
+       "ci_excludes_zero_positive": false
+      },
+      "ratio": {
+       "mean_pred_minus_implied_pts": 0.04221602068229375,
+       "mean_ratio_pred_over_implied": 1.0184235333296738,
+       "boot95_pts": [
+        -0.9517793480027787,
+        1.1138230527981874
+       ],
+       "boot95_pts_iid_d1_sensitivity": [
+        -0.9803294935290754,
+        1.1092603201130138
+       ],
+       "ci_block_above_zero": false,
+       "ci_iid_above_zero": false,
+       "ci_excludes_zero_positive": false
+      },
+      "unconditional": {
+       "mean_pred_minus_implied_pts": 2.8251759902223665,
+       "mean_ratio_pred_over_implied": 1.52814996809566,
+       "boot95_pts": [
+        1.687196320175468,
+        4.0122579223161
+       ],
+       "boot95_pts_iid_d1_sensitivity": [
+        1.9061391701771033,
+        3.707137727477203
+       ],
+       "ci_block_above_zero": true,
+       "ci_iid_above_zero": true,
+       "ci_excludes_zero_positive": true
+      }
+     },
+     "n_d2_days": 11,
+     "evaluable": true
+    }
+   },
+   "parity_abs_atm_dev_max": 3.5999999999996355,
+   "cannot_settle_condition_1": "10-minute closes are not simultaneous marks; this stand-in neither supports nor refutes the S1/S3 premise",
+   "rows": [
+    {
+     "date": "2026-09-21",
+     "S_1549_close": 7772.73,
+     "K": 7775.0,
+     "straddle_mark_10m": 6.93,
+     "settle": 7764.7,
+     "abs_move_pts": 8.029999999999745,
+     "pnl_usd": 316.8200000000182,
+     "parity_atm_dev": 0.30000000000043636,
+     "parity_signed_median_pm15": 0.8500000000004366,
+     "passes_parity_filter": true
+    },
+    {
+     "date": "2026-09-22",
+     "S_1549_close": 7777.36,
+     "K": 7775.0,
+     "straddle_mark_10m": 5.3,
+     "settle": 7764.64,
+     "abs_move_pts": 12.719999999999345,
+     "pnl_usd": 485.81999999996714,
+     "parity_atm_dev": 0.04000000000032777,
+     "parity_signed_median_pm15": 0.02000000000032731,
+     "passes_parity_filter": true
+    },
+    {
+     "date": "2026-09-23",
+     "S_1549_close": 7709.14,
+     "K": 7710.0,
+     "straddle_mark_10m": 5.85,
+     "settle": 7706.03,
+     "abs_move_pts": 3.110000000000582,
+     "pnl_usd": -208.1799999999745,
+     "parity_atm_dev": 0.10999999999967258,
+     "parity_signed_median_pm15": 0.10999999999967258,
+     "passes_parity_filter": true
+    },
+    {
+     "date": "2026-09-24",
+     "S_1549_close": 7704.29,
+     "K": 7705.0,
+     "straddle_mark_10m": 6.35,
+     "settle": 7704.13,
+     "abs_move_pts": 0.15999999999985448,
+     "pnl_usd": -568.180000000011,
+     "parity_atm_dev": -0.7399999999999634,
+     "parity_signed_median_pm15": -0.7399999999999638,
+     "passes_parity_filter": false
+    },
+    {
+     "date": "2026-09-25",
+     "S_1549_close": 7746.4,
+     "K": 7745.0,
+     "straddle_mark_10m": 6.279999999999999,
+     "settle": 7743.41,
+     "abs_move_pts": 2.9899999999997817,
+     "pnl_usd": -489.1799999999854,
+     "parity_atm_dev": 0.5200000000003633,
+     "parity_signed_median_pm15": 0.4800000000003646,
+     "passes_parity_filter": false
+    },
+    {
+     "date": "2026-09-28",
+     "S_1549_close": 7681.86,
+     "K": 7680.0,
+     "straddle_mark_10m": 6.63,
+     "settle": 7683.69,
+     "abs_move_pts": 1.8299999999999272,
+     "pnl_usd": -314.18000000003997,
+     "parity_atm_dev": 0.6100000000003272,
+     "parity_signed_median_pm15": 0.6100000000003272,
+     "passes_parity_filter": false
+    },
+    {
+     "date": "2026-09-29",
+     "S_1549_close": 7671.2,
+     "K": 7670.0,
+     "straddle_mark_10m": 6.08,
+     "settle": 7670.84,
+     "abs_move_pts": 0.3599999999996726,
+     "pnl_usd": -544.1799999999854,
+     "parity_atm_dev": 0.7200000000001818,
+     "parity_signed_median_pm15": 0.7200000000001818,
+     "passes_parity_filter": false
+    },
+    {
+     "date": "2026-09-30",
+     "S_1549_close": 7682.61,
+     "K": 7685.0,
+     "straddle_mark_10m": 8.350000000000001,
+     "settle": 7651.54,
+     "abs_move_pts": 31.06999999999971,
+     "pnl_usd": 2490.8200000000033,
+     "parity_atm_dev": -0.05999999999967276,
+     "parity_signed_median_pm15": -0.12999999999967304,
+     "passes_parity_filter": true
+    },
+    {
+     "date": "2026-10-01",
+     "S_1549_close": 7676.95,
+     "K": 7675.0,
+     "straddle_mark_10m": 6.98,
+     "settle": 7666.45,
+     "abs_move_pts": 10.5,
+     "pnl_usd": 136.82000000001818,
+     "parity_atm_dev": 0.3700000000001822,
+     "parity_signed_median_pm15": 0.3700000000001822,
+     "passes_parity_filter": true
+    },
+    {
+     "date": "2026-10-02",
+     "S_1549_close": 7724.11,
+     "K": 7725.0,
+     "straddle_mark_10m": 5.73,
+     "settle": 7722.72,
+     "abs_move_pts": 1.389999999999418,
+     "pnl_usd": -365.1800000000255,
+     "parity_atm_dev": 0.020000000000327756,
+     "parity_signed_median_pm15": 0.0200000000003282,
+     "passes_parity_filter": true
+    },
+    {
+     "date": "2026-10-05",
+     "S_1549_close": 7778.44,
+     "K": 7780.0,
+     "straddle_mark_10m": 5.85,
+     "settle": 7773.95,
+     "abs_move_pts": 4.489999999999782,
+     "pnl_usd": -0.17999999998184535,
+     "parity_atm_dev": -0.08999999999959973,
+     "parity_signed_median_pm15": -0.08999999999959973,
+     "passes_parity_filter": true
+    },
+    {
+     "date": "2026-10-06",
+     "S_1549_close": 7823.09,
+     "K": 7825.0,
+     "straddle_mark_10m": 4.949999999999999,
+     "settle": 7818.93,
+     "abs_move_pts": 4.1599999999998545,
+     "pnl_usd": 91.81999999997092,
+     "parity_atm_dev": 0.25999999999985457,
+     "parity_signed_median_pm15": 0.3799999999998551,
+     "passes_parity_filter": true
+    },
+    {
+     "date": "2026-10-07",
+     "S_1549_close": 7796.65,
+     "K": 7795.0,
+     "straddle_mark_10m": 5.28,
+     "settle": 7801.77,
+     "abs_move_pts": 5.1200000000008,
+     "pnl_usd": 128.82000000004368,
+     "parity_atm_dev": 0.7700000000003637,
+     "parity_signed_median_pm15": 0.7700000000003637,
+     "passes_parity_filter": false
+    },
+    {
+     "date": "2026-10-08",
+     "S_1549_close": 7763.16,
+     "K": 7765.0,
+     "straddle_mark_10m": 6.3,
+     "settle": 7765.36,
+     "abs_move_pts": 2.199999999999818,
+     "pnl_usd": -614.1800000000327,
+     "parity_atm_dev": -0.8599999999998547,
+     "parity_signed_median_pm15": -0.9599999999998534,
+     "passes_parity_filter": false
+    },
+    {
+     "date": "2026-10-09",
+     "S_1549_close": 7813.25,
+     "K": 7815.0,
+     "straddle_mark_10m": 4.3,
+     "settle": 7811.54,
+     "abs_move_pts": 1.7100000000000364,
+     "pnl_usd": -104.17999999999637,
+     "parity_atm_dev": 0.4500000000000002,
+     "parity_signed_median_pm15": 0.4500000000000002,
+     "passes_parity_filter": true
+    },
+    {
+     "date": "2026-10-12",
+     "S_1549_close": 7805.88,
+     "K": 7805.0,
+     "straddle_mark_10m": 3.7,
+     "settle": 7807.24,
+     "abs_move_pts": 1.3599999999996726,
+     "pnl_usd": -166.18000000002183,
+     "parity_atm_dev": 0.7199999999998907,
+     "parity_signed_median_pm15": 0.7199999999998905,
+     "passes_parity_filter": false
+    },
+    {
+     "date": "2026-10-13",
+     "S_1549_close": 7810.38,
+     "K": 7810.0,
+     "straddle_mark_10m": 4.13,
+     "settle": 7805.45,
+     "abs_move_pts": 4.930000000000291,
+     "pnl_usd": 21.820000000018183,
+     "parity_atm_dev": 0.6499999999998909,
+     "parity_signed_median_pm15": 0.5399999999998908,
+     "passes_parity_filter": false
+    },
+    {
+     "date": "2026-10-14",
+     "S_1549_close": 7712.1,
+     "K": 7710.0,
+     "straddle_mark_10m": 8.9,
+     "settle": 7718.94,
+     "abs_move_pts": 6.839999999999236,
+     "pnl_usd": -16.180000000039996,
+     "parity_atm_dev": 3.5999999999996355,
+     "parity_signed_median_pm15": 3.3299999999996377,
+     "passes_parity_filter": false
+    },
+    {
+     "date": "2026-10-15",
+     "S_1549_close": 7748.49,
+     "K": 7750.0,
+     "straddle_mark_10m": 6.6,
+     "settle": 7744.06,
+     "abs_move_pts": 4.4299999999993815,
+     "pnl_usd": -86.18000000004002,
+     "parity_atm_dev": 1.210000000000218,
+     "parity_signed_median_pm15": 0.6800000000002182,
+     "passes_parity_filter": false
+    },
+    {
+     "date": "2026-10-16",
+     "S_1549_close": 7652.49,
+     "K": 7650.0,
+     "straddle_mark_10m": 6.43,
+     "settle": 7659.44,
+     "abs_move_pts": 6.949999999999818,
+     "pnl_usd": 280.81999999996,
+     "parity_atm_dev": -3.1599999999997817,
+     "parity_signed_median_pm15": -0.08999999999978137,
+     "passes_parity_filter": false
+    },
+    {
+     "date": "2026-10-19",
+     "S_1549_close": 7704.76,
+     "K": 7705.0,
+     "straddle_mark_10m": 4.75,
+     "settle": 7690.73,
+     "abs_move_pts": 14.030000000000655,
+     "pnl_usd": 931.8200000000437,
+     "parity_atm_dev": -0.010000000000218279,
+     "parity_signed_median_pm15": -0.04000000000021853,
+     "passes_parity_filter": true
+    },
+    {
+     "date": "2026-10-20",
+     "S_1549_close": 7711.25,
+     "K": 7710.0,
+     "straddle_mark_10m": 6.1,
+     "settle": 7712.57,
+     "abs_move_pts": 1.319999999999709,
+     "pnl_usd": -373.18000000002917,
+     "parity_atm_dev": -0.050000000000000266,
+     "parity_signed_median_pm15": -0.120000000000001,
+     "passes_parity_filter": true
+    }
+   ]
+  },
+  "vi_p3_placebo_and_regimes": {
+   "n_placebo_minutes": 342,
+   "p3_nw_t": 4.087303215598813,
+   "p3_mean_bps": 0.9981739125509843,
+   "placebo_median_t": -0.534755551650542,
+   "placebo_share_t_gt_2": 0.005847953216374269,
+   "placebo_share_t_lt_minus_2": 0.07017543859649122,
+   "placebo_max_t": 2.1751966919127166,
+   "p3_rank_among_placebos_plus_p3": 1,
+   "late_2023_2026": {
+    "p3_nw_t": 1.2756558655880326,
+    "placebo_median_t": -0.2052604406364971,
+    "placebo_share_t_gt_2": 0.029239766081871343,
+    "p3_rank": 30
+   },
+   "p3_by_nyse_regime": {
+    "before_2019-04-01": {
+     "n": 1422,
+     "mean_bps": 0.8882987728942243,
+     "nw_t": 3.04418083339812
+    },
+    "2019-04-01_to_2022-12-31": {
+     "n": 940,
+     "mean_bps": 1.6748185905600428,
+     "nw_t": 2.680982466460607
+    },
+    "2023-01-01_on": {
+     "n": 945,
+     "mean_bps": 0.490445289549289,
+     "nw_t": 1.2756558655880326
+    }
+   }
+  },
+  "vii_otm_multiples_10m_bars": {
+   "n_days": 22,
+   "n_options": 261,
+   "table": {
+    "call_5": {
+     "n": 22,
+     "mean_entry_mark": 1.3731818181818183,
+     "share_reach_2x_bar_high": 0.18181818181818182,
+     "share_reach_3x_bar_high": 0.09090909090909091,
+     "share_reach_5x_bar_high": 0.0,
+     "share_settle_ge_2x": 0.0,
+     "share_settle_zero": 0.8636363636363636,
+     "mean_pnl_usd_hold": -101.27181818181984
+    },
+    "put_5": {
+     "n": 22,
+     "mean_entry_mark": 1.2750000000000001,
+     "share_reach_2x_bar_high": 0.45454545454545453,
+     "share_reach_3x_bar_high": 0.3181818181818182,
+     "share_reach_5x_bar_high": 0.18181818181818182,
+     "share_settle_ge_2x": 0.22727272727272727,
+     "share_settle_zero": 0.6363636363636364,
+     "mean_pnl_usd_hold": 112.40999999999998
+    },
+    "call_10": {
+     "n": 22,
+     "mean_entry_mark": 0.48045454545454547,
+     "share_reach_2x_bar_high": 0.18181818181818182,
+     "share_reach_3x_bar_high": 0.09090909090909091,
+     "share_reach_5x_bar_high": 0.0,
+     "share_settle_ge_2x": 0.0,
+     "share_settle_zero": 1.0,
+     "mean_pnl_usd_hold": -58.135454545454536
+    },
+    "put_10": {
+     "n": 22,
+     "mean_entry_mark": 0.5931818181818181,
+     "share_reach_2x_bar_high": 0.36363636363636365,
+     "share_reach_3x_bar_high": 0.22727272727272727,
+     "share_reach_5x_bar_high": 0.18181818181818182,
+     "share_settle_ge_2x": 0.13636363636363635,
+     "share_settle_zero": 0.8181818181818182,
+     "mean_pnl_usd_hold": 59.63727272727422
+    },
+    "call_15": {
+     "n": 22,
+     "mean_entry_mark": 0.21363636363636365,
+     "share_reach_2x_bar_high": 0.09090909090909091,
+     "share_reach_3x_bar_high": 0.045454545454545456,
+     "share_reach_5x_bar_high": 0.0,
+     "share_settle_ge_2x": 0.0,
+     "share_settle_zero": 1.0,
+     "mean_pnl_usd_hold": -31.45363636363637
+    },
+    "put_15": {
+     "n": 22,
+     "mean_entry_mark": 0.22090909090909092,
+     "share_reach_2x_bar_high": 0.2727272727272727,
+     "share_reach_3x_bar_high": 0.18181818181818182,
+     "share_reach_5x_bar_high": 0.13636363636363635,
+     "share_settle_ge_2x": 0.045454545454545456,
+     "share_settle_zero": 0.9545454545454546,
+     "mean_pnl_usd_hold": 51.728181818182016
+    },
+    "call_20": {
+     "n": 22,
+     "mean_entry_mark": 0.09363636363636361,
+     "share_reach_2x_bar_high": 0.13636363636363635,
+     "share_reach_3x_bar_high": 0.09090909090909091,
+     "share_reach_5x_bar_high": 0.045454545454545456,
+     "share_settle_ge_2x": 0.0,
+     "share_settle_zero": 1.0,
+     "mean_pnl_usd_hold": -19.45363636363636
+    },
+    "put_20": {
+     "n": 22,
+     "mean_entry_mark": 0.1159090909090909,
+     "share_reach_2x_bar_high": 0.22727272727272727,
+     "share_reach_3x_bar_high": 0.22727272727272727,
+     "share_reach_5x_bar_high": 0.13636363636363635,
+     "share_settle_ge_2x": 0.045454545454545456,
+     "share_settle_zero": 0.9545454545454546,
+     "mean_pnl_usd_hold": 39.50090909090925
+    },
+    "call_25": {
+     "n": 22,
+     "mean_entry_mark": 0.049090909090909095,
+     "share_reach_2x_bar_high": 0.0,
+     "share_reach_3x_bar_high": 0.0,
+     "share_reach_5x_bar_high": 0.0,
+     "share_settle_ge_2x": 0.0,
+     "share_settle_zero": 1.0,
+     "mean_pnl_usd_hold": -14.999090909090905
+    },
+    "put_25": {
+     "n": 22,
+     "mean_entry_mark": 0.07545454545454545,
+     "share_reach_2x_bar_high": 0.18181818181818182,
+     "share_reach_3x_bar_high": 0.18181818181818182,
+     "share_reach_5x_bar_high": 0.18181818181818182,
+     "share_settle_ge_2x": 0.045454545454545456,
+     "share_settle_zero": 0.9545454545454546,
+     "mean_pnl_usd_hold": 20.819090909091067
+    },
+    "call_30": {
+     "n": 21,
+     "mean_entry_mark": 0.024761904761904763,
+     "share_reach_2x_bar_high": 0.09523809523809523,
+     "share_reach_3x_bar_high": 0.09523809523809523,
+     "share_reach_5x_bar_high": 0.09523809523809523,
+     "share_settle_ge_2x": 0.0,
+     "share_settle_zero": 1.0,
+     "mean_pnl_usd_hold": -12.566190476190476
+    },
+    "put_30": {
+     "n": 20,
+     "mean_entry_mark": 0.051000000000000004,
+     "share_reach_2x_bar_high": 0.1,
+     "share_reach_3x_bar_high": 0.1,
+     "share_reach_5x_bar_high": 0.1,
+     "share_settle_ge_2x": 0.05,
+     "share_settle_zero": 0.95,
+     "mean_pnl_usd_hold": 2.110000000000183
+    }
+   },
+   "offsets_5_10_pooled": {
+    "n": 88,
+    "share_reach_2x_bar_high": 0.29545454545454547,
+    "share_settle_ge_2x": 0.09090909090909091,
+    "share_settle_zero": 0.8295454545454546,
+    "mean_pnl_usd_hold": 3.15999999999995
+   },
+   "rows": [
+    {
+     "date": "2026-09-21",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7780.0,
+     "entry_mark": 0.73,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -83.09
+    },
+    {
+     "date": "2026-09-21",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7770.0,
+     "entry_mark": 1.88,
+     "high_1550_bar": 5.4,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 2.8191489361703095,
+     "pnl_usd_hold": 331.9100000000182
+    },
+    {
+     "date": "2026-09-21",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7785.0,
+     "entry_mark": 0.28,
+     "high_1550_bar": 0.25,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -38.09
+    },
+    {
+     "date": "2026-09-21",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7765.0,
+     "entry_mark": 0.53,
+     "high_1550_bar": 0.88,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.5660377358493998,
+     "pnl_usd_hold": -33.08999999998181
+    },
+    {
+     "date": "2026-09-21",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7790.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.13,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-09-21",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7760.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-09-21",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7795.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-21",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7755.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.18,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-09-21",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7800.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-21",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7750.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-21",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7805.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-21",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7745.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-22",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7780.0,
+     "entry_mark": 1.38,
+     "high_1550_bar": 1.58,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -148.09
+    },
+    {
+     "date": "2026-09-22",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7770.0,
+     "entry_mark": 0.98,
+     "high_1550_bar": 5.75,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 5.469387755101707,
+     "pnl_usd_hold": 427.9099999999673
+    },
+    {
+     "date": "2026-09-22",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7785.0,
+     "entry_mark": 0.38,
+     "high_1550_bar": 0.33,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -48.09
+    },
+    {
+     "date": "2026-09-22",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7765.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 1.2,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 2.7692307692282507,
+     "pnl_usd_hold": 12.909999999967257
+    },
+    {
+     "date": "2026-09-22",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7790.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-09-22",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7760.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.23,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-22",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7795.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-22",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7755.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.08,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-22",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7800.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-22",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7750.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-22",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7805.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-22",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7745.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-23",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7715.0,
+     "entry_mark": 0.93,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -103.09
+    },
+    {
+     "date": "2026-09-23",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7705.0,
+     "entry_mark": 1.35,
+     "high_1550_bar": 3.7,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -145.09000000000003
+    },
+    {
+     "date": "2026-09-23",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7720.0,
+     "entry_mark": 0.33,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -43.09000000000001
+    },
+    {
+     "date": "2026-09-23",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7700.0,
+     "entry_mark": 0.48,
+     "high_1550_bar": 0.63,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -58.089999999999996
+    },
+    {
+     "date": "2026-09-23",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7725.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.1,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-09-23",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7695.0,
+     "entry_mark": 0.18,
+     "high_1550_bar": 1.9,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -28.090000000000003
+    },
+    {
+     "date": "2026-09-23",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7730.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-23",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7690.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-23",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7735.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-23",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7685.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.28,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-23",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7740.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-23",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7680.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-24",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7710.0,
+     "entry_mark": 0.95,
+     "high_1550_bar": 2.93,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -105.09
+    },
+    {
+     "date": "2026-09-24",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7700.0,
+     "entry_mark": 1.75,
+     "high_1550_bar": 1.15,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -185.09
+    },
+    {
+     "date": "2026-09-24",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7715.0,
+     "entry_mark": 0.35,
+     "high_1550_bar": 1.23,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -45.089999999999996
+    },
+    {
+     "date": "2026-09-24",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7695.0,
+     "entry_mark": 0.73,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -83.09
+    },
+    {
+     "date": "2026-09-24",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7720.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-09-24",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7690.0,
+     "entry_mark": 0.33,
+     "high_1550_bar": 0.28,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -43.09000000000001
+    },
+    {
+     "date": "2026-09-24",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7725.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.15,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-24",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7685.0,
+     "entry_mark": 0.18,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -28.090000000000003
+    },
+    {
+     "date": "2026-09-24",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7730.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-24",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7680.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-09-24",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7735.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-24",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7675.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-25",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7750.0,
+     "entry_mark": 1.68,
+     "high_1550_bar": 2.68,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -178.09
+    },
+    {
+     "date": "2026-09-25",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7740.0,
+     "entry_mark": 0.93,
+     "high_1550_bar": 0.48,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -103.09
+    },
+    {
+     "date": "2026-09-25",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7755.0,
+     "entry_mark": 0.58,
+     "high_1550_bar": 1.48,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -68.09
+    },
+    {
+     "date": "2026-09-25",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7735.0,
+     "entry_mark": 0.38,
+     "high_1550_bar": 0.18,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -48.09
+    },
+    {
+     "date": "2026-09-25",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7760.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.28,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-09-25",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7730.0,
+     "entry_mark": 0.18,
+     "high_1550_bar": 0.13,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -28.090000000000003
+    },
+    {
+     "date": "2026-09-25",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7765.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.2,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-25",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7725.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-25",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7770.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-25",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7720.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-25",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7775.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-25",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7715.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-28",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7685.0,
+     "entry_mark": 2.13,
+     "high_1550_bar": 2.65,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -223.09
+    },
+    {
+     "date": "2026-09-28",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7675.0,
+     "entry_mark": 0.78,
+     "high_1550_bar": 1.2,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -88.09
+    },
+    {
+     "date": "2026-09-28",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7690.0,
+     "entry_mark": 0.83,
+     "high_1550_bar": 0.98,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -93.09
+    },
+    {
+     "date": "2026-09-28",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7670.0,
+     "entry_mark": 0.33,
+     "high_1550_bar": 0.5,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -43.09000000000001
+    },
+    {
+     "date": "2026-09-28",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7695.0,
+     "entry_mark": 0.33,
+     "high_1550_bar": 0.38,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -43.09000000000001
+    },
+    {
+     "date": "2026-09-28",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7665.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.23,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-09-28",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7700.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.13,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-09-28",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7660.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-28",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7705.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-28",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7655.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-28",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7710.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-29",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7675.0,
+     "entry_mark": 1.63,
+     "high_1550_bar": 3.55,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -173.09
+    },
+    {
+     "date": "2026-09-29",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7665.0,
+     "entry_mark": 0.73,
+     "high_1550_bar": 0.93,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -83.09
+    },
+    {
+     "date": "2026-09-29",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7680.0,
+     "entry_mark": 0.58,
+     "high_1550_bar": 0.48,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -68.09
+    },
+    {
+     "date": "2026-09-29",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7660.0,
+     "entry_mark": 0.28,
+     "high_1550_bar": 0.2,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -38.09
+    },
+    {
+     "date": "2026-09-29",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7685.0,
+     "entry_mark": 0.18,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -28.090000000000003
+    },
+    {
+     "date": "2026-09-29",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7655.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.13,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-09-29",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7690.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-29",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7650.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-29",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7695.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-29",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7645.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-29",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7700.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-29",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7640.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-30",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7690.0,
+     "entry_mark": 1.38,
+     "high_1550_bar": 0.78,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -148.09
+    },
+    {
+     "date": "2026-09-30",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7680.0,
+     "entry_mark": 3.03,
+     "high_1550_bar": 28.85,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 9.392739273927406,
+     "pnl_usd_hold": 2532.9100000000035
+    },
+    {
+     "date": "2026-09-30",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7695.0,
+     "entry_mark": 0.6,
+     "high_1550_bar": 0.55,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -70.09
+    },
+    {
+     "date": "2026-09-30",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7675.0,
+     "entry_mark": 1.53,
+     "high_1550_bar": 24.0,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 15.333333333333357,
+     "pnl_usd_hold": 2182.9100000000035
+    },
+    {
+     "date": "2026-09-30",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7700.0,
+     "entry_mark": 0.28,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -38.09
+    },
+    {
+     "date": "2026-09-30",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7670.0,
+     "entry_mark": 0.73,
+     "high_1550_bar": 18.85,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 25.287671232876765,
+     "pnl_usd_hold": 1762.910000000004
+    },
+    {
+     "date": "2026-09-30",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7705.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.13,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-09-30",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7665.0,
+     "entry_mark": 0.38,
+     "high_1550_bar": 14.65,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 35.421052631579045,
+     "pnl_usd_hold": 1297.9100000000037
+    },
+    {
+     "date": "2026-09-30",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7710.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-09-30",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7660.0,
+     "entry_mark": 0.2,
+     "high_1550_bar": 8.8,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 42.30000000000018,
+     "pnl_usd_hold": 815.9100000000035
+    },
+    {
+     "date": "2026-09-30",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7715.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.08,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-09-30",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7655.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 3.7,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 26.615384615384894,
+     "pnl_usd_hold": 322.91000000000366
+    },
+    {
+     "date": "2026-10-01",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7680.0,
+     "entry_mark": 2.18,
+     "high_1550_bar": 0.2,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -228.09000000000003
+    },
+    {
+     "date": "2026-10-01",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7670.0,
+     "entry_mark": 0.98,
+     "high_1550_bar": 5.95,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 3.6224489795920225,
+     "pnl_usd_hold": 246.9100000000182
+    },
+    {
+     "date": "2026-10-01",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7685.0,
+     "entry_mark": 0.93,
+     "high_1550_bar": 1.58,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -103.09
+    },
+    {
+     "date": "2026-10-01",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7665.0,
+     "entry_mark": 0.43,
+     "high_1550_bar": 1.58,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -53.09
+    },
+    {
+     "date": "2026-10-01",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7690.0,
+     "entry_mark": 0.38,
+     "high_1550_bar": 1.53,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -48.09
+    },
+    {
+     "date": "2026-10-01",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7660.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.33,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-01",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7695.0,
+     "entry_mark": 0.18,
+     "high_1550_bar": 0.63,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -28.090000000000003
+    },
+    {
+     "date": "2026-10-01",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7655.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.13,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-01",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7700.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-01",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7650.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-01",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7705.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.1,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-01",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7645.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-02",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7730.0,
+     "entry_mark": 0.93,
+     "high_1550_bar": 1.38,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -103.09
+    },
+    {
+     "date": "2026-10-02",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7720.0,
+     "entry_mark": 1.33,
+     "high_1550_bar": 1.38,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -143.09000000000003
+    },
+    {
+     "date": "2026-10-02",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7735.0,
+     "entry_mark": 0.33,
+     "high_1550_bar": 0.33,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -43.09000000000001
+    },
+    {
+     "date": "2026-10-02",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7715.0,
+     "entry_mark": 0.53,
+     "high_1550_bar": 0.53,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -63.09
+    },
+    {
+     "date": "2026-10-02",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7740.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.18,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-02",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7710.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.15,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-02",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7745.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-02",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7705.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-02",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7750.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-02",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7700.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-02",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7755.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-02",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7695.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-05",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7785.0,
+     "entry_mark": 0.73,
+     "high_1550_bar": 0.23,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -83.09
+    },
+    {
+     "date": "2026-10-05",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7775.0,
+     "entry_mark": 1.48,
+     "high_1550_bar": 5.2,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 0.7094594594595823,
+     "pnl_usd_hold": -53.08999999998182
+    },
+    {
+     "date": "2026-10-05",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7790.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-05",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7770.0,
+     "entry_mark": 0.48,
+     "high_1550_bar": 2.78,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -58.089999999999996
+    },
+    {
+     "date": "2026-10-05",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7795.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-05",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7765.0,
+     "entry_mark": 0.18,
+     "high_1550_bar": 0.85,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -28.090000000000003
+    },
+    {
+     "date": "2026-10-05",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7800.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-05",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7760.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.3,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-05",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7805.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-05",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7755.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.08,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-05",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7810.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-05",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7750.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-06",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7830.0,
+     "entry_mark": 0.38,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -48.09
+    },
+    {
+     "date": "2026-10-06",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7820.0,
+     "entry_mark": 1.28,
+     "high_1550_bar": 3.85,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 0.8359374999997726,
+     "pnl_usd_hold": -31.090000000029114
+    },
+    {
+     "date": "2026-10-06",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7835.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-06",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7815.0,
+     "entry_mark": 0.53,
+     "high_1550_bar": 1.3,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -63.09
+    },
+    {
+     "date": "2026-10-06",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7840.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-06",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7810.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.18,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-06",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7845.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-06",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7805.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.18,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-06",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7850.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-06",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7800.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-06",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7855.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-06",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7795.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-07",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7800.0,
+     "entry_mark": 1.23,
+     "high_1550_bar": 4.15,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 1.4390243902442574,
+     "pnl_usd_hold": 43.910000000043645
+    },
+    {
+     "date": "2026-10-07",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7790.0,
+     "entry_mark": 0.48,
+     "high_1550_bar": 0.23,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -58.089999999999996
+    },
+    {
+     "date": "2026-10-07",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7805.0,
+     "entry_mark": 0.3,
+     "high_1550_bar": 0.88,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -40.09
+    },
+    {
+     "date": "2026-10-07",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7785.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-07",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7810.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.18,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-07",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7780.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-07",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7815.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.08,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-07",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7775.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-07",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7820.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-07",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7770.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-07",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7825.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-07",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7765.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-08",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7770.0,
+     "entry_mark": 0.68,
+     "high_1550_bar": 0.38,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -78.09
+    },
+    {
+     "date": "2026-10-08",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7760.0,
+     "entry_mark": 2.0,
+     "high_1550_bar": 2.7,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -210.09
+    },
+    {
+     "date": "2026-10-08",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7775.0,
+     "entry_mark": 0.28,
+     "high_1550_bar": 0.5,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -38.09
+    },
+    {
+     "date": "2026-10-08",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7755.0,
+     "entry_mark": 0.85,
+     "high_1550_bar": 0.88,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -95.09
+    },
+    {
+     "date": "2026-10-08",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7780.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-08",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7750.0,
+     "entry_mark": 0.38,
+     "high_1550_bar": 0.33,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -48.09
+    },
+    {
+     "date": "2026-10-08",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7785.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-08",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7745.0,
+     "entry_mark": 0.18,
+     "high_1550_bar": 0.18,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -28.090000000000003
+    },
+    {
+     "date": "2026-10-08",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7790.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-08",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7740.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-08",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7735.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-09",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7820.0,
+     "entry_mark": 0.38,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -48.09
+    },
+    {
+     "date": "2026-10-09",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7810.0,
+     "entry_mark": 0.83,
+     "high_1550_bar": 1.53,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -93.09
+    },
+    {
+     "date": "2026-10-09",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7825.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-09",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7805.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.33,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-09",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7830.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-09",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7800.0,
+     "entry_mark": 0.1,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -20.09
+    },
+    {
+     "date": "2026-10-09",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7835.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-09",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7795.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-09",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7840.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-09",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7790.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-09",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7845.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-09",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7785.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-12",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7810.0,
+     "entry_mark": 0.55,
+     "high_1550_bar": 0.63,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -65.09
+    },
+    {
+     "date": "2026-10-12",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7800.0,
+     "entry_mark": 0.2,
+     "high_1550_bar": 0.13,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -30.090000000000003
+    },
+    {
+     "date": "2026-10-12",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7815.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.13,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-12",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7795.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-12",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7820.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-12",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7790.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-12",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7825.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-12",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7785.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-12",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7830.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-12",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7780.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-12",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7835.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-12",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7775.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-13",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7815.0,
+     "entry_mark": 0.63,
+     "high_1550_bar": 0.63,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -73.09
+    },
+    {
+     "date": "2026-10-13",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7805.0,
+     "entry_mark": 0.43,
+     "high_1550_bar": 1.23,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -53.09
+    },
+    {
+     "date": "2026-10-13",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7820.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-13",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7800.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.23,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-13",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7825.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-13",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7795.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-13",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7830.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-13",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7790.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-13",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7835.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-13",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7785.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-13",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7840.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-13",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7780.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-14",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7715.0,
+     "entry_mark": 3.85,
+     "high_1550_bar": 6.2,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 1.0233766233765194,
+     "pnl_usd_hold": -1.0900000000400356
+    },
+    {
+     "date": "2026-10-14",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7705.0,
+     "entry_mark": 0.8,
+     "high_1550_bar": 0.68,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -90.09
+    },
+    {
+     "date": "2026-10-14",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7720.0,
+     "entry_mark": 2.03,
+     "high_1550_bar": 0.85,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -213.09
+    },
+    {
+     "date": "2026-10-14",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7700.0,
+     "entry_mark": 0.38,
+     "high_1550_bar": 0.33,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -48.09
+    },
+    {
+     "date": "2026-10-14",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7725.0,
+     "entry_mark": 0.88,
+     "high_1550_bar": 0.18,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -98.09
+    },
+    {
+     "date": "2026-10-14",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7695.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.2,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-14",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7730.0,
+     "entry_mark": 0.43,
+     "high_1550_bar": 0.65,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -53.09
+    },
+    {
+     "date": "2026-10-14",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7690.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-14",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7735.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.33,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-14",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7685.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-14",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7740.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.15,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-14",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7680.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-15",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7755.0,
+     "entry_mark": 2.28,
+     "high_1550_bar": 0.43,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -238.09
+    },
+    {
+     "date": "2026-10-15",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7745.0,
+     "entry_mark": 1.88,
+     "high_1550_bar": 5.65,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 0.49999999999978717,
+     "pnl_usd_hold": -104.09000000004002
+    },
+    {
+     "date": "2026-10-15",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7760.0,
+     "entry_mark": 0.58,
+     "high_1550_bar": 0.13,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -68.09
+    },
+    {
+     "date": "2026-10-15",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7740.0,
+     "entry_mark": 0.78,
+     "high_1550_bar": 2.2,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -88.09
+    },
+    {
+     "date": "2026-10-15",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7765.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.23,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-15",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7735.0,
+     "entry_mark": 0.28,
+     "high_1550_bar": 0.83,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -38.09
+    },
+    {
+     "date": "2026-10-15",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7770.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-15",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7730.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.43,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-15",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7775.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-15",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7725.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.13,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-15",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7780.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-15",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7720.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.1,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-16",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7655.0,
+     "entry_mark": 3.5,
+     "high_1550_bar": 8.6,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 1.2685714285713143,
+     "pnl_usd_hold": 83.90999999995996
+    },
+    {
+     "date": "2026-10-16",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7645.0,
+     "entry_mark": 1.95,
+     "high_1550_bar": 0.53,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -205.08999999999997
+    },
+    {
+     "date": "2026-10-16",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7660.0,
+     "entry_mark": 0.83,
+     "high_1550_bar": 3.9,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -93.09
+    },
+    {
+     "date": "2026-10-16",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7640.0,
+     "entry_mark": 3.35,
+     "high_1550_bar": 1.23,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -345.09
+    },
+    {
+     "date": "2026-10-16",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7665.0,
+     "entry_mark": 1.0,
+     "high_1550_bar": 1.8,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -110.09000000000002
+    },
+    {
+     "date": "2026-10-16",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7635.0,
+     "entry_mark": 0.43,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -53.09
+    },
+    {
+     "date": "2026-10-16",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7670.0,
+     "entry_mark": 0.48,
+     "high_1550_bar": 0.68,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -58.089999999999996
+    },
+    {
+     "date": "2026-10-16",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7630.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-16",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7675.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.38,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-16",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7625.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-16",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7680.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-19",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7710.0,
+     "entry_mark": 0.73,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -83.09
+    },
+    {
+     "date": "2026-10-19",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7700.0,
+     "entry_mark": 0.78,
+     "high_1550_bar": 11.85,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 11.884615384615945,
+     "pnl_usd_hold": 838.9100000000435
+    },
+    {
+     "date": "2026-10-19",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7715.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-19",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7695.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 6.5,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 18.565217391306245,
+     "pnl_usd_hold": 393.9100000000437
+    },
+    {
+     "date": "2026-10-19",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7720.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-19",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7690.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 1.98,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-19",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7725.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-19",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7685.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.53,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    },
+    {
+     "date": "2026-10-19",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7730.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-19",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7680.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.23,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-19",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7735.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-19",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7675.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.33,
+     "reach_2x": true,
+     "reach_3x": true,
+     "reach_5x": true,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-20",
+     "kind": "call",
+     "offset": 5,
+     "strike": 7715.0,
+     "entry_mark": 1.35,
+     "high_1550_bar": 1.28,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -145.09000000000003
+    },
+    {
+     "date": "2026-10-20",
+     "kind": "put",
+     "offset": 5,
+     "strike": 7705.0,
+     "entry_mark": 2.2,
+     "high_1550_bar": 0.48,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -230.09000000000003
+    },
+    {
+     "date": "2026-10-20",
+     "kind": "call",
+     "offset": 10,
+     "strike": 7720.0,
+     "entry_mark": 0.43,
+     "high_1550_bar": 0.28,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -53.09
+    },
+    {
+     "date": "2026-10-20",
+     "kind": "put",
+     "offset": 10,
+     "strike": 7700.0,
+     "entry_mark": 0.43,
+     "high_1550_bar": 0.88,
+     "reach_2x": true,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -53.09
+    },
+    {
+     "date": "2026-10-20",
+     "kind": "call",
+     "offset": 15,
+     "strike": 7725.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-20",
+     "kind": "put",
+     "offset": 15,
+     "strike": 7695.0,
+     "entry_mark": 0.23,
+     "high_1550_bar": 0.08,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -33.09
+    },
+    {
+     "date": "2026-10-20",
+     "kind": "call",
+     "offset": 20,
+     "strike": 7730.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-20",
+     "kind": "put",
+     "offset": 20,
+     "strike": 7690.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.2,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-20",
+     "kind": "call",
+     "offset": 25,
+     "strike": 7735.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-20",
+     "kind": "put",
+     "offset": 25,
+     "strike": 7685.0,
+     "entry_mark": 0.13,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -23.09
+    },
+    {
+     "date": "2026-10-20",
+     "kind": "call",
+     "offset": 30,
+     "strike": 7740.0,
+     "entry_mark": 0.01,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -11.09
+    },
+    {
+     "date": "2026-10-20",
+     "kind": "put",
+     "offset": 30,
+     "strike": 7680.0,
+     "entry_mark": 0.08,
+     "high_1550_bar": 0.01,
+     "reach_2x": false,
+     "reach_3x": false,
+     "reach_5x": false,
+     "settle_multiple": 0.0,
+     "pnl_usd_hold": -18.09
+    }
+   ]
+  },
+  "count": {
+   "requested_by_workflow": [
+    "(i) OTM 5..30 x call/put reach 2x/3x/5x + sell-at-2x rule (12 option series x 4 statistics)",
+    "(ii) minute-of-day |r| profile",
+    "(iii) 15:59 close -> official close"
+   ],
+   "added_by_this_analysis": [
+    "(iv) S1 with 10-minute 15:40-bar close as entry stand-in (22 days)",
+    "(iv) the same with a parity filter |ATM dev| <= 0.5",
+    "D1 strict day-rule sensitivity for H1/H2",
+    "ratio and unconditional implied-vs-realized models next to the regression",
+    "S2-alt: largest abs t among predictors known at 15:49 (P1/P2/P4), entry 15:49",
+    "fee $1.13/contract/side (actual Robinhood SPXW fee, upper end) in the cost grid",
+    "1-day-block (iid) bootstrap sensitivity next to the 20-day-block CIs",
+    "S2 predictor selection repeated on D1 dates before the first D2 session",
+    "(ii-b) yearly size of the 15:45/15:50/15:55/15:59 bars",
+    "(vi) P3 placebo at 342 other minutes + P3 split at the 2019-04-01 NYSE switch",
+    "(vii) OTM 5..30 reach 2x/3x/5x from 10-minute bar highs (22 days)"
+   ],
+   "n_extra_variants": 14,
+   "not_counted": "power diagnostic (design arithmetic, no new test) and the per-day parity data-quality check (pre-registered check)"
+  }
+ }
+}

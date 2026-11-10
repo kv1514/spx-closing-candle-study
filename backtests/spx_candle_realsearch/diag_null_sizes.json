@@ -1,0 +1,10 @@
+{
+ "note": "post-hoc diagnostic, chosen after the registered run; decides nothing",
+ "shifts_checked": 118,
+ "every_kth_shift": 4,
+ "median_days_in_max_t_cell": 48.5,
+ "share_of_max_t_cells_under_100_days": 0.6186440677966102,
+ "min_days_large": 300,
+ "large_cells_null_max_t_median": 2.171240968970575,
+ "large_cells_null_max_t_q95": 3.3972905496087495
+}

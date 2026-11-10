@@ -1,0 +1,252 @@
+"""Write the paper fragment for the SPY-candle study straight from results.json (no hand-typed numbers).
+
+Run from the repository root:
+  .venv/bin/python -I backtests/spx_candle_spy/make_tex.py
+Reads backtests/spx_candle_spy/results.json and prelock_checks.json; writes
+papers/spx_candle_1550/spy_section_draft.tex.
+"""
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+H = ROOT / "backtests" / "spx_candle_spy"
+R = json.load(open(H / "results.json"))
+PL = json.load(open(H / "prelock_checks.json"))
+OUT = ROOT / "papers" / "spx_candle_1550" / "spy_section_draft.tex"
+C, V, D = R["cells"], R["verdicts"], R["descriptive"]
+T = R["exclusions_total"]
+
+
+def usd(x, n=0):
+    return f"${'+' if x >= 0 else '-'}\\dollar{abs(x):,.{n}f}$".replace(",", "{,}")
+
+
+def num(x, n=2):
+    return f"${x:+.{n}f}$"
+
+
+def pct(x, n=0):
+    return f"{100 * x:.{n}f}\\%"
+
+
+def n_(x):
+    return f"{x:,}".replace(",", "{,}")
+
+
+READ = {"retrospective criterion met": "criterion met", "retrospective criterion not met": "criterion not met",
+        "retrospective secondary criterion met": "criterion met", "insufficient evidence": "insufficient evidence",
+        "not assessed": "not assessed"}
+rows = []
+for key, cell, name in (("primary", "S60", "SPY body $\\ge 60\\%$"), ("secondary_A", "AGREE", "SPY and index both $\\ge 60\\%$"),
+                        ("secondary_B", "S70", "SPY body $\\ge 70\\%$")):
+    e = C[cell]
+    hp = "" if key == "primary" else f"{V['p_holm'][key]:.4f}"
+    rows.append(f"{name} & {n_(e['trades'])} & {usd(e['per_trade'], 2)} & {usd(e['per_trade_mid'], 2)} & {pct(e['won'])} & "
+                f"{usd(e['per_day'], 2)} & {num(e['t'])} & {hp} & {READ[V[key]]} \\\\")
+b60, fr = D["spy_60_70_band"], D["feed_rule_on_the_same_days"]
+rows.append("\\midrule")
+rows.append(f"SPY body 60--70\\% & {b60['trades']} & {usd(b60['per_trade'], 2)} & {usd(b60['per_trade_mid'], 2)} & {pct(b60['won'])} & & & & descriptive \\\\")
+rows.append(f"CFD rule, same days & {fr['trades']} & {usd(fr['per_trade'], 2)} & {usd(fr['per_trade_mid'], 2)} & {pct(fr['won'])} & & & & descriptive \\\\")
+verdict_rows = "\n".join(rows)
+
+t3 = D["three_candles"]
+yn = lambda s: "yes" if s == "yes" else "--"
+trows = []
+for k, e in t3["combinations"].items():
+    parts = [p.split()[-1] for p in k.split(" / ")]
+    cells = " & ".join(yn(p) for p in parts)
+    if e["trades"]:
+        trows.append(f"{cells} & {e['days']} & {e['trades']} & {usd(e['per_trade'], 2)} & {usd(e['per_trade_mid'], 2)} & {pct(e['won'])} & {num(e['t_simple'])} \\\\")
+    else:
+        trows.append(f"{cells} & {e['days']} & 0 & & & & \\\\")
+three_rows = "\n".join(trows)
+
+ten = []
+for k, e in D["spy_ratio_tenths"].items():
+    lab = k.replace("[", "").replace(")", "").replace("]", "").replace(", ", "--")
+    ten.append(f"{lab} & {e['days']} & {e['trades']} & {usd(e['per_trade'])} & {usd(e['per_trade_mid'])} & {pct(e['won'])} \\\\")
+tenth_rows = "\n".join(ten)
+
+years = sorted(C["S60"]["by_year"])
+yr = []
+for cell, name in (("S60", "SPY body $\\ge 60\\%$"), ("AGREE", "SPY and index both $\\ge 60\\%$"), ("S70", "SPY body $\\ge 70\\%$")):
+    yr.append(name + " & " + " & ".join(f"{usd(C[cell]['by_year'][y]['per_trade'])} ({C[cell]['by_year'][y]['trades']})" for y in years) + " \\\\")
+yr.append("SPY body 60--70\\% & " + " & ".join(f"{usd(b60['by_year'][y]['per_trade'])} ({b60['by_year'][y]['trades']})" for y in years) + " \\\\")
+year_rows = "\n".join(yr)
+
+mv = D["index_move_bps"]
+mrows = []
+for band, name in (("70%+", "SPY body $\\ge 70\\%$"), ("60-70%", "SPY body 60--70\\%"), ("under 60%", "SPY body $< 60\\%$")):
+    e = mv[band]
+    mrows.append(f"{name} & {e['days']} & {num(e['mean_bps'])} & {num(e['t_newey_west'])} & {pct(e['right_way_share_of_nonzero'])} \\\\")
+move_rows = "\n".join(mrows)
+
+crows = []
+for other, key in (("CFD", "ratio_spy_vs_feed"), ("Index", "ratio_spy_vs_index")):
+    cb = D[key]["cross_bands"]
+    for band, name in (("SPY 70%+", "SPY $\\ge 70\\%$"), ("SPY 60-70%", "SPY 60--70\\%"), ("SPY under 60%", "SPY $< 60\\%$")):
+        e = cb[band]
+        crows.append(f"{other} & {name} & {e['days']} & {pct(e['shares']['other under 60%'])} & {pct(e['shares']['other 60-70%'])} & {pct(e['shares']['other 70%+'])} \\\\")
+    if other == "CFD":
+        crows.append("\\midrule")
+cross_rows = "\n".join(crows)
+
+allthree = t3["combinations"]["SPY yes / index yes / feed yes"]
+sf, si = D["spy_vs_feed"]["groups"], D["spy_vs_index"]["groups"]
+ea = PL["against_earlier_spy_archives"]["yahoo_1m"]
+cv = D["coverage"]["feed_rule_per_day"]
+sub = PL["prices_in_1550_bars_not_on_a_whole_cent"]
+c70 = D["ratio_spy_vs_feed"]["cross_bands"]["SPY 70%+"]["shares"]
+pos_years = sum(1 for y in years if C["S70"]["by_year"][y]["per_trade"] > 0)
+
+tex = f"""% Draft section for main.tex: the rule read from the SPY candle (pre-registered study, run 2026-11-10 UTC).
+% GENERATED by backtests/spx_candle_spy/make_tex.py from backtests/spx_candle_spy/results.json and prelock_checks.json.
+% Do not edit numbers by hand; re-run the script. Macros used: \\dollar, \\ITM.
+% Pre-registered: preregistration/spx_candle_spy.md, SHA-256 {R['prereg_sha256'][:8]}..., locked 2026-11-10T05:01:33Z.
+% Period 2021-01-01..2026-10-20. The three lines of tab:spycandle above its rule are registered; the rest is descriptive.
+
+\\section{{The rule on the SPY candle}}
+\\label{{sec:spycandle}}
+
+The index-candle study left a practical gap: the candle that met its criterion, the CFD's, cannot be seen live,
+and the candle that can, the index's, did not meet it. The CFD follows the futures. SPY, the exchange-traded fund,
+trades live and follows them as well. A further pre-registered study read the 15:50 candle from archived one-minute
+SPY bars and traded the same SPXW option at the same prices. It was the third candle source evaluated against the
+same option outcomes, and its second line was chosen after the agreement of two candles had been seen to do well.
+The plan was locked before any SPY candle was joined with a price, which prevents further adaptation but does not
+remove that selection. Its lines are therefore retrospective numerical criteria, not an independent confirmation.
+
+\\paragraph{{Design.}} The archive (CNBC, the vendor of the index archive) holds a valid SPY 15:50 bar on
+{n_(T['eligible'])} of the {n_(T['denominator'])} sessions with option quotes and an official close
+({100 * R['coverage']:.1f}\\%). Checks made before the lock, on price levels only, showed that the bar labelled 15:50
+is the same minute as the index bar in every year, that the bars are traded prices and not dividend-adjusted
+(their 15:59 close equals the unadjusted daily close at the median in every year), and that
+{pct(sub['off_cent'] / sub['prices'])} of the prices are sub-penny prints, which are rounded to the cent. They also showed
+that an ETF candle is vendor-dependent: against a second vendor's SPY bars on {ea['sessions']} sessions, the four
+prices of the 15:50 bar agreed to the cent on {ea['equal_in_whole_cents']}, with differences of up to
+{ea['max_abs_diff']['open']:.2f} elsewhere. The signal is the same whole-cent test applied to the SPY bar, and the
+trade is \\ITM{{10}} in the SPY candle's direction at the 15:51:00 ask, held to settlement. The primary line asks
+whether the daily series has a positive mean with Newey--West $t \\ge 2.0$; two secondary lines (the SPY and index
+candles both signalling in the same direction, and the SPY candle's band of 70\\% or more) also require a
+Holm-adjusted $p \\le 0.05$.
+
+\\begin{{table}}[h]
+\\centering
+\\small
+\\caption{{The rule read from the SPY candle, 2021-01-01 to 2026-10-20, one \\ITM{{10}} contract at the 15:51 ask in
+the SPY candle's direction, held to settlement. The first row is the primary line and the next two the secondary
+lines; Holm $p$ is adjusted across those two. Per day is the mean of the daily series; $t$ is Newey--West, lag 5.
+The rows below the rule are descriptive. Pre-registered, retrospective.}}
+\\label{{tab:spycandle}}
+\\begin{{tabular}}{{@{{}}lrrrrrrrl@{{}}}}
+\\toprule
+Signal & Trades & \\$/trade & At mid & Won & \\$/day & $t$ & Holm $p$ & Reading \\\\
+\\midrule
+{verdict_rows}
+\\bottomrule
+\\end{{tabular}}
+\\end{{table}}
+
+\\paragraph{{Verdicts.}} All three registered lines met their retrospective criteria
+(Table~\\ref{{tab:spycandle}}). Read from the SPY candle the rule made {usd(C['S60']['per_trade'], 2)} a trade
+($t = {C['S60']['t']:.2f}$), about what the CFD candle made on the same days and nearly twice what the index
+candle made. The band of 70\\% or more was the strongest line and was positive in {pos_years} of the {len(years)}
+years (Table~\\ref{{tab:spyyears}}); the 60--70\\% band made nothing, as on the other two sources.
+
+\\begin{{table}}[h]
+\\centering
+\\small
+\\caption{{Which of the three candles show a strong body. \\ITM{{10}} in the direction of the first signalling candle
+in the order SPY, index, CFD; {n_(t3['population_days'])} sessions with all three candles; \\dollar\\ per trade; $t$
+is a simple $t$-statistic. No session had signalling candles in opposite directions. Descriptive.}}
+\\label{{tab:spythree}}
+\\begin{{tabular}}{{@{{}}cccrrrrrr@{{}}}}
+\\toprule
+SPY & Index & CFD & Days & Trades & Ask & Mid & Won & $t$ \\\\
+\\midrule
+{three_rows}
+\\bottomrule
+\\end{{tabular}}
+\\end{{table}}
+
+\\paragraph{{Three candles (descriptive).}} A strong SPY candle is nearly always a strong CFD candle:
+{pct(1 - c70['other under 60%'])} of SPY candles of 70\\% or more were CFD signals (Table~\\ref{{tab:spycross}}). The
+gain was confined to sessions on which all three candles showed a strong body
+({allthree['trades']} trades, {usd(allthree['per_trade'], 2)}; Table~\\ref{{tab:spythree}}), and every other
+combination lost on average, including the index and CFD candles signalling without SPY. No single row of that
+table is significant on its own. Together they repeat the finding of Section~\\ref{{sec:realindex}}: a strong body on
+only some of the candles is not the signal. By the size of the SPY candle's body
+(Table~\\ref{{tab:spytenths}}) the trade was profitable from 70\\% upward, a lower edge than on the index candle,
+and the index moved in the SPY candle's direction after candles of 70\\% or more (Table~\\ref{{tab:spymove}}).
+
+\\begin{{table}}[h]
+\\centering
+\\small
+\\caption{{The rule read from the SPY candle, by year: \\dollar\\ per trade at the ask (trades). Descriptive.}}
+\\label{{tab:spyyears}}
+\\begin{{tabular}}{{@{{}}l{'r' * len(years)}@{{}}}}
+\\toprule
+Signal & {' & '.join(years)} \\\\
+\\midrule
+{year_rows}
+\\bottomrule
+\\end{{tabular}}
+\\end{{table}}
+
+\\begin{{table}}[h]
+\\centering
+\\small
+\\caption{{The SPY candle's body-to-range ratio in tenths: \\ITM{{10}} in the candle's direction whatever the ratio,
+2021--2026, \\dollar\\ per trade. A ratio of exactly 1 is in the last row. Descriptive.}}
+\\label{{tab:spytenths}}
+\\begin{{tabular}}{{@{{}}lrrrrr@{{}}}}
+\\toprule
+Body / range & Days & Trades & Ask & Mid & Won \\\\
+\\midrule
+{tenth_rows}
+\\bottomrule
+\\end{{tabular}}
+\\end{{table}}
+
+\\begin{{table}}[h]
+\\centering
+\\small
+\\caption{{Where a SPY candle's band falls on the other two candles: the share of each SPY band's sessions in each
+band of the CFD candle and of the index candle. Descriptive.}}
+\\label{{tab:spycross}}
+\\begin{{tabular}}{{@{{}}llrrrr@{{}}}}
+\\toprule
+Other candle & SPY band & Days & Other $< 60\\%$ & Other 60--70\\% & Other $\\ge 70\\%$ \\\\
+\\midrule
+{cross_rows}
+\\bottomrule
+\\end{{tabular}}
+\\end{{table}}
+
+\\begin{{table}}[h]
+\\centering
+\\small
+\\caption{{The index move after the SPY candle, 2021--2026: 15:51 open to 15:59 close of the archived index bars, in
+the SPY candle's direction, in basis points; $t$ is Newey--West, lag 5; ``Right'' is the share of non-zero moves in
+the candle's direction. Descriptive.}}
+\\label{{tab:spymove}}
+\\begin{{tabular}}{{@{{}}lrrrr@{{}}}}
+\\toprule
+SPY candle & Days & bps & $t$ & Right \\\\
+\\midrule
+{move_rows}
+\\bottomrule
+\\end{{tabular}}
+\\end{{table}}
+
+\\paragraph{{Limits.}} This is the third source tried on the same outcomes, so its $t$-statistics overstate what a
+fresh sample would support, and the days are not new. The result belongs to one vendor's archived SPY candle: a
+second vendor's candle differed by a cent or two on about a third of the sessions compared, enough to move a
+borderline candle across a band edge. The {len(D['coverage']['missing_days'])} sessions without an archived SPY bar
+were poor days for the CFD rule ({usd(cv['without_bar']['mean'])} a day against {usd(cv['with_bar']['mean'])} on the
+rest), so the estimates are slightly flattered. The three-candle table, the tenths and the yearly figures were
+read after the result. The entry is the quote at the instant the candle closes. Since the run, the live alert
+reads the SPY candle as well as the index candle and records both, so the comparison continues on new days.
+"""
+OUT.write_text(tex)
+print("wrote", OUT, len(tex), "chars")

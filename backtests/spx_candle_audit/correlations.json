@@ -1,0 +1,514 @@
+{
+ "history_2013_2020": {
+  "days": 1785,
+  "signal_days": 908,
+  "all_days": {
+   "body_pct": {
+    "index_move_bps": {
+     "n": 1785,
+     "pearson": 0.06383777213989442,
+     "pearson_p": 0.006976551927202088,
+     "spearman": 0.04353127739730196,
+     "spearman_p": 0.06595232701687663,
+     "share_of_variation_explained": 0.0040752611517850795
+    },
+    "went_the_candles_way": {
+     "n": 1770,
+     "pearson": 0.018185800861398312,
+     "pearson_p": 0.4444953267874546,
+     "spearman": 0.017488766681625904,
+     "spearman_p": 0.462149023241785,
+     "share_of_variation_explained": 0.0003307233529704356
+    }
+   },
+   "body_size_bps": {
+    "index_move_bps": {
+     "n": 1785,
+     "pearson": 0.10152711379700924,
+     "pearson_p": 1.7269693527735684e-05,
+     "spearman": 0.06053263179198573,
+     "spearman_p": 0.010527206835482146,
+     "share_of_variation_explained": 0.010307754835950863
+    },
+    "went_the_candles_way": {
+     "n": 1770,
+     "pearson": 0.021159406169346348,
+     "pearson_p": 0.37363994833699316,
+     "spearman": 0.02838647156328993,
+     "spearman_p": 0.23261312993146752,
+     "share_of_variation_explained": 0.0004477204694393723
+    }
+   },
+   "range_size_bps": {
+    "index_move_bps": {
+     "n": 1785,
+     "pearson": 0.04524282894892904,
+     "pearson_p": 0.05598971893332992,
+     "spearman": 0.03400195353660154,
+     "spearman_p": 0.15101193889233705,
+     "share_of_variation_explained": 0.0020469135713020513
+    },
+    "went_the_candles_way": {
+     "n": 1770,
+     "pearson": 0.01936467117234483,
+     "pearson_p": 0.41553095358228653,
+     "spearman": 0.013249233432971035,
+     "spearman_p": 0.5774973386813382,
+     "share_of_variation_explained": 0.0003749904896130429
+    }
+   }
+  },
+  "signal_days_only": {
+   "body_pct": {
+    "index_move_bps": {
+     "n": 908,
+     "pearson": -0.053401182526536514,
+     "pearson_p": 0.1078196867328106,
+     "spearman": -0.04351244484765373,
+     "spearman_p": 0.1902037971046954,
+     "share_of_variation_explained": 0.0028516862952324687
+    },
+    "went_the_candles_way": {
+     "n": 901,
+     "pearson": -0.034125478073159424,
+     "pearson_p": 0.30620906139582377,
+     "spearman": -0.03635346381666062,
+     "spearman_p": 0.2756888719189955,
+     "share_of_variation_explained": 0.0011645482537216846
+    }
+   },
+   "body_size_bps": {
+    "index_move_bps": {
+     "n": 908,
+     "pearson": 0.18948923882966867,
+     "pearson_p": 8.703734097112888e-09,
+     "spearman": 0.07531933528268087,
+     "spearman_p": 0.02322587471482708,
+     "share_of_variation_explained": 0.035906171632247214
+    },
+    "went_the_candles_way": {
+     "n": 901,
+     "pearson": 0.01670277610234475,
+     "pearson_p": 0.6165819160621491,
+     "spearman": 0.02587130741880568,
+     "spearman_p": 0.4379721751999751,
+     "share_of_variation_explained": 0.00027898272952505884
+    }
+   },
+   "range_size_bps": {
+    "index_move_bps": {
+     "n": 908,
+     "pearson": 0.2100768212711876,
+     "pearson_p": 1.6265815354764045e-10,
+     "spearman": 0.07814826579992139,
+     "spearman_p": 0.018512564980400364,
+     "share_of_variation_explained": 0.044132270835406495
+    },
+    "went_the_candles_way": {
+     "n": 901,
+     "pearson": 0.024621642571873575,
+     "pearson_p": 0.4604260751029265,
+     "spearman": 0.029158727024636715,
+     "spearman_p": 0.3819992776311129,
+     "share_of_variation_explained": 0.0006062252829370972
+    }
+   }
+  },
+  "body_pct_vs_body_size": {
+   "n": 1785,
+   "pearson": 0.29768512650190493,
+   "pearson_p": 7.47640080441108e-38,
+   "spearman": 0.6174405548061946,
+   "spearman_p": 4.284143918730867e-188,
+   "share_of_variation_explained": 0.08861643454045515
+  },
+  "signal_days_by_third_of_body_pct": {
+   "lowest third": {
+    "days": 303,
+    "body_pct_from": 0.6,
+    "body_pct_to": 0.7552476910159963,
+    "mean_index_move_bps": 3.9539422588992092
+   },
+   "middle third": {
+    "days": 302,
+    "body_pct_from": 0.7572727272727616,
+    "body_pct_to": 0.9300000000000584,
+    "mean_index_move_bps": 1.3794974130077728
+   },
+   "highest third": {
+    "days": 303,
+    "body_pct_from": 0.9303278688513514,
+    "body_pct_to": 1.0,
+    "mean_index_move_bps": 1.9118610690630946
+   }
+  }
+ },
+ "history_2021_2026": {
+  "days": 1445,
+  "signal_days": 644,
+  "all_days": {
+   "body_pct": {
+    "index_move_bps": {
+     "n": 1445,
+     "pearson": 0.08174857720681403,
+     "pearson_p": 0.0018706291008277125,
+     "spearman": 0.06697127284488867,
+     "spearman_p": 0.010882620106900115,
+     "share_of_variation_explained": 0.006682829875338434
+    },
+    "went_the_candles_way": {
+     "n": 1444,
+     "pearson": 0.06320580680448384,
+     "pearson_p": 0.016299346225104507,
+     "spearman": 0.06403221579872775,
+     "spearman_p": 0.014948898183783758,
+     "share_of_variation_explained": 0.003994974013805736
+    },
+    "option_pnl_at_ask": {
+     "n": 1318,
+     "pearson": 0.07736945847580676,
+     "pearson_p": 0.004948149906121238,
+     "spearman": 0.06543083503977884,
+     "spearman_p": 0.017515179806801257,
+     "share_of_variation_explained": 0.005986033104839586
+    },
+    "option_trade_won": {
+     "n": 1318,
+     "pearson": 0.0697511099676726,
+     "pearson_p": 0.011310842205850727,
+     "spearman": 0.07060553889501371,
+     "spearman_p": 0.010345839112374104,
+     "share_of_variation_explained": 0.004865217341722356
+    }
+   },
+   "body_size_bps": {
+    "index_move_bps": {
+     "n": 1445,
+     "pearson": 0.10275144852429641,
+     "pearson_p": 9.119915783432962e-05,
+     "spearman": 0.08411186778308914,
+     "spearman_p": 0.0013730228505472145,
+     "share_of_variation_explained": 0.010557860173841135
+    },
+    "went_the_candles_way": {
+     "n": 1444,
+     "pearson": 0.05670086566350054,
+     "pearson_p": 0.03120095126018267,
+     "spearman": 0.06577870342612001,
+     "spearman_p": 0.01241463066757192,
+     "share_of_variation_explained": 0.003214988166990335
+    },
+    "option_pnl_at_ask": {
+     "n": 1318,
+     "pearson": 0.09231403309481066,
+     "pearson_p": 0.000792558824962953,
+     "spearman": 0.051905023010383106,
+     "spearman_p": 0.05958446440366702,
+     "share_of_variation_explained": 0.008521880706229798
+    },
+    "option_trade_won": {
+     "n": 1318,
+     "pearson": 0.04785527495926494,
+     "pearson_p": 0.08244059380109225,
+     "spearman": 0.060530792132807404,
+     "spearman_p": 0.027987875217387742,
+     "share_of_variation_explained": 0.00229012734142685
+    }
+   },
+   "range_size_bps": {
+    "index_move_bps": {
+     "n": 1445,
+     "pearson": 0.06548036305724615,
+     "pearson_p": 0.012787493944403408,
+     "spearman": 0.07498688019693843,
+     "spearman_p": 0.004344001036486442,
+     "share_of_variation_explained": 0.004287677946108767
+    },
+    "went_the_candles_way": {
+     "n": 1444,
+     "pearson": 0.03516925179934487,
+     "pearson_p": 0.18165146385174738,
+     "spearman": 0.042057968941740034,
+     "spearman_p": 0.11014858627645228,
+     "share_of_variation_explained": 0.0012368762721257222
+    },
+    "option_pnl_at_ask": {
+     "n": 1318,
+     "pearson": 0.0422019402927645,
+     "pearson_p": 0.12568559382268787,
+     "spearman": 0.024460278900359605,
+     "spearman_p": 0.3749159259768164,
+     "share_of_variation_explained": 0.0017810037644740598
+    },
+    "option_trade_won": {
+     "n": 1318,
+     "pearson": 0.01744084025446217,
+     "pearson_p": 0.5269790061377754,
+     "spearman": 0.03820814315294822,
+     "spearman_p": 0.1656526278051243,
+     "share_of_variation_explained": 0.00030418290878166804
+    }
+   }
+  },
+  "signal_days_only": {
+   "body_pct": {
+    "index_move_bps": {
+     "n": 644,
+     "pearson": 0.04198753161991411,
+     "pearson_p": 0.28736345137927444,
+     "spearman": 0.02043099125229903,
+     "spearman_p": 0.6047881955286777,
+     "share_of_variation_explained": 0.001762952811533287
+    },
+    "went_the_candles_way": {
+     "n": 644,
+     "pearson": 0.018746731577715996,
+     "pearson_p": 0.6348894628155141,
+     "spearman": 0.019597693006874518,
+     "spearman_p": 0.6196015131349639,
+     "share_of_variation_explained": 0.0003514399448469341
+    },
+    "option_pnl_at_ask": {
+     "n": 585,
+     "pearson": 0.05595628321455011,
+     "pearson_p": 0.1765140985877229,
+     "spearman": 0.0539013443063926,
+     "spearman_p": 0.192965036885634,
+     "share_of_variation_explained": 0.0031311056311869425
+    },
+    "option_trade_won": {
+     "n": 585,
+     "pearson": 0.045152011512563955,
+     "pearson_p": 0.27558023580207736,
+     "spearman": 0.04520019554074914,
+     "spearman_p": 0.275067674928902,
+     "share_of_variation_explained": 0.002038704143630708
+    }
+   },
+   "body_size_bps": {
+    "index_move_bps": {
+     "n": 644,
+     "pearson": 0.1265662279625697,
+     "pearson_p": 0.0012881665434276274,
+     "spearman": 0.10751157646351593,
+     "spearman_p": 0.006315072405007528,
+     "share_of_variation_explained": 0.016019010060673158
+    },
+    "went_the_candles_way": {
+     "n": 644,
+     "pearson": 0.04496079255355029,
+     "pearson_p": 0.25456279068074783,
+     "spearman": 0.03559538309661718,
+     "spearman_p": 0.36714161358741865,
+     "share_of_variation_explained": 0.002021472867043383
+    },
+    "option_pnl_at_ask": {
+     "n": 585,
+     "pearson": 0.12308654501088659,
+     "pearson_p": 0.0028632944393963307,
+     "spearman": 0.07935874882216748,
+     "spearman_p": 0.0550662625572453,
+     "share_of_variation_explained": 0.01515029756271701
+    },
+    "option_trade_won": {
+     "n": 585,
+     "pearson": 0.03487067682322566,
+     "pearson_p": 0.39986561249839453,
+     "spearman": 0.04308673762050355,
+     "spearman_p": 0.2981618207767064,
+     "share_of_variation_explained": 0.001215964102109847
+    }
+   },
+   "range_size_bps": {
+    "index_move_bps": {
+     "n": 644,
+     "pearson": 0.12013999325145415,
+     "pearson_p": 0.0022584495782678156,
+     "spearman": 0.10903955957208927,
+     "spearman_p": 0.00560560452115251,
+     "share_of_variation_explained": 0.014433617978459448
+    },
+    "went_the_candles_way": {
+     "n": 644,
+     "pearson": 0.04220948419899884,
+     "pearson_p": 0.2848208495800392,
+     "spearman": 0.030831311889571125,
+     "spearman_p": 0.43475740678769453,
+     "share_of_variation_explained": 0.0017816405563455325
+    },
+    "option_pnl_at_ask": {
+     "n": 585,
+     "pearson": 0.10612460084470937,
+     "pearson_p": 0.010211653229542593,
+     "spearman": 0.07187655801241055,
+     "spearman_p": 0.08238878963726196,
+     "share_of_variation_explained": 0.01126243090444889
+    },
+    "option_trade_won": {
+     "n": 585,
+     "pearson": 0.022322012109845028,
+     "pearson_p": 0.590018086900396,
+     "spearman": 0.03370593046655791,
+     "spearman_p": 0.4158023674185606,
+     "share_of_variation_explained": 0.0004982722246320681
+    }
+   }
+  },
+  "body_pct_vs_body_size": {
+   "n": 1445,
+   "pearson": 0.5986980521337689,
+   "pearson_p": 2.927506376805248e-141,
+   "spearman": 0.8026765462002883,
+   "spearman_p": 0.0,
+   "share_of_variation_explained": 0.3584393576287691
+  },
+  "signal_days_by_third_of_body_pct": {
+   "lowest third": {
+    "days": 215,
+    "body_pct_from": 0.6000811194482936,
+    "body_pct_to": 0.7387802071348393,
+    "mean_index_move_bps": 1.842713723537475,
+    "option_trades": 191,
+    "option_pnl_at_ask": 19.019947643979144
+   },
+   "middle third": {
+    "days": 214,
+    "body_pct_from": 0.7387931034482276,
+    "body_pct_to": 0.8691910499139334,
+    "mean_index_move_bps": 2.8088071653913294,
+    "option_trades": 201,
+    "option_pnl_at_ask": 101.60651741293279
+   },
+   "highest third": {
+    "days": 215,
+    "body_pct_from": 0.8704697986575576,
+    "body_pct_to": 1.0,
+    "mean_index_move_bps": 2.4356662105296594,
+    "option_trades": 193,
+    "option_pnl_at_ask": 79.83227979274632
+   }
+  }
+ },
+ "two_feeds": {
+  "days": 36,
+  "at_1550": {
+   "n": 36,
+   "pearson": 0.9004432824305786,
+   "pearson_p": 7.647350894848007e-14,
+   "spearman": 0.8715572715572715,
+   "spearman_p": 4.618327761390083e-12,
+   "share_of_variation_explained": 0.8107981048743547
+  },
+  "candles_1530_1559": {
+   "n": 1080,
+   "pearson": 0.7616105229667396,
+   "pearson_p": 2.5508027196403417e-205,
+   "spearman": 0.7637464624681376,
+   "spearman_p": 3.822050588137522e-207,
+   "share_of_variation_explained": 0.5800505886936705
+  },
+  "line_feed_pct_from_real_pct": {
+   "intercept": 0.09993363594995397,
+   "slope": 0.7196242213475398,
+   "feed_pct_when_real_is_0.60": 0.5317081687584778,
+   "feed_pct_when_real_is_0.70": 0.6036705908932318,
+   "real_pct_where_feed_is_0.60": 0.6948992949593075
+  },
+  "mean_gap_real_minus_feed_at_1550": 0.06559920068842634
+ },
+ "forward_log": {
+  "days": 36,
+  "first": "2026-09-21",
+  "last": "2026-11-09",
+  "days_after_2026-10-20_(not_in_any_backtest)": 14,
+  "real_pct_vs_move_pts": {
+   "n": 36,
+   "pearson": 0.010892609960398314,
+   "pearson_p": 0.9497259547588571,
+   "spearman": -0.0051486678248628855,
+   "spearman_p": 0.9762250225337183,
+   "share_of_variation_explained": 0.00011864895174936856
+  },
+  "feed_pct_vs_move_pts": {
+   "n": 36,
+   "pearson": -0.023799393723742485,
+   "pearson_p": 0.8904173114236332,
+   "spearman": -0.017377872212089952,
+   "spearman_p": 0.9198720294570377,
+   "share_of_variation_explained": 0.0005664111416177132
+  },
+  "by_real_band": {
+   "70%+": {
+    "days": 17,
+    "went_the_candles_way": 11,
+    "mean_move_pts": 1.5335294117647063,
+    "median_move_pts": 1.24,
+    "alerted_trades_priced": 0,
+    "alerted_pnl_at_ask_total": null
+   },
+   "60-70%": {
+    "days": 3,
+    "went_the_candles_way": 2,
+    "mean_move_pts": 3.873333333333333,
+    "median_move_pts": 0.42,
+    "alerted_trades_priced": 1,
+    "alerted_pnl_at_ask_total": 985.91
+   },
+   "under 60%": {
+    "days": 16,
+    "went_the_candles_way": 10,
+    "mean_move_pts": 1.080625,
+    "median_move_pts": 1.795,
+    "alerted_trades_priced": 0,
+    "alerted_pnl_at_ask_total": null
+   }
+  },
+  "by_feed_band": {
+   "70%+": {
+    "days": 13,
+    "went_the_candles_way": 8,
+    "mean_move_pts": 1.5484615384615386,
+    "median_move_pts": 3.72
+   },
+   "60-70%": {
+    "days": 1,
+    "went_the_candles_way": 1,
+    "mean_move_pts": 1.24,
+    "median_move_pts": 1.24
+   },
+   "under 60%": {
+    "days": 22,
+    "went_the_candles_way": 14,
+    "mean_move_pts": 1.5277272727272726,
+    "median_move_pts": 1.315
+   }
+  },
+  "cross": {
+   "real 60-70% / feed under 60%": {
+    "days": 3,
+    "went_the_candles_way": 2,
+    "mean_move_pts": 3.873333333333333
+   },
+   "real 70%+ / feed 60-70%": {
+    "days": 1,
+    "went_the_candles_way": 1,
+    "mean_move_pts": 1.24
+   },
+   "real 70%+ / feed 70%+": {
+    "days": 13,
+    "went_the_candles_way": 8,
+    "mean_move_pts": 1.5484615384615386
+   },
+   "real 70%+ / feed under 60%": {
+    "days": 3,
+    "went_the_candles_way": 2,
+    "mean_move_pts": 1.5666666666666667
+   },
+   "real under 60% / feed under 60%": {
+    "days": 16,
+    "went_the_candles_way": 10,
+    "mean_move_pts": 1.0806250000000002
+   }
+  }
+ }
+}

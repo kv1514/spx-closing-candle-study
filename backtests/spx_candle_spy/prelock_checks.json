@@ -1,0 +1,296 @@
+{
+ "base_dates": 1446,
+ "by_year": {
+  "2021": {
+   "base": 251,
+   "no_expiry_marker": 93,
+   "no_quote_file_no_marker": 0,
+   "no_close": 0,
+   "denominator": 158,
+   "no_spy_file": 0,
+   "no_1550_bar": 2,
+   "invalid_1550_bar": 0,
+   "eligible": 156,
+   "eligible_with_index_bar": 152
+  },
+  "2022": {
+   "base": 250,
+   "no_expiry_marker": 31,
+   "no_quote_file_no_marker": 0,
+   "no_close": 0,
+   "denominator": 219,
+   "no_spy_file": 0,
+   "no_1550_bar": 2,
+   "invalid_1550_bar": 0,
+   "eligible": 217,
+   "eligible_with_index_bar": 215
+  },
+  "2023": {
+   "base": 248,
+   "no_expiry_marker": 0,
+   "no_quote_file_no_marker": 0,
+   "no_close": 0,
+   "denominator": 248,
+   "no_spy_file": 0,
+   "no_1550_bar": 2,
+   "invalid_1550_bar": 0,
+   "eligible": 246,
+   "eligible_with_index_bar": 242
+  },
+  "2024": {
+   "base": 249,
+   "no_expiry_marker": 0,
+   "no_quote_file_no_marker": 0,
+   "no_close": 0,
+   "denominator": 249,
+   "no_spy_file": 0,
+   "no_1550_bar": 0,
+   "invalid_1550_bar": 0,
+   "eligible": 249,
+   "eligible_with_index_bar": 247
+  },
+  "2025": {
+   "base": 247,
+   "no_expiry_marker": 0,
+   "no_quote_file_no_marker": 0,
+   "no_close": 0,
+   "denominator": 247,
+   "no_spy_file": 0,
+   "no_1550_bar": 3,
+   "invalid_1550_bar": 0,
+   "eligible": 244,
+   "eligible_with_index_bar": 244
+  },
+  "2026": {
+   "base": 201,
+   "no_expiry_marker": 0,
+   "no_quote_file_no_marker": 0,
+   "no_close": 0,
+   "denominator": 201,
+   "no_spy_file": 0,
+   "no_1550_bar": 1,
+   "invalid_1550_bar": 0,
+   "eligible": 200,
+   "eligible_with_index_bar": 200
+  }
+ },
+ "total": {
+  "base": 1446,
+  "no_expiry_marker": 124,
+  "no_quote_file_no_marker": 0,
+  "no_close": 0,
+  "denominator": 1322,
+  "no_spy_file": 0,
+  "no_1550_bar": 10,
+  "invalid_1550_bar": 0,
+  "eligible": 1312,
+  "eligible_with_index_bar": 1300
+ },
+ "coverage": 0.9924357034795764,
+ "requests_per_filled_session": {
+  "1": 587,
+  "2": 244,
+  "3": 208,
+  "4": 128,
+  "5": 93,
+  "6": 54,
+  "7": 35,
+  "8": 24,
+  "9": 21,
+  "10": 7,
+  "11": 6,
+  "12": 10,
+  "13": 5,
+  "14": 5,
+  "16": 2,
+  "17": 5,
+  "19": 1
+ },
+ "answering_window": {
+  "1545-1600": 374,
+  "first request 1545-1600": 587,
+  "0930-1600": 474
+ },
+ "scaled_spy_1550_close_vs_index_close_at": {
+  "2021": {
+   "n": 244,
+   "15:49": 2.172,
+   "15:50": 0.283,
+   "15:51": 1.176
+  },
+  "2022": {
+   "n": 246,
+   "15:49": 3.792,
+   "15:50": 0.366,
+   "15:51": 2.027
+  },
+  "2023": {
+   "n": 242,
+   "15:49": 2.058,
+   "15:50": 0.274,
+   "15:51": 1.2
+  },
+  "2024": {
+   "n": 247,
+   "15:49": 2.432,
+   "15:50": 0.34,
+   "15:51": 1.529
+  },
+  "2025": {
+   "n": 244,
+   "15:49": 3.962,
+   "15:50": 0.412,
+   "15:51": 1.893
+  },
+  "2026": {
+   "n": 200,
+   "15:49": 3.327,
+   "15:50": 0.394,
+   "15:51": 1.615
+  }
+ },
+ "years_where_1550_is_not_the_closest_minute": [],
+ "against_earlier_spy_archives": {
+  "recorder bars_1m": {
+   "sessions": 21,
+   "first": "2026-09-22",
+   "last": "2026-10-20",
+   "exactly_equal": 0,
+   "equal_in_whole_cents": 13,
+   "median_abs_diff": {
+    "open": 0.0,
+    "high": 0.0,
+    "low": 0.0,
+    "close": 0.0
+   },
+   "max_abs_diff": {
+    "open": 0.02,
+    "high": 0.0075,
+    "low": 0.005,
+    "close": 0.01
+   },
+   "mean_abs_gap_cnbc_1550_close_vs_other_close_at": {
+    "15:49": 0.334,
+    "15:50": 0.0014,
+    "15:51": 0.1494
+   }
+  },
+  "yahoo_1m": {
+   "sessions": 22,
+   "first": "2026-09-21",
+   "last": "2026-10-20",
+   "exactly_equal": 0,
+   "equal_in_whole_cents": 14,
+   "median_abs_diff": {
+    "open": 0.0,
+    "high": 0.0,
+    "low": 0.0,
+    "close": 0.0
+   },
+   "max_abs_diff": {
+    "open": 0.02,
+    "high": 0.0075,
+    "low": 0.005,
+    "close": 0.01
+   },
+   "mean_abs_gap_cnbc_1550_close_vs_other_close_at": {
+    "15:49": 0.3343,
+    "15:50": 0.0014,
+    "15:51": 0.1435
+   }
+  }
+ },
+ "cnbc_1559_close_over_unadjusted_daily_close": {
+  "2021": {
+   "n": 248,
+   "median": 0.99994,
+   "min": 0.9991,
+   "max": 1.00171
+  },
+  "2022": {
+   "n": 248,
+   "median": 1.0,
+   "min": 0.99893,
+   "max": 1.00185
+  },
+  "2023": {
+   "n": 246,
+   "median": 1.0,
+   "min": 0.99948,
+   "max": 1.00031
+  },
+  "2024": {
+   "n": 249,
+   "median": 0.99996,
+   "min": 0.99924,
+   "max": 1.00081
+  },
+  "2025": {
+   "n": 244,
+   "median": 1.0,
+   "min": 0.99028,
+   "max": 1.00171
+  },
+  "2026": {
+   "n": 200,
+   "median": 0.99993,
+   "min": 0.99767,
+   "max": 1.00449
+  }
+ },
+ "prices_in_1550_bars_not_on_a_whole_cent": {
+  "prices": 5740,
+  "off_cent": 927
+ },
+ "raw_samples": {
+  "2021-03-15": {
+   "symbol": "SPY",
+   "bars": 15,
+   "all_on_the_minute": true,
+   "all_dated_that_day": true,
+   "duplicate_labels": 0,
+   "epoch_of_1550_bar_new_york": "2021-03-15 15:50:00 EDT",
+   "equals_stored_file": true
+  },
+  "2023-03-13": {
+   "symbol": "SPY",
+   "bars": 15,
+   "all_on_the_minute": true,
+   "all_dated_that_day": true,
+   "duplicate_labels": 0,
+   "epoch_of_1550_bar_new_york": "2023-03-13 15:50:00 EDT",
+   "equals_stored_file": true
+  },
+  "2026-03-06": {
+   "symbol": "SPY",
+   "bars": 15,
+   "all_on_the_minute": true,
+   "all_dated_that_day": true,
+   "duplicate_labels": 0,
+   "epoch_of_1550_bar_new_york": "2026-03-06 15:50:00 EST",
+   "equals_stored_file": true
+  },
+  "2026-03-09": {
+   "symbol": "SPY",
+   "bars": 15,
+   "all_on_the_minute": true,
+   "all_dated_that_day": true,
+   "duplicate_labels": 0,
+   "epoch_of_1550_bar_new_york": "2026-03-09 15:50:00 EDT",
+   "equals_stored_file": true
+  },
+  "2026-10-20": {
+   "symbol": "SPY",
+   "bars": 15,
+   "all_on_the_minute": true,
+   "all_dated_that_day": true,
+   "duplicate_labels": 0,
+   "epoch_of_1550_bar_new_york": "2026-10-20 15:50:00 EDT",
+   "equals_stored_file": true
+  }
+ },
+ "manifest_sha256": "cfe31add76511c279ac30cfed6687c43103a8c635ab440768840ba1bc6b8912a",
+ "manifest_files": 1446,
+ "index_manifest_sha256": "50d1fc7a3a597f19a64887149f280f5b54e0699e47f0412a3a3f2ce6ab6ca5e9",
+ "index_manifest_files": 1946
+}

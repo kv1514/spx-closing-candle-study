@@ -1,0 +1,62 @@
+{
+ "what": "Frozen candidate list of the SPX close candle scan (features + direction). Written and hashed by `scan.py discover` before any holdout return is read; `scan.py holdout` refuses to run unless this file matches candidates.sha256.",
+ "prereg": "/Users/kv15/trading/preregistration/spx_close_candle_scan.md",
+ "prereg_sha256": "2fbf826635e8261ba143470f098876332d845bd791eeab8e381972a94446ab4c",
+ "scan_py_sha256_at_freeze": "05fd91bbf9d76fa388353e66dae91904d32f7339805e6cd5d742cb56fe9e4c7a",
+ "frozen_utc": "2026-10-21T20:25:04Z",
+ "discovery_window": [
+  "2013-02-28",
+  "2020-12-31"
+ ],
+ "discovery_sample": {
+  "first": "2013-02-28",
+  "last": "2020-12-31",
+  "n_days": 1861
+ },
+ "selection_rule": "candidates = features with |NW t| >= 2.5 in DISCOVERY, at most the 8 largest |t| (ties by feature order); direction = sign of the discovery mean",
+ "n_candidates": 3,
+ "candidates": [
+  {
+   "rank": 1,
+   "feature": "F2_1m_1550_strong_body",
+   "direction": 1,
+   "entry": "15:51",
+   "target": "r(15:51 open -> 15:59 close)",
+   "desc": "strong body (|body| >= 0.6 range): sign(body); on the 15:50 1-minute candle",
+   "discovery_nw_t": 3.8235384635695224,
+   "discovery_mean_bps": 1.1896196956837422,
+   "discovery_hit_rate": 0.5410733844468785,
+   "discovery_bh_q": 0.005393552415050596,
+   "discovery_agreement_with_P3_sign": 0.9793478260869565,
+   "overlaps_known_P3": true
+  },
+  {
+   "rank": 2,
+   "feature": "F1_1m_15:50",
+   "direction": 1,
+   "entry": "15:51",
+   "target": "r(15:51 open -> 15:59 close)",
+   "desc": "sign(close - open) of the 15:50 1-minute candle",
+   "discovery_nw_t": 2.8904507246213393,
+   "discovery_mean_bps": 0.9478926757455223,
+   "discovery_hit_rate": 0.5217877094972067,
+   "discovery_bh_q": 0.07886141599440871,
+   "discovery_agreement_with_P3_sign": 0.9313019390581717,
+   "overlaps_known_P3": true
+  },
+  {
+   "rank": 3,
+   "feature": "F4_day_so_far",
+   "direction": 1,
+   "entry": "15:49",
+   "target": "r(15:49 open -> 15:59 close)",
+   "desc": "sign r(09:30 open -> 15:49 open) (= P1)",
+   "discovery_nw_t": 2.68954351211156,
+   "discovery_mean_bps": 1.4628437663883678,
+   "discovery_hit_rate": 0.5201086956521739,
+   "discovery_bh_q": 0.09778475207552965,
+   "discovery_agreement_with_P3_sign": 0.4997298757428417,
+   "overlaps_known_P3": false
+  }
+ ]
+}

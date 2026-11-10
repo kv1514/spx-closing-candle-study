@@ -1,0 +1,64 @@
+{
+ "code_sha256": "b0cbd1a716b19662a316718a1862c0e2d192e520a1735b7d36c93dc22e5014f9",
+ "prereg_sha256": "7b99ae6cca0f853d2aa113d6a8edfeb2d5f90c8852a37c40c8578f98d35ae958",
+ "selection_sha256": "075053105d4dd291d6e1107ef58d59157cd438d9ef532ae19108dd6836f3b376",
+ "inputs": {
+  "window": [
+   "2024-01-01",
+   "2026-10-20"
+  ],
+  "quote_listing": {
+   "window": [
+    "2024-01-01",
+    "2026-10-20"
+   ],
+   "files": 697,
+   "sha256": "de9996b9a1d845811c5889d5125def1fefcf48a4d908200eb472d164f48713e9"
+  },
+  "closes_csv": {
+   "file": "/Users/kv15/trading/data/spx_1549/spx_official_closes_cboe.csv",
+   "bytes": 293585
+  },
+  "robinhood": [
+   {
+    "file": "/Users/kv15/trading/data/spx_1549/live_2026-10-22/spx_daily.json",
+    "bytes": 1728
+   },
+   {
+    "file": "/Users/kv15/trading/data/spx_1549/live_2026-10-23/spx_daily.json",
+    "bytes": 70328
+   },
+   {
+    "file": "/Users/kv15/trading/data/spx_1549/live_2026-10-26/spx_daily.json",
+    "bytes": 1728
+   },
+   {
+    "file": "/Users/kv15/trading/data/spx_1549/live_2026-10-27/spx_daily.json",
+    "bytes": 1726
+   },
+   {
+    "file": "/Users/kv15/trading/data/spx_1549/live_2026-10-28/spx_daily.json",
+    "bytes": 70328
+   },
+   {
+    "file": "/Users/kv15/trading/data/spx_1549/live_2026-10-29/spx_daily.json",
+    "bytes": 70328
+   },
+   {
+    "file": "/Users/kv15/trading/data/spx_1549/live_2026-10-30/spx_daily.json",
+    "bytes": 70328
+   },
+   {
+    "file": "/Users/kv15/trading/data/spx_1549/live_2026-11-06/spx_daily.json",
+    "bytes": 71546
+   }
+  ],
+  "days_listing": {
+   "file": "/Users/kv15/trading/data/spx_1549/d1_days.csv",
+   "bytes": 475584
+  }
+ },
+ "command": "test",
+ "utc": "2026-11-09T17:43:29.297891+00:00",
+ "pid": 3236
+}

@@ -1,0 +1,204 @@
+{
+ "label": "teaching example, not a test; prices from saved Robinhood files, model = normal-move approximation",
+ "day": "2026-10-20",
+ "spx_open_1549": 7710.93,
+ "atm_strike": 7710.0,
+ "call_mark_1549": 3.05,
+ "put_mark_1549": 2.85,
+ "straddle_mark_1549": 5.9,
+ "half_spread_per_leg": 0.1,
+ "straddle_cost_with_half_spreads": 6.1000000000000005,
+ "breakeven_low": 7703.9,
+ "breakeven_high": 7716.1,
+ "breakeven_move_from_s0_up": 5.170000000000073,
+ "breakeven_move_from_s0_down": 7.030000000000655,
+ "breakeven_move_bps_avg": 7.9108486265604325,
+ "official_close": 7712.57,
+ "realized_move_pts": 1.639999999999418,
+ "straddle_settlement_value": 2.569999999999709,
+ "straddle_pnl_usd_base": -353.18000000002905,
+ "if_spx_unchanged_straddle_worth": 0.930000000000291,
+ "time_value_at_1549": 4.969999999999709,
+ "time_value_lost_per_minute_avg": 0.4518181818181554,
+ "sqrt_time_rule_time_value": {
+  "11_min_left": 4.969999999999709,
+  "8_min_left": 4.238430241149287,
+  "5_min_left": 3.3507733164421167,
+  "3_min_left": 2.595497850299303,
+  "1_min_left": 1.4985113825513976
+ },
+ "normal_approx": {
+  "sd_move_pts_to_close": 7.394553410161451,
+  "atm_call_delta": 0.5500423102578113,
+  "atm_gamma_per_pt": 0.05352582333346996,
+  "gamma_30d_15pct_same_moneyness": 0.0012030845316357939,
+  "gamma_ratio_0dte_vs_30d": 44.49049250154741
+ },
+ "otm_call": {
+  "strike": 7715.0,
+  "mark_1549": 1.13,
+  "level_for_2x_at_close": 7717.26,
+  "move_needed_for_2x_pts": 6.329999999999927,
+  "prob_close_above_strike_normal": 0.29102077150078476,
+  "prob_2x_or_more_normal": 0.19598908022904804,
+  "fair_value_normal": 1.3508969354757576,
+  "max_close_1549_1558": 1.35,
+  "settlement_value": 0.0,
+  "payoff_table": [
+   {
+    "spx_move_pts": -5.0,
+    "spx_at_close": 7705.93,
+    "value": 0.0,
+    "multiple_of_entry": 0.0
+   },
+   {
+    "spx_move_pts": 0.0,
+    "spx_at_close": 7710.93,
+    "value": 0.0,
+    "multiple_of_entry": 0.0
+   },
+   {
+    "spx_move_pts": 4.069999999999709,
+    "spx_at_close": 7715.0,
+    "value": 0.0,
+    "multiple_of_entry": 0.0
+   },
+   {
+    "spx_move_pts": 6.329999999999927,
+    "spx_at_close": 7717.26,
+    "value": 2.2600000000002183,
+    "multiple_of_entry": 2.000000000000193
+   },
+   {
+    "spx_move_pts": 10.0,
+    "spx_at_close": 7720.93,
+    "value": 5.930000000000291,
+    "multiple_of_entry": 5.247787610619727
+   },
+   {
+    "spx_move_pts": 15.0,
+    "spx_at_close": 7725.93,
+    "value": 10.930000000000291,
+    "multiple_of_entry": 9.672566371681674
+   },
+   {
+    "spx_move_pts": 20.0,
+    "spx_at_close": 7730.93,
+    "value": 15.930000000000291,
+    "multiple_of_entry": 14.097345132743621
+   }
+  ]
+ },
+ "path": [
+  {
+   "bar": "15:49",
+   "spx_close": 7711.25,
+   "call_close": 3.65,
+   "put_close": 2.45,
+   "straddle_close": 6.1,
+   "otm_call_close": 1.35,
+   "straddle_intrinsic_at_spx": 1.25,
+   "minutes_left_after_bar": 10
+  },
+  {
+   "bar": "15:50",
+   "spx_close": 7709.15,
+   "call_close": 1.78,
+   "put_close": 2.93,
+   "straddle_close": 4.71,
+   "otm_call_close": 0.38,
+   "straddle_intrinsic_at_spx": 0.8500000000003638,
+   "minutes_left_after_bar": 9
+  },
+  {
+   "bar": "15:51",
+   "spx_close": 7712.27,
+   "call_close": 3.45,
+   "put_close": 1.55,
+   "straddle_close": 5.0,
+   "otm_call_close": 1.08,
+   "straddle_intrinsic_at_spx": 2.2700000000004366,
+   "minutes_left_after_bar": 8
+  },
+  {
+   "bar": "15:52",
+   "spx_close": 7712.22,
+   "call_close": 3.3,
+   "put_close": 1.4,
+   "straddle_close": 4.699999999999999,
+   "otm_call_close": 0.93,
+   "straddle_intrinsic_at_spx": 2.2200000000002547,
+   "minutes_left_after_bar": 7
+  },
+  {
+   "bar": "15:53",
+   "spx_close": 7710.2,
+   "call_close": 2.13,
+   "put_close": 1.93,
+   "straddle_close": 4.06,
+   "otm_call_close": 0.48,
+   "straddle_intrinsic_at_spx": 0.1999999999998181,
+   "minutes_left_after_bar": 6
+  },
+  {
+   "bar": "15:54",
+   "spx_close": 7711.64,
+   "call_close": 2.8,
+   "put_close": 1.13,
+   "straddle_close": 3.9299999999999997,
+   "otm_call_close": 0.6,
+   "straddle_intrinsic_at_spx": 1.6400000000003274,
+   "minutes_left_after_bar": 5
+  },
+  {
+   "bar": "15:55",
+   "spx_close": 7709.32,
+   "call_close": 1.48,
+   "put_close": 1.73,
+   "straddle_close": 3.21,
+   "otm_call_close": 0.18,
+   "straddle_intrinsic_at_spx": 0.680000000000291,
+   "minutes_left_after_bar": 4
+  },
+  {
+   "bar": "15:56",
+   "spx_close": 7711.44,
+   "call_close": 2.23,
+   "put_close": 0.83,
+   "straddle_close": 3.06,
+   "otm_call_close": 0.3,
+   "straddle_intrinsic_at_spx": 1.4399999999995998,
+   "minutes_left_after_bar": 3
+  },
+  {
+   "bar": "15:57",
+   "spx_close": 7711.08,
+   "call_close": 1.9,
+   "put_close": 0.65,
+   "straddle_close": 2.55,
+   "otm_call_close": 0.18,
+   "straddle_intrinsic_at_spx": 1.0799999999999272,
+   "minutes_left_after_bar": 2
+  },
+  {
+   "bar": "15:58",
+   "spx_close": 7710.2,
+   "call_close": 1.48,
+   "put_close": 0.68,
+   "straddle_close": 2.16,
+   "otm_call_close": 0.08,
+   "straddle_intrinsic_at_spx": 0.1999999999998181,
+   "minutes_left_after_bar": 1
+  },
+  {
+   "bar": "15:59",
+   "spx_close": 7711.7,
+   "call_close": 1.05,
+   "put_close": 0.08,
+   "straddle_close": 1.1300000000000001,
+   "otm_call_close": 0.01,
+   "straddle_intrinsic_at_spx": 1.699999999999818,
+   "minutes_left_after_bar": 0
+  }
+ ]
+}
