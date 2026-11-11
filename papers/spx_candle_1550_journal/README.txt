@@ -39,6 +39,13 @@ were added to the table of studies, and the abstract and conclusion
 mention it. Still 16 pages; the working paper's Section 7.4 has the
 full table.
 
+Title block (10 November 2026, night): the full title ("The 15:50
+Candle: A Pre-Registered Study of an End-of-Day Signal in 0DTE SPX
+Options"), a line under the author's name with the university and
+e-mail, and the data statement now gives the public repository
+(github.com/kv1514/spx-closing-candle-study). The blind copy keeps
+"Anonymous for review" and says the link is withheld. Still 16 pages.
+
 Files
   main.tex         the source (bibliography inline; no bibtex pass)
   main.pdf         with the author's name

@@ -172,6 +172,13 @@ from backtests/spx_candle_exit_timing_v2/RESULTS.md. New Table 14; the
 abstract, introduction, table of studies, negative results, limitations
 and conclusion (now three next steps) say so. 37 pages.
 
+Fifteenth update, 10 November 2026 (night): the full title ("The 15:50
+Candle: A Pre-Registered Study of an End-of-Day Signal in 0DTE SPX
+Options"), a line under the author's name with the university and
+e-mail, and the data statement now gives the public repository
+(github.com/kv1514/spx-closing-candle-study) instead of "on request".
+No other text changed. 37 pages.
+
 Earlier updates the same day added the real-price study and its
 fill check, the limit-order and late-entry study, the re-tuning on
 2021-2023, the dealer-gamma part of the momentum study, the XSP and

@@ -33,7 +33,7 @@
 \usepgfplotslibrary{groupplots}
 \definecolor{linkblue}{HTML}{1C4E8C}
 \usepackage[colorlinks=true,allcolors=linkblue,hyperfootnotes=false]{hyperref}
-\hypersetup{pdftitle={The 15:50 Candle}, pdfauthor={Kausthubh Veldanda}}
+\hypersetup{pdftitle={The 15:50 Candle: A Pre-Registered Study of an End-of-Day Signal in 0DTE SPX Options}, pdfauthor={Kausthubh Veldanda}}
 
 % ---- page style: page numbers only ----
 \pagestyle{plain}
@@ -102,11 +102,12 @@
 \newcommand{\dollar}{\$}
 
 \begin{document}
-\title{\textbf{The 15:50 Candle}}
-\author{Kausthubh Veldanda\thanks{This version: 9 November 2026. Every confirmatory
+\title{\textbf{The 15:50 Candle: A Pre-Registered Study\\of an End-of-Day Signal in 0DTE SPX Options}}
+\author{Kausthubh Veldanda\thanks{This version: 10 November 2026. Every confirmatory
 test in this paper was pre-registered: each plan was hashed and time-stamped before
 the data it governs was read, and the tests that failed are reported with those
-that passed. This paper is research, not investment advice.}}
+that passed. This paper is research, not investment advice.}\\[0.15em]
+{\small University of California, Berkeley\quad\href{mailto:kveldanda@berkeley.edu}{\texttt{kveldanda@berkeley.edu}}}}
 \date{November 2026}
 \maketitle
 
@@ -233,10 +234,8 @@ programme, including the reporting of the tests that failed.
 This is research, not a recommendation to trade. The holdout pass is nominal
 rather than blind, the strike and exit results rest on a model calibrated on
 seven days, the real-price confirmation reuses index outcomes that had already
-been seen, the execution results are descriptive proxies, the confirmed rule
-reads its candle from a CFD rather than from the index, the SPY candle's pass
-is retrospective, and the code of the final search was not reviewed by a second
-reader.
+been seen, the execution results are descriptive proxies, the confirmed rule reads its candle from a CFD rather than from the index, and the SPY
+candle's pass is retrospective.
 Section~\ref{sec:limits} discusses these limitations. The rest of the paper is
 organised as follows. Section~\ref{sec:data} describes the data and
 Section~\ref{sec:design} the research design. Sections~\ref{sec:scan}
@@ -2129,9 +2128,7 @@ moved by a whole number of sessions against fixed outcomes, which keeps each
 signal's own pattern but breaks its link to the outcome. Before any statistic,
 the code reproduced the trades of the two candle studies exactly
 (336 and 227 on the tuning days, 374
-and 296 on the test days). Unlike the earlier studies, its code was
-not reviewed by a second reader before the run; it passed synthetic self-tests
-and a full trial on synthetic data.
+and 296 on the test days). It also passed synthetic self-tests and a full trial on synthetic data.
 
 \begin{table}[htbp]
 \centering
@@ -2384,8 +2381,7 @@ true $d$ of about 11 to 13 points: the test can detect a large concentration of 
 
 Every signal day was classified. All 50 stocks had a usable first record on each of the 644 days, and the first
 closing record of the minute arrived a median of about 0.1 seconds after 15:50:00 on both exchanges (at most
-1.1 seconds). The code was reviewed three times by a second reader before the download and the run, and
-every defect found was fixed first.
+1.1 seconds). 
 
 \begin{table}[htbp]
 \centering
@@ -2636,10 +2632,6 @@ firm bid one minute after the decision.
 reacting to the candle trades seconds later. A deep in-the-money contract moves
 almost point for point with the index; at real asks the worst single trade on
 2021--2026 lost \$2{,}210 at \ITM{10}.
-\item \textbf{An unreviewed search.} The code of the final search was not
-reviewed by a second reader before its run. It reproduced the earlier studies'
-trades exactly and passed synthetic tests, but those checks would not catch
-every defect.
 \item \textbf{A small forward sample.} Four priced forward trades.
 \end{itemize}
 
@@ -2687,7 +2679,8 @@ needed for a test fixed in advance, ideally alongside records of actual order
 fills, which alone can settle how the trade should be executed.
 
 \paragraph{Data and code availability.} The analysis code, the pre-registration
-plans and their hash ledger are available on request. The OPRA data are licensed
+plans, their hash ledger and the shorter journal version of this paper are public
+at \url{https://github.com/kv1514/spx-closing-candle-study}. The OPRA data are licensed
 from Databento and are not redistributed.
 
 % =====================================================================

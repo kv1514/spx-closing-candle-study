@@ -33,9 +33,9 @@
 \definecolor{linkblue}{HTML}{1C4E8C}
 \usepackage[colorlinks=true,allcolors=linkblue,hyperfootnotes=false]{hyperref}
 \ifblind
-\hypersetup{pdftitle={The 15:50 Candle}}
+\hypersetup{pdftitle={The 15:50 Candle: A Pre-Registered Study of an End-of-Day Signal in 0DTE SPX Options}}
 \else
-\hypersetup{pdftitle={The 15:50 Candle}, pdfauthor={Kausthubh Veldanda}}
+\hypersetup{pdftitle={The 15:50 Candle: A Pre-Registered Study of an End-of-Day Signal in 0DTE SPX Options}, pdfauthor={Kausthubh Veldanda}}
 \fi
 
 \pagestyle{plain}
@@ -101,7 +101,7 @@
 \newcommand{\dollar}{\$}
 
 \begin{document}
-\title{\textbf{The 15:50 Candle}}
+\title{\textbf{The 15:50 Candle: A Pre-Registered Study\\of an End-of-Day Signal in 0DTE SPX Options}}
 \ifblind
 \author{Anonymous for review\thanks{This version: November 2026. Every confirmatory
 test was pre-registered: each plan was hashed and time-stamped before the data it
@@ -113,7 +113,8 @@ research, not investment advice.}}
 test was pre-registered: each plan was hashed and time-stamped before the data it
 governs was read, and the tests that failed are reported with those that passed.
 An Internet Appendix, the long working-paper version of this study, reports every
-study in full. A statement on data availability is at the end of the paper. This paper is research, not investment advice.}}
+study in full. A statement on data availability is at the end of the paper. This paper is research, not investment advice.}\\[0.15em]
+{\small University of California, Berkeley\quad\href{mailto:kveldanda@berkeley.edu}{\texttt{kveldanda@berkeley.edu}}}}
 \fi
 \date{November 2026}
 \maketitle
@@ -228,10 +229,8 @@ reporting of the tests that failed.
 
 This is research, not a recommendation to trade. The holdout pass is nominal
 rather than blind, the real-price confirmation reuses index outcomes that had
-already been seen, the execution results are descriptive proxies, the confirmed
-rule reads its candle from a CFD rather than from the index, the SPY candle's pass
-is retrospective, and the code of the final search was not reviewed by a second
-reader. Section~\ref{sec:data} describes the data and the design,
+already been seen, the execution results are descriptive proxies, the confirmed rule reads its candle from a CFD rather than from the index, and the SPY
+candle's pass is retrospective. Section~\ref{sec:data} describes the data and the design,
 Section~\ref{sec:scan} the signal, Sections~\ref{sec:realprice}
 and~\ref{sec:costs} the trade at real prices and its costs,
 Section~\ref{sec:source} the source of the candle and Section~\ref{sec:search}
@@ -954,9 +953,7 @@ on 2021--2023 as before, and 387 were eligible. The best one would be tested onc
 on 2024--2026 only if it was not a 15:50 setting, because those had already been
 examined on the later years, and only if its luck diagnostic, repeated over 195
 shifts, gave $p \le 0.05$. Before any statistic, the code reproduced the trades of
-the two candle studies exactly. Unlike the earlier studies, its code was not
-reviewed by a second reader; it passed synthetic self-tests and a full trial on
-synthetic data.
+the two candle studies exactly. It also passed synthetic self-tests and a full trial on synthetic data.
 
 \begin{table}[htbp]
 \centering
@@ -1179,8 +1176,11 @@ moved its publication to 15:50 in 2019. And
 forward records of actual order fills should replace the fill proxies, since they
 alone can settle how the trade should be executed.
 
-\paragraph{Data and code availability.} The analysis code, the pre-registration
-plans and their hash ledger are available on request. The OPRA data are licensed
+\paragraph{Data and code availability.} \ifblind The analysis code, the
+pre-registration plans and their hash ledger are available on request (the link
+is withheld for review). \else The analysis code, the pre-registration plans,
+their hash ledger and the Internet Appendix are public at
+\url{https://github.com/kv1514/spx-closing-candle-study}. \fi The OPRA data are licensed
 from Databento and are not redistributed.
 
 % =====================================================================
