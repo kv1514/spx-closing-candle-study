@@ -1,0 +1,55 @@
+{
+ "plan_sha256": "34c2c8347c7963bcdc295155de45bbd0aa65ed1e1a7b3ba35fd6df4ba82201b0",
+ "hold": {
+  "n": 270,
+  "mean": 68.7840740740737,
+  "h1": 133,
+  "h2": 137,
+  "mean_h1": 149.9701503759423,
+  "mean_h2": -10.031605839419168
+ },
+ "coverage": {
+  "all": {
+   "entries": 270,
+   "complete": 197,
+   "share": 0.7296296296296296
+  },
+  "H1": {
+   "entries": 133,
+   "complete": 107,
+   "share": 0.8045112781954887
+  },
+  "H2": {
+   "entries": 137,
+   "complete": 90,
+   "share": 0.656934306569343
+  }
+ },
+ "selection": {
+  "decision": "coverage too low; no pick",
+  "goes_to_test": false,
+  "failed_gates": [
+   "coverage"
+  ],
+  "pick": null,
+  "score": null,
+  "p": null,
+  "coverage": {
+   "all": {
+    "entries": 270,
+    "complete": 197,
+    "share": 0.7296296296296296
+   },
+   "H1": {
+    "entries": 133,
+    "complete": 107,
+    "share": 0.8045112781954887
+   },
+   "H2": {
+    "entries": 137,
+    "complete": 90,
+    "share": 0.656934306569343
+   }
+  }
+ }
+}

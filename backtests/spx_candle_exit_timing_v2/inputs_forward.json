@@ -1,0 +1,20 @@
+{
+ "step": "test (forward, after the decision)",
+ "window": [
+  "2026-10-21",
+  "2099-12-31"
+ ],
+ "inputs": {
+  "entries": {
+   "rows_sha256": "eb47a3fcd4a33462455159032debc3e3e7111520b7cf162c0d56da82eca472fd",
+   "entries": 0
+  },
+  "closes": {
+   "rows_sha256": "94bf88a5063618a71cdd985267a2fad5d078750e8f5b43574e3f9773858680ae",
+   "closes": 13
+  },
+  "quote_files": {}
+ },
+ "no_close": [],
+ "no_quote_file": []
+}

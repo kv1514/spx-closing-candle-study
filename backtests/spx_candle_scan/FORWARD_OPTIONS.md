@@ -10,16 +10,16 @@ When a signal fires, buy one 0DTE SPXW call (signal up) or put (signal down) at 
 
 | Signal | Exit | Trades | Wins ($0.09 / $0.74) | Win share, $0.09 (95% CI) | Total, $0.09 | Mean, $0.09 | Total, $0.74 | Mean, $0.74 | Backtest model on the same days, mean ($0.09) |
 |---|---|---|---|---|---|---|---|---|---|
-| 15:50 candle, strong body (headline) | A: hold to expiry (finalized) | 4 | 2 / 2 | 50% (15%-85%) | -69.36 | -17.34 | -71.96 | -17.99 | +63.87 |
-| 15:50 candle, strong body (headline) | B: sell 15:59 | 5 | 3 / 3 | 60% (23%-88%) | +556.10 | +111.22 | +549.60 | +109.92 | +233.52 |
-| 15:50 candle direction, any body | A: hold to expiry (finalized) | 6 | 3 / 3 | 50% (19%-81%) | -454.54 | -75.76 | -458.44 | -76.41 | -69.80 |
-| 15:50 candle direction, any body | B: sell 15:59 | 7 | 4 / 4 | 57% (25%-84%) | +166.74 | +23.82 | +157.64 | +22.52 | +72.68 |
-| P3 reference (15:50 open -> 15:51 open direction) | A: hold to expiry (finalized) | 6 | 3 / 3 | 50% (19%-81%) | -454.54 | -75.76 | -458.44 | -76.41 | - |
-| P3 reference (15:50 open -> 15:51 open direction) | B: sell 15:59 | 7 | 4 / 4 | 57% (25%-84%) | +166.74 | +23.82 | +157.64 | +22.52 | - |
+| 15:50 candle, strong body (headline) | A: hold to expiry (finalized) | 5 | 3 / 3 | 60% (23%-88%) | +711.55 | +142.31 | +708.30 | +141.66 | +233.52 |
+| 15:50 candle, strong body (headline) | B: sell 15:59 | 6 | 3 / 3 | 50% (19%-81%) | +211.92 | +35.32 | +204.12 | +34.02 | +122.94 |
+| 15:50 candle direction, any body | A: hold to expiry (finalized) | 7 | 4 / 4 | 57% (25%-84%) | +326.37 | +46.62 | +321.82 | +45.97 | +72.68 |
+| 15:50 candle direction, any body | B: sell 15:59 | 8 | 4 / 4 | 50% (22%-78%) | -177.44 | -22.18 | -187.84 | -23.48 | +11.76 |
+| P3 reference (15:50 open -> 15:51 open direction) | A: hold to expiry (finalized) | 7 | 4 / 4 | 57% (25%-84%) | +326.37 | +46.62 | +321.82 | +45.97 | - |
+| P3 reference (15:50 open -> 15:51 open direction) | B: sell 15:59 | 8 | 4 / 4 | 50% (22%-78%) | -177.44 | -22.18 | -187.84 | -23.48 | - |
 
-The headline signal has **5 trade(s) with a real entry price, 4 of them finalized** (official close known). That is far too few to say anything about whether it makes money; one big day dominates a total this small. The model column is scan.py's cost model on exactly the same days (its idealised option, its cost). Only days with saved one-minute option bars can be priced, so the sample also depends on which days were collected in time.
+The headline signal has **6 trade(s) with a real entry price, 5 of them finalized** (official close known). That is far too few to say anything about whether it makes money; one big day dominates a total this small. The model column is scan.py's cost model on exactly the same days (its idealised option, its cost). Only days with saved one-minute option bars can be priced, so the sample also depends on which days were collected in time.
 
-Provisional (official close not saved yet, valued at the 15:59 bar close and left out of the exit-A totals): 2026-11-09.
+Provisional (official close not saved yet, valued at the 15:59 bar close and left out of the exit-A totals): 2026-11-10.
 
 ## Every forward day
 
@@ -64,9 +64,12 @@ Provisional (official close not saved yet, valued at the 15:59 bar close and lef
 | 2026-11-06 | strong body | no_minute_option_bars | put 7385 | - | - | - | - | - | +618.03 |
 | 2026-11-06 | direction | no_minute_option_bars | put 7385 | - | - | - | - | - | +633.09 |
 | 2026-11-06 | P3 | no_minute_option_bars | put 7385 | - | - | - | - | - | - |
-| 2026-11-09 | strong body | traded | put 7560 | 2.25 | 10.99 (prov.) | +873.91 | 9.65 | +729.82 | +912.15 |
-| 2026-11-09 | direction | traded | put 7560 | 2.25 | 10.99 (prov.) | +873.91 | 9.65 | +729.82 | +927.57 |
-| 2026-11-09 | P3 | traded | put 7560 | 2.25 | 10.99 (prov.) | +873.91 | 9.65 | +729.82 | - |
+| 2026-11-09 | strong body | traded | put 7560 | 2.25 | 10.06 | +780.91 | 9.65 | +729.82 | +912.15 |
+| 2026-11-09 | direction | traded | put 7560 | 2.25 | 10.06 | +780.91 | 9.65 | +729.82 | +927.57 |
+| 2026-11-09 | P3 | traded | put 7560 | 2.25 | 10.06 | +780.91 | 9.65 | +729.82 | - |
+| 2026-11-10 | strong body | traded | call 7530 | 3.35 | 0.00 (prov.) | -335.09 | 0.01 | -344.18 | -430.01 |
+| 2026-11-10 | direction | traded | call 7530 | 3.35 | 0.00 (prov.) | -335.09 | 0.01 | -344.18 | -414.66 |
+| 2026-11-10 | P3 | traded | call 7530 | 3.35 | 0.00 (prov.) | -335.09 | 0.01 | -344.18 | - |
 
 ## Is the backtest's option price realistic? (every day with minute option bars)
 
@@ -88,8 +91,9 @@ The backtest assumed an at-the-money option costs half the realized-move-fair st
 | 2026-11-05 | 7369.29 | 7370 | - | - | - | - | only 10-minute (or other non-minute) option bars saved | - |
 | 2026-11-06 | 7385.25 | 7385 | - | - | - | - | only 10-minute (or other non-minute) option bars saved | - |
 | 2026-11-09 | 7562.45 | 7560 | 4.55 | 2.15 | 6.70 | 8.86 | 0.79x | 0.82x |
+| 2026-11-10 | 7529.45 | 7530 | 3.25 | 3.25 | 6.50 | 8.63 | 0.77x | 0.80x |
 
-Over 7 day(s) the market straddle averaged 8.73 bps, 0.78x the strong-body model price (0.81x the any-body one). This compares the call + put pair with twice the model option; on a given day the call or the put alone can be cheaper or dearer than the model. A pair above 1x means options cost more than the backtest assumed that day.
+Over 8 day(s) the market straddle averaged 8.72 bps, 0.78x the strong-body model price (0.81x the any-body one). This compares the call + put pair with twice the model option; on a given day the call or the put alone can be cheaper or dearer than the model. A pair above 1x means options cost more than the backtest assumed that day.
 
 ## Caveats
 

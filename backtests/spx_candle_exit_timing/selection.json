@@ -1,0 +1,27 @@
+{
+ "decision": "coverage too low; no pick",
+ "goes_to_test": false,
+ "failed_gates": [
+  "coverage"
+ ],
+ "pick": null,
+ "score": null,
+ "p": null,
+ "coverage": {
+  "all": {
+   "entries": 270,
+   "complete": 197,
+   "share": 0.7296296296296296
+  },
+  "H1": {
+   "entries": 133,
+   "complete": 107,
+   "share": 0.8045112781954887
+  },
+  "H2": {
+   "entries": 137,
+   "complete": 90,
+   "share": 0.656934306569343
+  }
+ }
+}

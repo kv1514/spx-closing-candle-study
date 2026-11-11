@@ -1,0 +1,95 @@
+{
+ "rule": "Rule: holdings with assetCat EC, each identified by its ISIN (SPY's filings give a placeholder CUSIP 000000000 for\nforeign-domiciled issuers, so CUSIP cannot be the key); entries with the same ISIN summed (valUSD, balance); a\nholding without an ISIN is keyed by its CUSIP if that is not 000000000, otherwise excluded and counted. Ranked by\nvalUSD descending, ties by key ascending; first 50. The list for year Y comes from the report for 31 December of Y-1.\nReads data/spx_1549/spy_nport/manifest.json (and checks each file's SHA-256, fund name and report period).\nWrites stock_lists_raw.csv (year, rank, key, cusip, isin, name, val_usd, balance, pct_val) and the per-year coverage into\nstock_lists.json. Ticker mapping is a separate step (map_tickers.py).\n",
+ "years": {
+  "2021": {
+   "report_date": "2020-12-31",
+   "accession": "0001752724-21-043869",
+   "file_sha256": "5cde609dff35da4078d9fbff11921e3ca064a413bd804b65e69c8cfabae9173d",
+   "holdings": 505,
+   "asset_categories": {
+    "EC": 505
+   },
+   "ec_keys": 505,
+   "no_key_excluded": 0,
+   "duplicate_key_entries": 0,
+   "top50_pct_of_net_assets": "54.401717496710",
+   "rank50_val_usd": "1456972425.70000000",
+   "rank51_val_usd": "1437568528.11000000"
+  },
+  "2022": {
+   "report_date": "2021-12-31",
+   "accession": "0001752724-22-048845",
+   "file_sha256": "f6e85d246b3bee0531740e558741ee7a3fb237414299bf40b4135825cabbf13f",
+   "holdings": 506,
+   "asset_categories": {
+    "EC": 506
+   },
+   "ec_keys": 506,
+   "no_key_excluded": 0,
+   "duplicate_key_entries": 0,
+   "top50_pct_of_net_assets": "54.912312706266",
+   "rank50_val_usd": "1976405155.80000000",
+   "rank51_val_usd": "1963842440.80000000"
+  },
+  "2023": {
+   "report_date": "2022-12-31",
+   "accession": "0001752724-23-046862",
+   "file_sha256": "c85b6c01b02136550bc2c5d2625469d2b10de67405b7fbf4e73c99025b5061ae",
+   "holdings": 504,
+   "asset_categories": {
+    "EC": 504
+   },
+   "ec_keys": 504,
+   "no_key_excluded": 0,
+   "duplicate_key_entries": 0,
+   "top50_pct_of_net_assets": "51.368338073615",
+   "rank50_val_usd": "1471396443.19000000",
+   "rank51_val_usd": "1456266059.52000000"
+  },
+  "2024": {
+   "report_date": "2023-12-31",
+   "accession": "0001752724-24-043296",
+   "file_sha256": "59d10507068a683bc39efe5c390b1e816688d9ea0fd2c9a5c0074b26f5f6fcc8",
+   "holdings": 503,
+   "asset_categories": {
+    "EC": 503
+   },
+   "ec_keys": 503,
+   "no_key_excluded": 0,
+   "duplicate_key_entries": 0,
+   "top50_pct_of_net_assets": "56.048463550057",
+   "rank50_val_usd": "1874081232.74000000",
+   "rank51_val_usd": "1859939765.36000000"
+  },
+  "2025": {
+   "report_date": "2024-12-31",
+   "accession": "0001752724-25-043826",
+   "file_sha256": "fc1b288ad60ea2fa9344fa5b7b45ac5e6f8637835852ee93ba2cecd1178e4155",
+   "holdings": 503,
+   "asset_categories": {
+    "EC": 503
+   },
+   "ec_keys": 503,
+   "no_key_excluded": 0,
+   "duplicate_key_entries": 0,
+   "top50_pct_of_net_assets": "60.575321670085",
+   "rank50_val_usd": "2137087087.92000000",
+   "rank51_val_usd": "2107982792.52000000"
+  },
+  "2026": {
+   "report_date": "2025-12-31",
+   "accession": "0001410368-26-020131",
+   "file_sha256": "2a2d0f79ff374b85b73997a4ff2af807a3fe559875d46af235eebf7e18b34601",
+   "holdings": 503,
+   "asset_categories": {
+    "EC": 503
+   },
+   "ec_keys": 503,
+   "no_key_excluded": 0,
+   "duplicate_key_entries": 0,
+   "top50_pct_of_net_assets": "62.523915995247",
+   "rank50_val_usd": "2425839733.89000000",
+   "rank51_val_usd": "2421874715.40000000"
+  }
+ }
+}

@@ -48,26 +48,26 @@ recorder fetched them at least 5 minutes after the bar ended.
 
 ## Current forward tally
 
-- **SPX_robinhood** (pre-registered): 14 of 14 forward NYSE session(s) logged. On disk in all: 36 full sessions (22 overlap).
-- **SPY_recorder** (stand-in): 14 of 14 forward NYSE session(s) logged. On disk in all: 35 full sessions (21 overlap).
-- Forward NYSE sessions so far: 14 (2026-10-21 to 2026-11-09, the latest date on disk).
+- **SPX_robinhood** (pre-registered): 15 of 15 forward NYSE session(s) logged. On disk in all: 37 full sessions (22 overlap).
+- **SPY_recorder** (stand-in): 14 of 15 forward NYSE session(s) logged; not logged: 2026-11-10: no data on disk. On disk in all: 35 full sessions (21 overlap).
+- Forward NYSE sessions so far: 15 (2026-10-21 to 2026-11-10, the latest date on disk).
 
 | Signal | Source | Forward days with a signal | Hits | Zero moves | Hit rate (95% CI) | Mean move in the signal's direction (bps) |
 |---|---|---|---|---|---|---|
-| 15:50 candle, strong body (passed the holdout test and the accuracy bar; overlaps the known P3 effect, not a blind pass) | SPX_robinhood | 8 | 7 | 0 | 87.5% (52.9-97.8%) | +6.93 |
+| 15:50 candle, strong body (passed the holdout test and the accuracy bar; overlaps the known P3 effect, not a blind pass) | SPX_robinhood | 9 | 7 | 0 | 77.8% (45.3-93.7%) | +5.10 |
 | 15:50 candle, strong body (passed the holdout test and the accuracy bar; overlaps the known P3 effect, not a blind pass) | SPY_recorder | 7 | 6 | 0 | 85.7% (48.7-97.4%) | +5.59 |
-| 15:50 candle, strong body (passed the holdout test and the accuracy bar; overlaps the known P3 effect, not a blind pass) | mixed_SPX_else_SPY (not pre-registered) | 8 | 7 | 0 | 87.5% (52.9-97.8%) | +6.93 |
-| 15:50 candle direction, any body (passed the holdout test, not the accuracy bar; overlaps the known P3 effect, not a blind pass) | SPX_robinhood | 14 | 12 | 0 | 85.7% (60.1-96.0%) | +5.90 |
+| 15:50 candle, strong body (passed the holdout test and the accuracy bar; overlaps the known P3 effect, not a blind pass) | mixed_SPX_else_SPY (not pre-registered) | 9 | 7 | 0 | 77.8% (45.3-93.7%) | +5.10 |
+| 15:50 candle direction, any body (passed the holdout test, not the accuracy bar; overlaps the known P3 effect, not a blind pass) | SPX_robinhood | 15 | 12 | 0 | 80.0% (54.8-93.0%) | +4.87 |
 | 15:50 candle direction, any body (passed the holdout test, not the accuracy bar; overlaps the known P3 effect, not a blind pass) | SPY_recorder | 14 | 11 | 0 | 78.6% (52.4-92.4%) | +5.32 |
-| 15:50 candle direction, any body (passed the holdout test, not the accuracy bar; overlaps the known P3 effect, not a blind pass) | mixed_SPX_else_SPY (not pre-registered) | 14 | 12 | 0 | 85.7% (60.1-96.0%) | +5.90 |
-| P3 reference (15:50 open -> 15:51 open direction; known before the scan) | SPX_robinhood | 14 | 12 | 0 | 85.7% (60.1-96.0%) | +5.90 |
+| 15:50 candle direction, any body (passed the holdout test, not the accuracy bar; overlaps the known P3 effect, not a blind pass) | mixed_SPX_else_SPY (not pre-registered) | 15 | 12 | 0 | 80.0% (54.8-93.0%) | +4.87 |
+| P3 reference (15:50 open -> 15:51 open direction; known before the scan) | SPX_robinhood | 15 | 12 | 0 | 80.0% (54.8-93.0%) | +4.87 |
 | P3 reference (15:50 open -> 15:51 open direction; known before the scan) | SPY_recorder | 13 | 11 | 0 | 84.6% (57.8-95.7%) | +6.08 |
-| P3 reference (15:50 open -> 15:51 open direction; known before the scan) | mixed_SPX_else_SPY (not pre-registered) | 14 | 12 | 0 | 85.7% (60.1-96.0%) | +5.90 |
-| Day so far, 09:30 open -> 15:49 open direction (failed the holdout test; this is the known P1) | SPX_robinhood | 14 | 5 | 0 | 35.7% (16.3-61.2%) | -4.33 |
+| P3 reference (15:50 open -> 15:51 open direction; known before the scan) | mixed_SPX_else_SPY (not pre-registered) | 15 | 12 | 0 | 80.0% (54.8-93.0%) | +4.87 |
+| Day so far, 09:30 open -> 15:49 open direction (failed the holdout test; this is the known P1) | SPX_robinhood | 15 | 6 | 0 | 40.0% (19.8-64.3%) | -4.00 |
 | Day so far, 09:30 open -> 15:49 open direction (failed the holdout test; this is the known P1) | SPY_recorder | 14 | 3 | 0 | 21.4% (7.6-47.6%) | -6.84 |
-| Day so far, 09:30 open -> 15:49 open direction (failed the holdout test; this is the known P1) | mixed_SPX_else_SPY (not pre-registered) | 14 | 5 | 0 | 35.7% (16.3-61.2%) | -4.33 |
+| Day so far, 09:30 open -> 15:49 open direction (failed the holdout test; this is the known P1) | mixed_SPX_else_SPY (not pre-registered) | 15 | 6 | 0 | 40.0% (19.8-64.3%) | -4.00 |
 
-So far there are **8 strong-body forward day(s) in SPX_robinhood**, the pre-registered source (7 in SPY_recorder, the stand-in). That is far too few to say anything.
+So far there are **9 strong-body forward day(s) in SPX_robinhood**, the pre-registered source (7 in SPY_recorder, the stand-in). That is far too few to say anything.
 
 Exact-decimal sensitivity (not the binding test; it counts a body of exactly 60% of the range as strong after normalising the prices): it agrees with the binding test on every forward day so far. On overlap days it differs on 1: 2026-10-05 SPY_recorder (binding test none, exact-decimal down; body/range as stored 59.9976%).
 
@@ -75,7 +75,6 @@ Latest forward sessions (each source, up to 15 rows):
 
 | Date | Source | 15:50 body / range | Strong body | 15:50 direction | Move 15:51 to 15:59 close (bps) | Strong body hit | Direction hit |
 |---|---|---|---|---|---|---|---|
-| 2026-10-29 | SPY_recorder | 89.1% | up | up | +12.35 | yes | yes |
 | 2026-10-30 | SPX_robinhood | 99.2% | up | up | +0.77 | yes | yes |
 | 2026-10-30 | SPY_recorder | 97.9% | up | up | +0.13 | yes | yes |
 | 2026-11-02 | SPX_robinhood | 92.4% | down | down | -6.02 | yes | yes |
@@ -90,6 +89,7 @@ Latest forward sessions (each source, up to 15 rows):
 | 2026-11-06 | SPY_recorder | 79.5% | down | down | -12.78 | yes | yes |
 | 2026-11-09 | SPX_robinhood | 61.7% | down | down | -17.79 | yes | yes |
 | 2026-11-09 | SPY_recorder | 57.5% | none | down | -17.06 | - | yes |
+| 2026-11-10 | SPX_robinhood | 77.6% | up | up | -9.54 | no | no |
 
 ## How many strong-body days a firm answer would take (planning estimates)
 

@@ -1,0 +1,7 @@
+{
+ "started_utc": "2026-11-10T21:08:51Z",
+ "plan_sha256": "c5c5131c31dd4865d1e132723c219eb12406a0cb20782c28b63a9014747d913c",
+ "defect_rerun_reason": null,
+ "files_verified": 1288,
+ "pairs_missing_after_3_attempts": []
+}

@@ -1,0 +1,28 @@
+{
+ "decision": "No rule advanced under the prespecified rules (failed: no eligible rule)",
+ "goes_to_test": false,
+ "failed_gates": [
+  "no eligible rule"
+ ],
+ "pick": null,
+ "score": null,
+ "p": null,
+ "coverage": {
+  "all": {
+   "entries": 270,
+   "complete": 270,
+   "share": 1.0
+  },
+  "H1": {
+   "entries": 133,
+   "complete": 133,
+   "share": 1.0
+  },
+  "H2": {
+   "entries": 137,
+   "complete": 137,
+   "share": 1.0
+  }
+ },
+ "eligible": []
+}

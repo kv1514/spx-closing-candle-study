@@ -128,9 +128,12 @@ on 2021--2026 it was right on 57.5\% of 644 trades. An SPXW option 10 points in
 the money, bought at the quoted ask and held to settlement, earned \$67 a trade
 ($t = 2.40$), but the same trades lost money before 2021, when spreads were about
 five times wider, and limit orders at the mid did not help because they missed
-the best days. The result depends on where the candle is read: from the index
-itself the rule missed its criterion ($t = 1.53$). We discuss the publication of
-closing-auction imbalances at 15:50 as a possible, untested mechanism.
+the best days. Twenty-six pre-registered stop and take-profit rules, tested at
+real bids, all earned less than holding on 2021--2023. The result depends on where the candle is read: from the index
+itself the rule missed its criterion ($t = 1.53$). In a pre-registered test with
+the exchanges' own messages, the candle pointed the same way as the
+closing-auction imbalance published at 15:50 on 73\% of signal days but was not
+more accurate on those days (56\% against 62\%).
 
 \medskip
 \noindent\textit{JEL classification:} G13, G14.\quad
@@ -198,7 +201,11 @@ and met a retrospective one. On all three sources the gain came on sessions on
 which every candle showed a strong body. Fifth, nothing tried afterwards improved
 on the rule, and a search over 7{,}128 settings of candle source, minute, cut,
 direction and strike chose the 15:50 candle again, although its choice was not
-clearly beyond luck ($p = 0.051$).
+clearly beyond luck ($p = 0.051$). Sixth, the candle pointed the same way as the
+closing-auction imbalance published at 15:50 on 73\% of signal days, but in a
+pre-registered test it was not more accurate on those days (56\% against 62\%), so
+the auction explanation we propose was not confirmed, although the test could
+detect only a large difference.
 
 The paper relates to four literatures. The first documents market intraday
 momentum. \citet{ghlz2018} find that the first half-hour return predicts the last
@@ -209,7 +216,8 @@ momentum nor a dealer-gamma proxy explains it, or improves it. The second studie
 the closing auction. \citet{bm2023} show that closing-auction volume is tied to
 passive and ETF ownership and that auction imbalance information contributes to
 price discovery at the close; our signal sits in the first minute after that
-information is published. The third concerns 0DTE options. \citet{bbg2023}
+information is published, and we test whether its accuracy depends on agreeing
+with it. The third concerns 0DTE options. \citet{bbg2023}
 document that retail traders lose money in them, and \citet{dev2024} find little
 evidence that 0DTE gamma or trading volume amplifies index moves. We show, at real quotes, how the spread
 determines whether a genuine short-horizon prediction can be monetised with these
@@ -228,7 +236,7 @@ Section~\ref{sec:scan} the signal, Sections~\ref{sec:realprice}
 and~\ref{sec:costs} the trade at real prices and its costs,
 Section~\ref{sec:source} the source of the candle and Section~\ref{sec:search}
 the search for a better rule. Section~\ref{sec:why} discusses why 15:50 might
-matter, and Section~\ref{sec:conclusion} concludes.
+matter and tests one explanation, and Section~\ref{sec:conclusion} concludes.
 
 % =====================================================================
 \section{Data and research design}
@@ -258,6 +266,7 @@ Databento OPRA & XSP and SPY quotes & 2021--2026 & Smaller contracts \\
 Cboe & Official SPX daily close & 2013--2026 & Option settlement \\
 CNBC & SPX index one-minute bars (archive) & 2021--2026 & Index candle (Section~\ref{sec:source}) \\
 CNBC & SPY one-minute bars (archive; traded prices, not dividend-adjusted) & 2021--2026 & SPY candle (Section~\ref{sec:source}) \\
+Databento & NYSE and Nasdaq closing-auction imbalance messages, 15:50--16:00~ET on signal days, for SPY's 50 largest holdings (SEC N-PORT reports) & 2021--2026 & Imbalance test (Section~\ref{sec:imbtest}) \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -324,7 +333,7 @@ inform the discussion but decide nothing.
 \tabnotes{Registration dates are UTC. The strike-ladder and early-exit studies
 priced trades with a calibrated model, before real quotes were available; they
 and the forward log are reported in full in the Internet Appendix. The
-limit-order and early-sale analyses of Section~\ref{sec:costs} were not
+limit-order and fixed-minute sale analyses of Section~\ref{sec:costs} were not
 pre-registered.}
 \begin{tabular}{@{}L{0.16\linewidth}L{0.07\linewidth}L{0.11\linewidth}L{0.33\linewidth}L{0.22\linewidth}@{}}
 \toprule
@@ -340,6 +349,9 @@ XSP and SPY & \ref{sec:other} & 2026-11-09 & Positive mean with $t \ge 2.0$ on 2
 Index candle & \ref{sec:source} & 2026-11-10 & Rule read from the index candle: positive mean per day with $t \ge 2.0$ & Criterion not met \\
 SPY candle & \ref{sec:source} & 2026-11-10 & Rule read from the SPY candle: positive mean per day with $t \ge 2.0$ & Retrospective criterion met \\
 Candle search & \ref{sec:minutes} & 2026-11-10 & Best of 7{,}128 settings on 2021--2023, tested on 2024--2026 only if not at 15:50 and luck diagnostic $p \le 0.05$ & Pick at 15:50; no test \\
+Closing imbalance & \ref{sec:imbtest} & 2026-11-10 & Hit rate higher on days the candle agrees with the 15:50 imbalance: $d > 0$ with $t \ge 2.0$ & Not confirmed \\
+Real-time exits & \ref{sec:exits} & 2026-11-10 & An exit rule beats holding in both halves of 2021--2023 and has luck diagnostic $p \le 0.05$; then $t \ge 2.0$ on 2024--2026 & Stopped at the coverage gate \\
+Real-time exits, revised & \ref{sec:exits} & 2026-11-11 & The same, for the 26 rules that read only the option's bid & No eligible rule; no test \\
 Forward options log & \ref{sec:other} & 2026-10-30 & Running record of real option outcomes & Four priced trades so far \\
 \bottomrule
 \end{tabular}
@@ -748,12 +760,35 @@ contract earned less the later the entry (Table~\ref{tab:late}, Panel B): about
 entry at 15:51:00 exactly, while a person reacting to the candle trades seconds
 later.
 
+\subsection{Selling before the close}
+\label{sec:exits}
+
 \paragraph{Selling early does not help.} Each of the 585 confirmation trades,
 bought at the 15:51 ask, was also sold at the bid at the start of each later
 minute, paying the fee twice. Every fixed exit minute from 15:52 to 15:59 earned
 less than holding to settlement, by \$79 to \$136 a trade, and no year favoured an
 early exit. The pre-registered model study of stop-loss and take-profit rules
 reached the same conclusion (Section~\ref{sec:other}).
+
+\paragraph{Real-time exit rules.} A pre-registered study tested rules that watch
+the option's own bid at each minute from 15:52 to 15:58 and sell at the next
+minute's bid: 5 trailing stops (sell when the bid falls 10--50\% below its peak
+since entry), 9 profit locks (once the bid has risen 10--30\% above the price
+paid, sell if it gives back a third, two-thirds or all of that gain) and 12
+take-profits (sell once the bid is 10--30\% above the price paid, from 15:52,
+15:54, 15:56 or 15:58). On the 270 trades of 2021--2023, a rule had to sell early
+on at least 25 trades and beat holding in each half of the period; the best such
+rule would then have faced a luck diagnostic and one test on 2024--2026. A first
+plan, which also included 18 rules that trail the index level implied by
+put--call parity, stopped at its coverage gate before any rule was computed,
+because that level was often missing in the last minutes; a revised plan, written
+after that stop, kept the 26 bid-based rules, whose quotes were complete. No rule
+qualified, so nothing was tested: all 26 earned less than holding on 2021--2023,
+by \$9 to \$120 a trade. Take-profits did worst, \$49 to \$107 a trade below
+holding, because they sell the trades that would have kept rising and do nothing
+for the losers. Looked at afterwards, 2024--2026 agrees: take-profits trailed
+holding by \$39 to \$108 a trade, and the stops were within \$31 of holding,
+none with $|t|$ above 1.6.
 
 % =====================================================================
 \section{Which candle?}
@@ -1014,9 +1049,12 @@ candle, and on 2021--2023 the re-tuning over 2{,}178 settings and the search ove
 7{,}128 both chose a 15:50 candle (tuning on 2013--2020, when spreads were wide and
 only two settings were eligible, had favoured a 15:42 candle). A strong 15:50
 candle is followed by an index move in its direction whether it is read from a
-CFD, from the index or from SPY. We did not set out to explain the effect, and
-none of our studies tests a mechanism, but the timing of the closing auction
-offers a natural hypothesis.
+CFD, from the index or from SPY. We did not set out to explain the effect, but
+the timing of the closing auction offers a natural hypothesis, and one
+pre-registered study tests its most direct prediction.
+
+\subsection{The closing-auction hypothesis}
+\label{sec:hypothesis}
 
 From 15:50 the NYSE's regulatory closing imbalance is public and Nasdaq's
 early imbalance indicator is disseminated, and the NYSE accepts new market-on-close and
@@ -1038,12 +1076,71 @@ five minutes earlier, at 15:45. Until late 2018 the only imbalance first publish
 at 15:50 was Nasdaq's, and for a few months after that no exchange began
 publishing at 15:50, so the NYSE's schedule cannot be the whole story. And a
 strong body on the index candle alone, without the CFD and SPY candles, carried
-no gain, which suggests that the futures-linked instruments react first. Both are
-testable. Exchange imbalance feeds would show whether the 15:50 candle's direction
-agrees with the sign and size of the published imbalance, whether the effect
-concentrates on days with large imbalances, and whether it changed when the NYSE
-moved its publication from 15:45 to 15:50 in April 2019, a few months after
-Nasdaq had moved its own from 15:50 to 15:55. We leave these tests to future work.
+no gain, which suggests that the futures-linked instruments react first. The
+exchanges' imbalance messages allow a direct test, which we report next. Whether
+the effect concentrates on days with large imbalances, and whether it changed when
+the NYSE moved its publication from 15:45 to 15:50 in April 2019, a few months
+after Nasdaq had moved its own from 15:50 to 15:55, we leave to future work.
+
+% Generated by backtests/spx_candle_imbalance/make_tex.py (spx_candle_1550_journal/imbalance_section_draft.tex); do not edit numbers by hand.
+\subsection{A test with the published imbalances}
+\label{sec:imbtest}
+
+If traders react to the published imbalance during the 15:50 minute, the candle should be right more often on days
+when it points the same way as that imbalance. A pre-registered study (plan locked 2026-11-10 19:37 UTC, one registered run)
+tested this prediction on the rule's 644 signal days of 2021--2026. For each year it took the 50 largest stocks
+in SPY at the previous year-end, from the fund's N-PORT reports to the SEC (between 51\% and 63\% of its net assets), and bought
+from Databento the imbalance messages that each stock's listing exchange sent from 15:50. From each stock's first
+closing-imbalance record received in the 15:50 minute it summed the signed dollar imbalance,
+$D = \sum_i s_i Q_i p_i$, with $s_i = +1$ for a buy imbalance, $-1$ for a sell imbalance and 0 for none, $Q_i$ the
+imbalance in shares and $p_i$ the reference price. A day agrees if the sign of $D$ is the candle's direction. The
+primary test compares the rule's hit rate on agreeing and disagreeing days, $d = h_a - h_d$, and passes if $d > 0$
+and $t \ge 2.0$. By the plan's power calculation it could detect a true $d$ of about 11 to 13 points, a large concentration of
+the edge on agreeing days, not a modest one. All 50 stocks had a usable record on every day, so every signal day was
+classified.
+
+\begin{table}[htbp]
+\centering
+\caption{Signal days that agree and disagree with the 15:50 closing imbalance, by year.}
+\label{tab:imbyear}
+\tabnotes{Signal days of the rule (a 15:50 body of 60\% or more), 2021--2026. A day agrees when the sign of the
+summed dollar imbalance of the 50 largest stocks, from each stock's first closing-imbalance record received in the
+15:50 minute, equals the candle's direction. Every signal day was classified, so no day is unclassified. Hit rate:
+share of days on which the CFD moved from the 15:51 open to the 15:59 close in the candle's direction, with its
+Wilson 95\% interval in percent; bp: the mean of that move in the candle's direction, in basis points. Over all
+days the difference in hit rates is $-5.9$ points ($t = -1.35$), with a 20-day block-bootstrap 95\%
+interval from $-14.8$ to $+4.0$ points.}
+\begin{tabular}{@{}lrrlrrlr@{}}
+\toprule
+ & & \multicolumn{3}{c}{Agreeing days} & \multicolumn{3}{c}{Disagreeing days} \\
+\cmidrule(lr){3-5}\cmidrule(l){6-8}
+Year & Days & $n$ & Hit rate (95\% CI) & bp & $n$ & Hit rate (95\% CI) & bp \\
+\midrule
+2021 & 111 & 92 & 62.0\% (52--71) & $4.67$ & 19 & 78.9\% (57--91) & $5.12$ \\
+2022 & 105 & 76 & 57.9\% (47--68) & $4.00$ & 29 & 69.0\% (51--83) & $3.88$ \\
+2023 & 113 & 73 & 53.4\% (42--64) & $0.33$ & 40 & 55.0\% (40--69) & $1.18$ \\
+2024 & 106 & 69 & 59.4\% (48--70) & $2.59$ & 37 & 43.2\% (29--59) & $-1.90$ \\
+2025 & 117 & 91 & 53.8\% (44--64) & $1.39$ & 26 & 69.2\% (50--83) & $3.97$ \\
+2026 & 92 & 68 & 47.1\% (36--59) & $0.96$ & 24 & 70.8\% (51--85) & $4.29$ \\
+\midrule
+All & 644 & 469 & 55.9\% (51--60) & $2.41$ & 175 & 61.7\% (54--69) & $2.24$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The candle and the imbalance usually pointed the same way, on 469 of the 644 days
+(72.8\%). But agreement did not make the candle more accurate (Table~\ref{tab:imbyear}): it was right on
+55.9\% of agreeing days and 61.7\% of disagreeing days, $d = -5.9$
+points ($t = -1.35$), with a block-bootstrap interval from $-14.8$ to $+4.0$ points,
+and disagreeing days had the higher hit rate in five of the six years, all but 2024. The imbalance direction alone was right on 51.1\% of days. The robustness checks fixed in
+the plan agree: the difference in hit rates stayed negative with the latest record of the minute, with NYSE or
+Nasdaq stocks alone and within year and direction, and the differences in the average move and in the option P\&L
+were small against their noise ($t = 0.13$ and $0.79$; Internet Appendix). The prediction was
+therefore not confirmed. The test has limited power, and a failure does not refute the auction explanation: the
+price may adjust within the 15:50 candle itself, imbalances change after their first publication, and 50 stocks are
+only part of the index. The high agreement is an association, not a cause, since the candle and the imbalance can
+reflect the same closing orders. What the test does show is that the rule's edge was not concentrated on the days on
+which its candle agreed with the imbalance first published at 15:50.
 
 % =====================================================================
 \section{Conclusion}
@@ -1056,15 +1153,18 @@ with a deep in-the-money 0DTE option, bought at the quoted ask and held to
 settlement, it made money on 2021--2026, though less than a pricing model implied.
 The bid-ask spread is the decisive cost: it took the whole edge before 2021, and a
 limit order at the mid does not recover it, because it misses the best days.
-Nothing tried afterwards, from re-tuned settings and early exits to momentum
-filters and smaller contracts, improved on the rule, and a search over the other
+Nothing tried afterwards, from re-tuned settings and real-time exit rules to
+momentum filters and smaller contracts, improved on the rule, and a search over the other
 closing candles chose the 15:50 candle again.
 
 The confirmation holds for the candle as the backtests read it, from a CFD that
 tracks the index. Read from the SPX index candle under a plan locked in advance,
 the rule earned less and did not meet its criterion; read from the SPY candle it
 met a retrospective one; and on every source the gain came on sessions on which
-all three candles showed a strong body. The fair summary is a small,
+all three candles showed a strong body. A pre-registered test found that the
+candle usually agrees with the closing-auction imbalance published at 15:50 but is
+no more accurate when it does; with limited power, that leaves the mechanism open.
+The fair summary is a small,
 execution-sensitive effect that is worth continuing to measure, not an established
 edge. The study's limits follow from its design: the holdout was nominal rather
 than blind, later studies reused the 2021--2026 outcomes, the fills are proxies
@@ -1073,7 +1173,9 @@ for what an order would have paid, and the luck diagnostic is approximate.
 Three steps would sharpen the evidence. Settings suggested by the searches, such
 as stricter 15:50 cuts and the agreement of several candles, should be tested only
 on days after November 2026, under new registered plans. Closing-imbalance data
-should be used to test the mechanism proposed in Section~\ref{sec:why}. And
+could test the rest of the hypothesis of Section~\ref{sec:hypothesis}: whether the
+effect depends on the size of the imbalance, and whether it changed when the NYSE
+moved its publication to 15:50 in 2019. And
 forward records of actual order fills should replace the fill proxies, since they
 alone can settle how the trade should be executed.
 

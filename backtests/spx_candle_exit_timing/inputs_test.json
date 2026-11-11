@@ -1,0 +1,6 @@
+{
+ "step": "test",
+ "plan_sha256": "34c2c8347c7963bcdc295155de45bbd0aa65ed1e1a7b3ba35fd6df4ba82201b0",
+ "inputs": null,
+ "note": "nothing read: tune stopped on coverage"
+}

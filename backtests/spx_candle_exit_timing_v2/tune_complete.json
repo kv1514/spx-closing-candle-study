@@ -1,0 +1,10 @@
+{
+ "inputs_tune.json": "cb1d1a19f5456a7d5099068400e0cbc1735a2e484f6b0b6859d83cda68bac01d",
+ "selection.json": "1f80ef6dba0f1b6e99a75683bca5ed692eabd52c8c9bc72b6ceaeded9455b3e4",
+ "selection.sha256": "d9071835a8f68c106b0916b1a418cca360799c560fab8549999c4a05ffed75c1",
+ "selection_time.json": "9a361d899c46dcbbf2460ce619936edca061f50c0689206d16fbef60437577f3",
+ "tune_results.json": "43603cf4da096c4c3e6e270c3b8948474c146e2aaf8c859365be6bfadcd19ff0",
+ "trades_csv_tuning_rows": "d9249cbc06d6e4b709fd106d04b2c0fe73d5d1d6f9cfc5cd3e55e0a48303a4f2",
+ "RESULTS_md_tuning_section": "5da796f8bea2a9008e667dad8a4ecdb023c9da0a74761f61a80132debf4a52c8",
+ "completed_utc": "2026-11-11T00:01:45Z"
+}
