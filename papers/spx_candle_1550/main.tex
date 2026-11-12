@@ -1,9 +1,10 @@
 % =====================================================================
-% The 15:50 Candle
-% Evidence from a pre-registered study of an end-of-day signal in
-% same-day SPX options
+% The 15:50 Candle -- full working paper.
+% It serves as the Internet Appendix to the shorter journal version in
+% ../spx_candle_1550_journal/. The bibliography is inline (no bibtex
+% pass) and the figures are drawn from the CSV files in figures/.
 % =====================================================================
-\documentclass[11pt,letterpaper]{article}
+\documentclass[12pt,letterpaper]{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -21,8 +22,9 @@
 \usepackage{xcolor}
 \usepackage{etoolbox}
 \usepackage{enumitem}
-\usepackage[font=small,labelfont=bf,labelsep=colon,skip=4pt]{caption}
+\usepackage[font=small,labelsep=colon,skip=4pt]{caption}
 \captionsetup[table]{position=top}
+\captionsetup[figure]{position=top}
 \usepackage[compact]{titlesec}
 \usepackage{titling}
 \usepackage{placeins}
@@ -67,15 +69,16 @@
 \setlength{\parskip}{0pt plus 1pt}
 \flushbottom
 \setlength{\intextsep}{8pt plus 4pt minus 2pt}
-\AtBeginEnvironment{tabular}{\footnotesize}
-% tables and figures single-spaced, including the [H] tables of Appendix B
+% table body size; a wide table sets \tabfont to 9pt locally
+\newcommand{\tabfont}{\footnotesize}
+\AtBeginEnvironment{tabular}{\tabfont}
+% tables and figures single-spaced
 \AtBeginEnvironment{table}{\setstretch{1}}
-\AtBeginEnvironment{figure}{\setstretch{1}}
+\AtBeginEnvironment{figure}{\setstretch{1}\setlength{\parindent}{0pt}}
 \setlength{\emergencystretch}{2em}
 
-% table notes, set under the table in small type
-% the explanatory note of a table, set between its title and the table in small type
-\newcommand{\tabnotes}[1]{\par\vspace{2pt}\parbox{\linewidth}{\footnotesize\setlength{\parindent}{0pt}#1}\par\vspace{7pt}}
+% the explanatory note of a table or figure, set below it in small type
+\newcommand{\tabnotes}[1]{\par\vspace{5pt}\parbox{\linewidth}{\footnotesize\setlength{\parindent}{0pt}\textit{Note:} #1}\par}
 
 % ---- figures: drawn by pgfplots from CSV files made by figures/make_figure_data.py ----
 \definecolor{series1}{HTML}{2A78D6}
@@ -102,41 +105,45 @@
 \newcommand{\dollar}{\$}
 
 \begin{document}
-\title{\textbf{The 15:50 Candle: A Pre-Registered Study\\of an End-of-Day Signal in 0DTE SPX Options}}
-\author{Kausthubh Veldanda\thanks{This version: 10 November 2026. Every confirmatory
-test in this paper was pre-registered: each plan was hashed and time-stamped before
-the data it governs was read, and the tests that failed are reported with those
-that passed. This paper is research, not investment advice.}\\[0.15em]
-{\small University of California, Berkeley\quad\href{mailto:kveldanda@berkeley.edu}{\texttt{kveldanda@berkeley.edu}}}}
-\date{November 2026}
+\title{\textbf{The 15:50 Candle: A Pre-Registered Study\\of an End-of-Day Signal in 0DTE SPX Options}\thanks{This version: 12 November 2026.
+Every confirmatory test in this paper was pre-registered: each plan was hashed and
+time-stamped before the data it governs was read, and the tests that failed are
+reported with those that passed. This is the full working-paper version of the
+study and reports every study in full; it serves as the Internet Appendix to the
+shorter journal version of this paper. A statement on data availability is at the end of the paper. I thank Tiger
+Chen, whose observation started this study. This paper is research, not
+investment advice.}}
+\author{Kausthubh Veldanda\thanks{University of California, Berkeley. Email: \href{mailto:kveldanda@berkeley.edu}{kveldanda@berkeley.edu}}}
+\date{12 November 2026}
 \maketitle
 
 \begin{abstract}
-\noindent We ask whether a one-minute candle near the close predicts the S\&P~500
-index (SPX) into the close, and whether the signal survives the cost of trading
-same-day-expiry (0DTE) index options. Every confirmatory test was pre-registered.
-A scan of 41 candle features on 2013--2020 selected a 15:50~ET candle whose body
-spans at least 60\% of its range; on the 2021--2026 holdout, traded in its own
-direction, it was right on 57.5\% of 644 trades. At real OPRA quotes, an SPXW
-option 10 points in the money, bought at the ask and held to settlement, earned
-\$67 a trade (Newey--West $t = 2.40$), about two-thirds of what a pricing model
-implied, and lost money before 2021, when spreads were about five times wider.
-Early exits (including 26 pre-registered stop and take-profit rules at real
-bids), limit orders, momentum and dealer-gamma filters and smaller contracts did
-not improve it. Read from the SPX index candle rather than the CFD
-candle of the backtests, the rule made \$39 a trade ($t = 1.53$) and missed its
-criterion; read from the SPY candle it made \$72 ($t = 2.35$) and met a
-retrospective one. A final search over 7{,}128 settings of candle, cut,
-direction and strike again chose the 15:50 candle, with a luck diagnostic of
-$p = 0.051$. In a pre-registered test with the exchanges' own messages, the candle
-pointed the same way as the closing-auction imbalance published at 15:50 on 73\% of
-signal days but was not more accurate on those days (56\% against 62\%). The
-evidence supports a small, execution-sensitive edge, not an established one.
+\noindent I test whether a one-minute candle near the close predicts the move of the
+S\&P~500 index (SPX) into the close, and whether the prediction is worth
+anything after the cost of trading same-day-expiry (0DTE) index options. Every confirmatory test was
+pre-registered. A scan of 41 candle features on 2013--2020 selected a 15:50~ET
+candle whose body spans at least 60\% of its range. On the 2021--2026 holdout,
+traded in its own direction, it was right on 57.5\% of 644 trades. At real OPRA
+quotes, an SPXW option 10 points in the money, bought at the ask and held to
+settlement, earned \$67 a trade (Newey--West $t = 2.40$), about two-thirds of what
+a pricing model implied. The profit depends on the bid-ask spread, and the same trades lost money before
+2021, when spreads were about five times wider. Early exits
+(including 26 pre-registered stop and take-profit rules at real bids), limit
+orders, momentum and dealer-gamma filters and smaller contracts did not improve
+the trade. The result also depends on where the candle is read. Read from the SPX index
+candle instead of the CFD candle of the backtests, the rule made \$39 a trade
+($t = 1.53$) and missed its criterion. Read from the SPY candle it made \$72
+($t = 2.35$) and met a retrospective one. A final search over 7{,}128 settings of
+candle, cut, direction and strike again chose the 15:50 candle, with a luck
+diagnostic of $p = 0.051$. In a pre-registered test using the exchanges' imbalance messages, the candle pointed the same way as the closing-auction imbalance
+published at 15:50 on 73\% of signal days but was not more accurate on those days
+(56\% against 62\%). I read the evidence as a small edge that is sensitive to execution and not yet
+established.
 
 \medskip
-\noindent\textit{JEL classification:} G13, G14.\quad
-\textit{Keywords:} 0DTE options; S\&P~500 index options; closing auction; intraday
-momentum; bid-ask spread; pre-registration.
+\noindent \textit{JEL:} G13, G14\\
+\noindent \textit{Keywords:} 0DTE options; S\&P~500 index options; closing
+auction; intraday momentum; bid-ask spread; pre-registration.
 \end{abstract}
 
 
@@ -145,118 +152,140 @@ momentum; bid-ask spread; pre-registration.
 \section{Introduction}
 \label{sec:intro}
 
-Options on the S\&P~500 index that expire the same day (0DTE) now list every
-weekday, and much of their volume concentrates near the close. The final minutes
-of the session are also when closing-auction order imbalances are published, and
-an index option bought at 15:51~ET settles in cash on the official close nine
-minutes later. Its outcome therefore depends on little more than the direction
-and size of the last move of the day. That makes the close a natural place to
-look for a short-horizon directional signal, and 0DTE options a natural way to
-trade one.
+Options on the S\&P~500 index that expire the same day (0DTE) are now listed
+every weekday, and much of their volume concentrates near the close. The
+closing auction also becomes visible in the last ten minutes of the session.
+From 15:50~ET the New York Stock Exchange publishes the closing-auction imbalance of the stocks
+it lists, and Nasdaq disseminates an early imbalance indicator for its own
+stocks. An index option bought at 15:51~ET settles in cash on the official close
+nine minutes later, so its outcome depends on little more than the direction and
+size of the last move of the day. The close is therefore a reasonable place to look for a short-horizon
+directional signal, and a 0DTE option is the simplest way to trade one.
 
-It is also a setting in which it is easy to be fooled. Many plausible candle
-rules, scored on enough history, will produce an apparent winner by chance, and
-the winner's edge shrinks out of sample \citep{harvey2016}. A backtest that
-enters at the close of the signal candle uses information that was not yet
-available, and a rule that is right 54\% of the time can still lose money once
-the bid-ask spread is paid. We therefore pre-registered every confirmatory test
-\citep{nosek2018}: what would be computed, on which data, and what would count as
-success. Each plan was hashed and time-stamped before the data it governs was
-read.
+I came to this question through a friend, Tiger Chen, who had noticed by
+chance, on one-minute charts of the index, that the S\&P~500 often makes a
+sharp move in one direction about ten minutes before the close, and who showed
+me 27 screenshots of it. This paper began as an attempt to check whether that
+observation is real and whether trading it with same-day options makes money.
 
-The paper reports a sequence of studies, each building on the last. A scan of 41
-candle features finds a signal on 2013--2020 and tests it on 2021--2026
-(Section~\ref{sec:scan}). A calibrated pricing model then asks which strike best
-expresses the signal and whether a stop-loss or take-profit beats holding to
-settlement (Section~\ref{sec:model}). Real OPRA quotes replace the model to tune
-and confirm the trade at the prices actually offered
-(Section~\ref{sec:realprice}), trade bars describe how the order might have
-been filled, and a pre-registered study tests real-time exit rules at real bids
-(Section~\ref{sec:execution}). Three further studies re-tune the
-rule on recent data (Section~\ref{sec:refine}), test published intraday
-momentum and a dealer-gamma channel (Section~\ref{sec:momentum}), and trade the
-signal on smaller contracts (Section~\ref{sec:mini}). An independent
-re-validation then checks the whole chain (Section~\ref{sec:audit}), two
-further pre-registered studies read the signal from the SPX index candle itself
+A backtest of such a trade can mislead in several ways. If enough candle rules
+are scored on enough history, one of them will look good by chance, and its
+edge will shrink out of sample \citep{harvey2016}. A backtest that enters at
+the close of the signal candle uses information that was not yet available. And
+a rule that is right 54\% of the time can still lose money once the bid-ask
+spread is paid. I therefore fixed what would be tested before reading the data,
+and the confirmation prices the trade at quotes that were available at the
+time.
+
+Every confirmatory test in the paper was pre-registered \citep{nosek2018}.
+Before reading the data for a study I wrote down what would be computed, on
+which data, and what would count as success, and the plan was hashed and
+time-stamped. The tests that failed are reported with those that passed. The
+studies were done in sequence, each building on the last. A scan of 41 candle features finds a signal on 2013--2020
+and tests it on 2021--2026 (Section~\ref{sec:scan}). A calibrated pricing model
+then asks which strike best expresses the signal and whether a stop-loss or
+take-profit beats holding to settlement (Section~\ref{sec:model}). Real OPRA
+quotes replace the model to tune and confirm the trade at the prices actually
+offered (Section~\ref{sec:realprice}). Trade bars describe how the order might
+have been filled, and a pre-registered study tests real-time exit rules at real
+bids (Section~\ref{sec:execution}). Three further studies re-tune the rule on
+recent data (Section~\ref{sec:refine}), test published intraday momentum and a
+dealer-gamma channel (Section~\ref{sec:momentum}), and trade the signal on
+smaller contracts (Section~\ref{sec:mini}). An independent re-validation then
+checks the whole chain (Section~\ref{sec:audit}). Because the backtests read the
+signal from a contract for difference (CFD) that tracks the index, two further
+pre-registered studies read the signal from the SPX index candle itself
 (Section~\ref{sec:realindex}) and from the SPY candle
 (Section~\ref{sec:spycandle}), and another searches 7{,}128 nearby settings,
 including other closing candles, for a better rule (Section~\ref{sec:search}). A
-last one tests an explanation of the signal with the closing-auction imbalances
+last study tests an explanation of the signal with the closing-auction imbalances
 that the exchanges publish at 15:50 (Section~\ref{sec:imbalance}).
 
-Our main findings are as follows. First, one candle passes: the 15:50 one-minute
-candle with a \emph{strong body}, traded in its own direction, predicts the move
-to the close out of sample. It is a sharper form of an effect that was already
-known, and it has weakened since 2023. Second, deep in-the-money options are the
-most robust way to express it, in the model and at real prices, and no early
-exit improves on holding to settlement, including 26 stop and take-profit rules
-tested at real bids. Third, bought at the quoted ask,
-the trade earned $+\$67.46$ per contract on 2021--2026 ($t = 2.40$): a real but
-modest edge, about two-thirds of the model's estimate. Fourth, the bid-ask spread
-decides whether the trade pays. The same trades lost money at the ask before
-2021, and a limit order at the mid does not recover the spread, because it
-misses the best days. Fifth, nothing tried afterwards, from re-tuned thresholds
-to momentum filters to cheaper contracts, improved on the original rule.
-Sixth, an independent re-validation reproduced these results, placed the start
-of the effect near a 60\% body, found that a larger body beyond that threshold
-does not mean a larger gain, and showed that the CFD candle from which the
-signals were computed reads weaker than the SPX index candle. Read from the index
-candle, under a plan locked before any index candle was joined with a price, the
-rule made $+\$39.44$ a trade ($t = 1.53$) and did not meet its criterion. The gain
-was confined to days on which both candles showed a strong body, so the
-confirmation above is a statement about the CFD candle. Read from the SPY candle,
-which can be seen live, the rule made $+\$71.74$ a trade ($t = 2.35$) and met its
-criterion, but SPY was the third source evaluated on the same outcomes, so this
-is a retrospective result rather than an independent confirmation; the gain was
+The scan produced one usable signal, the 15:50 one-minute candle with a
+\emph{strong body}, traded in its own direction. On 2021--2026 it was right on
+57.5\% of 644 trades. It is a stricter version of an effect I had already seen
+in earlier exploratory work, and it has weakened since 2023.
+
+At real option prices the edge is small. Deep in-the-money options did best, in
+the model and at real prices. An option 10 points in the money, bought at the
+quoted ask and held to settlement, earned $+\$67.46$ per contract on 2021--2026
+($t = 2.40$), about two-thirds of the model's estimate. Whether the trade makes
+money depends mostly on the bid-ask spread. The same trades lost money at the
+ask before 2021, and a limit order at the mid does not recover the spread,
+because it misses the best days. No early exit improved on holding to
+settlement, including 26 stop and take-profit rules tested at real bids.
+Re-tuned thresholds, momentum filters and cheaper contracts did not improve on
+the original rule either.
+
+The result also depends on where the candle is read. An independent
+re-validation reproduced the results above, placed the start of the effect near a
+60\% body, and found that a larger body beyond that threshold does not mean a
+larger gain. It also showed that the CFD candle from which the signals were
+computed reads weaker than the SPX index candle. Read from the index candle,
+under a plan locked before any index candle was joined with a price, the rule
+made $+\$39.44$ a trade ($t = 1.53$) and did not meet its criterion. The gain was
+confined to days on which both candles showed a strong body, so the confirmation
+above is a statement about the CFD candle. Read from the SPY candle, which can be
+seen live, the rule made $+\$71.74$ a trade ($t = 2.35$) and met its criterion.
+SPY was the third source evaluated on the same outcomes, however, so this
+result is retrospective and is not an independent confirmation, and the gain
+was
 again confined to sessions on which all three candles showed a strong body.
-Seventh, a pre-registered search over 7{,}128 settings of candle source, minute,
-cut, direction and strike chose the 15:50 candle again. Its choice was not
-clearly beyond luck ($p = 0.051$), and because 15:50 settings had already been
-examined on the later years, it could not be tested afresh. Finally, the candle
-pointed the same way as the closing-auction imbalance published at 15:50 on 73\%
-of signal days, but in a pre-registered test it was not more accurate on those
-days (56\% against 62\%). The explanation that traders react to the published
-imbalance was therefore not confirmed, although the test could detect only a large
-difference.
 
-The paper relates to three literatures. The first documents market intraday
-momentum. \citet{ghlz2018} find that the first half-hour return predicts the
-last half hour of the S\&P~500, and \citet{bdlm2021} find the same pattern
-across futures markets and link it to the hedging of option dealers who are
-short gamma. The 15:50 candle lies inside that last half hour, and we test both
-the momentum and the gamma channel directly. The second concerns data mining and
-multiple testing in return predictability \citep{harvey2016}, which motivates
-our holdout design and our luck diagnostics. The third is pre-registration
-\citep{nosek2018}, which remains rare in empirical finance. Our studies show how
-a plan, hash and ledger protocol can govern an evolving trading research
-programme, including the reporting of the tests that failed.
+A later pre-registered search over 7{,}128 settings of candle source, minute, cut, direction and strike chose
+the 15:50 candle again. Its choice was not clearly beyond luck ($p = 0.051$), and
+because 15:50 settings had already been examined on the later years, it could
+not be tested afresh. Finally, the candle pointed the same way as the
+closing-auction imbalance published at 15:50 on 73\% of signal days, but in a
+pre-registered test it was not more accurate on those days (56\% against 62\%).
+The explanation that traders react to the published imbalance was therefore not
+confirmed, although the test could detect only a large difference.
 
-This is research, not a recommendation to trade. The holdout pass is nominal
-rather than blind, the strike and exit results rest on a model calibrated on
-seven days, the real-price confirmation reuses index outcomes that had already
-been seen, the execution results are descriptive proxies, the confirmed rule reads its candle from a CFD rather than from the index, and the SPY
-candle's pass is retrospective.
-Section~\ref{sec:limits} discusses these limitations. The rest of the paper is
-organised as follows. Section~\ref{sec:data} describes the data and
-Section~\ref{sec:design} the research design. Sections~\ref{sec:scan}
-to~\ref{sec:imbalance} report the studies, Section~\ref{sec:forward} the forward
-evidence and Section~\ref{sec:discussion} what they imply together.
+Several limits apply throughout, and none of this is a recommendation to trade.
+The holdout was not blind, because a related effect was already known. The
+strike and exit results rest on a model calibrated on seven days. The
+real-price confirmation reuses index outcomes that I had already seen, and the
+execution results are descriptive proxies. The confirmed rule reads its candle
+from a CFD and not from the index, and the SPY candle's pass is retrospective. Section~\ref{sec:limits} discusses these limitations.
+
+\paragraph{Related literature.} The closest work is on market intraday momentum. \citet{ghlz2018} find that the first
+half-hour return predicts the last half hour of the S\&P~500, and
+\citet{bdlm2021} find the same pattern across futures markets and link it to the
+hedging of option dealers who are short gamma. The 15:50 candle lies inside that
+last half hour, and I test both the momentum and the gamma channel directly. What I add is a
+single minute within that window, tested out of sample under a pre-registered
+plan. The holdout design and the luck diagnostics follow the work on data
+mining and multiple testing in return predictability \citep{harvey2016}.
+Pre-registration \citep{nosek2018} is still rare in empirical finance, and the
+paper applies a plan, hash and ledger protocol to a sequence of trading studies
+and reports the tests that failed.
+
+\paragraph{Outline.} Section~\ref{sec:data} describes the data and
+Section~\ref{sec:design} the research design. Section~\ref{sec:scan} tests the
+signal, and Section~\ref{sec:model} studies strike choice and early exits under a
+pricing model. Sections~\ref{sec:realprice} and~\ref{sec:execution} price the
+trade at real quotes and examine how it would have been executed.
+Sections~\ref{sec:refine} to~\ref{sec:mini} report the studies that tried to
+improve the rule, and Section~\ref{sec:audit} the re-validation.
+Sections~\ref{sec:realindex} and~\ref{sec:spycandle} read the candle from the
+index and from SPY, Section~\ref{sec:search} searches the other closing candles,
+and Section~\ref{sec:imbalance} tests the closing-auction explanation.
+Section~\ref{sec:forward} reports the forward evidence,
+Section~\ref{sec:discussion} discusses what the studies imply together, and
 Section~\ref{sec:conclusions} concludes.
 
 % =====================================================================
 \section{Data}
 \label{sec:data}
 
-Table~\ref{tab:data} lists the data sources.
+The study combines one-minute bars for the index and for SPY, real option
+quotes and trades, the exchanges' closing-auction imbalance messages and a
+broker's own one-minute bars. Table~\ref{tab:data} lists the sources.
 
 \begin{table}[htbp]
 \centering
 \caption{Data sources.}
 \label{tab:data}
-\tabnotes{The index sample runs from 2013-02-28 to 2026-10-20 and the OPRA SPXW
-sample from 2013-04-01 to 2026-10-20; the XSP and SPY sample starts on
-2021-01-01. Robinhood data begin on 2026-09-21. The CFD series was extended to 2026-11-09
-for the comparison in Section~\ref{sec:audit}.}
 \begin{tabular}{@{}L{0.17\linewidth}L{0.41\linewidth}L{0.13\linewidth}L{0.21\linewidth}@{}}
 \toprule
 Source & Content & Period & Used for \\
@@ -273,20 +302,23 @@ CNBC & SPY one-minute bars (archive; traded prices, not dividend-adjusted) & 202
 Databento & NYSE and Nasdaq closing-auction imbalance messages, 15:50--16:00~ET on signal days, for SPY's 50 largest holdings (SEC N-PORT reports) & 2021--2026 & Imbalance test (Section~\ref{sec:imbalance}) \\
 \bottomrule
 \end{tabular}
+\tabnotes{The index sample runs from 2013-02-28 to 2026-10-20 and the OPRA SPXW
+sample from 2013-04-01 to 2026-10-20; the XSP and SPY sample starts on
+2021-01-01. Robinhood data begin on 2026-09-21. The CFD series was extended to 2026-11-09
+for the comparison in Section~\ref{sec:audit}.}
 \end{table}
 
-\paragraph{Index.} Signals and index outcomes come from Dukascopy's US500 CFD
-one-minute bars during regular trading hours, restricted to a validated set of
-full sessions. Discovery uses 2013--2020 (1{,}861 sessions) and the holdout
-2021--2026 (1{,}446 sessions). The CFD stands in for SPX, and index outcomes are
-measured to the close of the 15:59 bar rather than to the official settlement.
+Signals and index outcomes come from Dukascopy's US500 CFD one-minute bars during
+regular trading hours, restricted to a validated set of full sessions. Discovery
+uses 2013--2020 (1{,}861 sessions) and the holdout 2021--2026 (1{,}446
+sessions). The CFD stands in for SPX, and index outcomes are measured to the
+close of the 15:59 bar rather than to the official settlement.
 Section~\ref{sec:realindex} reads the signal candle instead from an archive of
 SPX index one-minute bars, and Section~\ref{sec:spycandle} from an archive of SPY
-one-minute bars.
-On the 22 days where both are available, the CFD and SPX moves from 15:51 to the
-close had the same sign on 86\% of days.
+one-minute bars. On the 22 days where both are available, the CFD and SPX moves
+from 15:51 to the close had the same sign on 86\% of days.
 
-\paragraph{Options.} Real option prices come from Databento's OPRA feed: the
+Real option prices come from Databento's OPRA feed: the
 consolidated best bid and offer at one-minute marks for SPXW contracts expiring
 that day, from 15:00 to 16:01~ET, for the 25 strikes within 60 points of the
 at-the-money strike at 15:51. A quote stamped HH:MM:00 is the quote at the open
@@ -297,7 +329,7 @@ expiry that day; the rest are excluded from every option study. Options settle a
 intrinsic value on Cboe's official SPX close, which matched the broker's daily
 close on all 362 days on which both exist.
 
-\paragraph{Broker data.} Robinhood's SPX and SPXW bars serve two purposes. Seven
+Finally, Robinhood's SPX and SPXW bars serve two purposes. Seven
 days of real one-minute option prices calibrate the pricing model of
 Section~\ref{sec:model}, and since 21 October 2026 a read-only collector has
 saved the day's SPX and SPXW one-minute bars after every close for the forward
@@ -307,6 +339,8 @@ about a day, so a day that is not collected promptly is lost.
 % =====================================================================
 \section{Research design}
 \label{sec:design}
+
+
 
 \subsection{The signal and the trade}
 \label{sec:signal}
@@ -325,12 +359,12 @@ In the option studies, let $S$ be the index level at entry and
 $K_{\textsc{atm}} = 5\lfloor S/5 + 1/2\rfloor$ the nearest listed strike. An
 offset of $j$ points, positive meaning in the money in the trade's direction,
 buys the call struck at $K_{\textsc{atm}} - j$ after an up signal and the put
-struck at $K_{\textsc{atm}} + j$ after a down signal. We consider nine offsets,
+struck at $K_{\textsc{atm}} + j$ after a down signal. I consider nine offsets,
 from 20 points in the money (\ITM{20}) to 20 points out of the money
 (\OTM{20}) in steps of five. One contract (multiplier 100) is bought per signal
 and held to cash settlement unless stated otherwise, and each side pays a fee of
-\$0.09 per contract, with \$0.74 as a sensitivity. We call the 15:50
-strong-body signal traded at \ITM{10} the \emph{current rule}.
+\$0.09 per contract, with \$0.74 as a sensitivity. I refer to the 15:50 strong-body signal traded at \ITM{10} as the \emph{current
+rule}.
 
 \subsection{Pre-registration}
 \label{sec:prereg}
@@ -341,18 +375,14 @@ ledger, and each study's code recomputes the hash at start-up and refuses to
 read real data unless it matches a ledger entry. Each plan lists what was already
 known when it was written, and any departure from a plan is reported as a
 labelled deviation; no result was re-run under a changed rule.
-
 Table~\ref{tab:studies} lists the studies, their primary criteria and their
-outcomes. Analyses that were not pre-registered are labelled
-\emph{descriptive}. They inform the discussion but decide nothing.
+outcomes. Analyses that were not pre-registered are labelled \emph{descriptive} and were
+not used to decide any test.
 
 \begin{table}[htbp]
 \centering
 \caption{The pre-registered studies.}
 \label{tab:studies}
-\tabnotes{Registration dates are UTC. The limit-order and fixed-minute sale analyses of
-Section~\ref{sec:execution} and the re-validation of Section~\ref{sec:audit}
-were not pre-registered.}
 \begin{tabular}{@{}L{0.16\linewidth}L{0.07\linewidth}L{0.11\linewidth}L{0.33\linewidth}L{0.22\linewidth}@{}}
 \toprule
 Study & Section & Registered & Primary criterion & Outcome \\
@@ -373,19 +403,22 @@ Real-time exits, revised & \ref{sec:rtexit} & 2026-11-11 & The same, for the 26 
 Forward options log & \ref{sec:forward} & 2026-10-30 & Running record of real option outcomes & Four priced trades so far \\
 \bottomrule
 \end{tabular}
+\tabnotes{Registration dates are UTC. The limit-order and fixed-minute sale analyses of
+Section~\ref{sec:execution} and the re-validation of Section~\ref{sec:audit}
+were not pre-registered.}
 \end{table}
 
 \subsection{Statistical inference}
 \label{sec:inference}
 
-We report mean P\&L per trade and per day, where the daily series takes the
+I report mean P\&L per trade and per day, where the daily series takes the
 trade's P\&L on a signal day and zero otherwise. Unless stated otherwise,
 $t$-statistics use Newey--West standard errors with five lags on the daily
 series \citep{neweywest1987}. The scan tests its candidates one-sided with a
 Holm correction \citep{holm1979}, and hit-rate intervals are Wilson intervals
 \citep{wilson1927}.
 
-Two studies choose one setting from a large grid, and for them we report a
+Two studies choose one setting from a large grid, and for them I report a
 \emph{luck diagnostic}. The signal series is shifted circularly against the
 outcome days, by every shift from 21 days to $n - 21$ in steps of three. A shift
 keeps the signal's own structure but breaks its link to the outcomes. The whole
@@ -418,7 +451,9 @@ are in dollars at the index level of the time.
 \section{Does a closing candle predict the close?}
 \label{sec:scan}
 
-\paragraph{Design.} We defined 41 features, each of which outputs up, down or no
+
+
+I defined 41 features, each of which outputs up, down or no
 trade using only bars completed before the entry: the direction of every
 one-minute candle from 15:30 to 15:50; five candle shapes (strong body, hammer,
 shooting star, engulfing, big candle) on the 15:50 one-minute candle and on the
@@ -434,13 +469,6 @@ at-the-money option breaks even.
 \centering
 \caption{The candle scan: frozen candidates on the 2021--2026 holdout.}
 \label{tab:scan}
-\tabnotes{Panel A gives hit rates in discovery (2013--2020) and on the holdout,
-with 95\% Wilson intervals. The strong-body break-even is 49.5\% at a \$0.09 fee
-(51.8\% size-neutral); with 644 trades, ``accurate'' requires an observed hit
-rate of 53.4\% (55.7\% size-neutral). The P3 row is a reference and was not
-tested. Panel B prices the at-the-money option with the scan's cost model. By
-year from 2021 to 2026 the hit rate was 64.9, 61.0, 54.0, 53.8, 57.3 and
-53.3\%.}
 \begin{minipage}{\linewidth}\centering
 \textit{Panel A. The three candidates}\par\smallskip
 \setlength{\tabcolsep}{4pt}
@@ -469,34 +497,40 @@ Strong body & trades & hit rate (95\% CI) & $t$ & option P\&L / trade ($t$) \\
 \bottomrule
 \end{tabular}
 \end{minipage}
+\tabnotes{Panel A gives hit rates in discovery (2013--2020) and on the holdout,
+with 95\% Wilson intervals. The strong-body break-even is 49.5\% at a \$0.09 fee
+(51.8\% size-neutral); with 644 trades, ``accurate'' requires an observed hit
+rate of 53.4\% (55.7\% size-neutral). The P3 row is a reference and was not
+tested. Panel B prices the at-the-money option with the scan's cost model. By
+year from 2021 to 2026 the hit rate was 64.9, 61.0, 54.0, 53.8, 57.3 and
+53.3\%.}
 \end{table}
 
-\paragraph{Results.} Three features qualified (Table~\ref{tab:scan}, panel A).
-Two of them, both on the 15:50 candle, predicted the 2021--2026 move, but only
+Panel A of Table~\ref{tab:scan} shows that three features qualified. Two of them, both on the 15:50 candle, predicted the 2021--2026 move, but only
 the strong-body candle also cleared the accuracy bar. It was right on 57.5\% of
 644 trades. Rescaled to today's index level, these trades moved an average of
 $+1.82$ points in the signal's direction over nine minutes. The third candidate,
-a whole-day feature, did not survive out of sample.
+a whole-day feature, failed out of sample.
 
-\paragraph{Robustness.} Two checks argue against chance and against a generic
-intraday pattern. When the 41 features were shifted out of line with the
+I ran two checks, one against chance and one against a generic intraday
+pattern. When the 41 features were shifted out of line with the
 2013--2020 outcomes and the scan was re-run 304 times, about 1\% of runs found as
 many qualifying features as the real scan, and none found one as strong as the
 best real feature. The same rules moved four hours earlier, entering at 11:51,
 showed nothing in either period.
 
-\paragraph{A known effect in a sharper form.}
-\label{sec:scan-known}
-Both passing features sit on the 15:50 candle and agree with the direction of
-the move from 15:50 to 15:51 (an effect we call P3, found in the project's
-earlier exploratory work) on 98\% and 93\% of days. P3's behaviour over
-2013--2026 was known before the scan, so the holdout was not blind for these
-features. The fair reading is that a known effect survived a stricter test in a
-sharper form. On 15:50 candles without a strong body, trading the direction
-earned nothing.
+\label{sec:scan-known}%
+The result is not entirely new. Both passing features sit on the 15:50 candle
+and agree with the direction of the move from 15:50 to 15:51 (an effect I call
+P3, found in the project's earlier exploratory work) on 98\% and 93\% of days.
+I knew how P3 had behaved over 2013--2026 before running the scan, so the
+holdout was not blind for these features. I therefore read the result as a
+known effect passing a stricter test, not as a new discovery. The strong body
+does matter, because on 15:50 candles without one, trading the direction earned
+nothing.
 
-\paragraph{Weaker since 2023.} Most of the edge comes from 2021--2022
-(Table~\ref{tab:scan}, panel B). In 2023--2026 the hit-rate interval includes
+The effect has also weakened since 2023. Panel B of Table~\ref{tab:scan} shows
+that most of the edge comes from 2021--2022. In 2023--2026 the hit-rate interval includes
 50\%, and the modelled option P\&L is not significant. At that effect size, a
 test with 80\% power would need roughly 19 years of signals, so no single year
 can settle the question.
@@ -510,7 +544,8 @@ calibrated model of Section~\ref{sec:pricing} to price the 644 holdout trades.
 The first asks which strike best expresses the signal, and the second whether a
 stop-loss or take-profit improves on holding to settlement. Both report a
 headline calibration, variant (a), and alternatives that change the volatility,
-the costs or the skew (Appendix~\ref{app:cal}).
+the costs or the skew (Appendix~\ref{app:cal}). Under the model, strikes deep in the money were the most robust and no early
+exit improved on holding.
 
 \subsection{Which strike}
 \label{sec:strikes}
@@ -519,11 +554,6 @@ the costs or the skew (Appendix~\ref{app:cal}).
 \centering
 \caption{The strike ladder under the calibrated model.}
 \label{tab:ladder}
-\tabnotes{Variant (a), 644 modelled strong-body trades on 2021--2026, \$0.09
-fee, level-normalised dollars per contract. A model, not observed P\&L. The
-\OTM{20} row (grey) is an artefact of the skew rule; the \OTM{10} and \OTM{15}
-rows inherit skew factors of 2.09 and 2.26 and are unreliable for the same
-reason. Table~\ref{tab:variants} reports every variant.}
 \begin{tabular}{lrrrrrr}
 \toprule
 Strike & model price & mean P\&L / contract & $t$ & profitable & mean return & median return \\
@@ -539,20 +569,24 @@ Strike & model price & mean P\&L / contract & $t$ & profitable & mean return & m
 \color{gray}\OTM{20} & \color{gray}\dollar1{,}683 & \color{gray}$-1{,}628.66$ & \color{gray}$-3.62$ & \color{gray}1\% & \color{gray}$-74\%$ & \color{gray}$-100\%$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{Variant (a), 644 modelled strong-body trades on 2021--2026, \$0.09
+fee, level-normalised dollars per contract. A model, not observed P\&L. The
+\OTM{20} row (grey) is an artefact of the skew rule; the \OTM{10} and \OTM{15}
+rows inherit skew factors of 2.09 and 2.26 and are unreliable for the same
+reason. Table~\ref{tab:variants} reports every variant.}
 \end{table}
 
-Strikes 10 to 20 points in the money were the most robust
-(Table~\ref{tab:ladder}). Their mean stayed between $+\$102$ and $+\$214$ per
+Table~\ref{tab:ladder} shows that strikes 10 to 20 points in the money were the
+most robust. Their mean stayed between $+\$102$ and $+\$214$ per
 contract in every credible variant, a majority of trades were profitable, and the
-typical trade made money. Deep in-the-money options carry little time value, so
-they keep nearly all of a small move. At-the-money options earn a higher return
-on premium, but from fewer, larger winners: the median at-the-money trade lost
+typical trade made money. Deep in-the-money options carry little time value, so they keep nearly all of a
+small move. At-the-money options earn a higher return on premium, but from
+fewer, larger winners. The median at-the-money trade lost
 about half its premium, and the mean depends heavily on the assumed price of
 volatility. The ranking held in both subperiods, although the level fell after
 2022.
 
-\paragraph{Far out of the money.}
-\label{sec:skewfail}
+\label{sec:skewfail}%
 The pre-registered skew factor, the median ratio of market to model price,
 failed for far out-of-the-money strikes. On the calm calibration days the normal
 model priced a 20-point out-of-the-money option at almost nothing, while the
@@ -579,10 +613,6 @@ strike after the strike results had been seen.
 \centering
 \caption{Early exits under the calibrated model.}
 \label{tab:exits}
-\tabnotes{\ITM{10}, variant (a), 644 modelled trades, level-normalised dollars per
-contract, \$0.09 fee. ``Sold early'' is the share of trades the rule closes
-before settlement. The last column is the mean paired difference from holding,
-with its Newey--West $t$.}
 \begin{tabular}{lrrrrrrr}
 \toprule
 Rule & sold early & mean & $t$ & profitable & 5th pct & worst & vs hold ($t$) \\
@@ -596,10 +626,16 @@ T10 & 19\% & $+101.36$ & 3.39 & 56\% & $-1{,}186$ & $-3{,}601$ & $-64.72$ ($-2.8
 B5\_10 & 51\% & $+62.52$ & 2.34 & 48\% & $-810$ & $-1{,}481$ & $-103.56$ ($-3.79$) \\
 \bottomrule
 \end{tabular}
+\tabnotes{\ITM{10}, variant (a), 644 modelled trades, level-normalised dollars per
+contract, \$0.09 fee. ``Sold early'' is the share of trades the rule closes
+before settlement. The last column is the mean paired difference from holding,
+with its Newey--West $t$.}
 \end{table}
 
 \begin{figure}[htbp]
 \centering
+\caption{Early exits against holding to the close.}
+\label{fig:exits}
 \begin{tikzpicture}
 \begin{axis}[paper, xbar, width=0.88\linewidth, height=4.9cm, bar width=8pt,
   xmin=0, xmax=195, ymajorgrids=false, xmajorgrids,
@@ -612,18 +648,17 @@ B5\_10 & 51\% & $+62.52$ & 2.34 & 48\% & $-810$ & $-1{,}481$ & $-103.56$ ($-3.79
 \addplot[fill=series1, draw=none] table[x=per_trade, y=idx]{figures/exits.csv};
 \end{axis}
 \end{tikzpicture}
-\caption{Early exits against holding to the close, 644 modelled trades
-(2021--2026), \dollar0.09 fee. Every stop and take-profit rule earned less on
-average than holding; stops bought a smaller worst case (Table~\ref{tab:exits}).}
-\label{fig:exits}
+\tabnotes{644 modelled trades (2021--2026), \dollar0.09 fee. Every stop and
+take-profit rule earned less on average than holding; stops bought a smaller
+worst case (Table~\ref{tab:exits}).}
 \end{figure}
 
-No rule beat holding (Table~\ref{tab:exits} and Figure~\ref{fig:exits}). Every
-rule's mean difference from holding was negative, at every strike reported and
+Table~\ref{tab:exits} and Figure~\ref{fig:exits} show that no rule beat holding.
+Every rule's mean difference from holding was negative, at every strike reported and
 in every variant. Stops cut the worst loss by more than half, but they cost money
-on average and reduced the share of profitable trades. The signal is a small
-drift over nine minutes, many adverse moves reverse before the close, and every
-early sale pays the spread again. Take-profits raised the share of winning trades
+on average and reduced the share of profitable trades. The likely explanation is that the signal is a small drift over nine minutes,
+so many adverse moves reverse before the close, and every early sale pays the
+spread again. Take-profits raised the share of winning trades
 and lowered the mean, because they cut the winners short and do nothing for the
 losers. Sections~\ref{sec:fixedexit} and~\ref{sec:rtexit} revisit early exits
 at real prices.
@@ -632,10 +667,10 @@ at real prices.
 \section{Real option prices}
 \label{sec:realprice}
 
-The model studies leave two questions open: whether the edge survives the prices
-actually quoted, and whether the current rule is the best nearby setting. A
-pre-registered study answered both with real OPRA quotes, tuning on 2013--2020
-and confirming once on 2021--2026.
+The model studies leave two questions open, whether the edge is still there at
+the prices actually quoted, and whether the current rule is the best nearby
+setting. A pre-registered study addressed both with real OPRA quotes, tuning on
+2013--2020 and confirming once on 2021--2026.
 
 \subsection{Design}
 
@@ -670,11 +705,6 @@ for option prices but not for the index moves.
 \centering
 \caption{Tuning at real prices, 2013--2020: the eligible settings.}
 \label{tab:rpdisc}
-\tabnotes{2013-04-01 to 2020-12-31, real asks, \$0.09 fee, dollars per contract per
-day. Only these two of the 2{,}178 settings were eligible. Luck diagnostic: 262
-shifts, 142 of them with no eligible setting (counted as the worst); 95th
-percentile of the shifted best score $+\$21.92$; $p = 0.034$. Best minus current:
-$+\$40.17$ a day, Newey--West $t = 1.56$ over 593 days.}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrrrc}
 \toprule
@@ -686,10 +716,15 @@ Cell (candle, body, direction, strike) & score & mean & trades & 2013--16 & 2017
 \emph{Current: 15:50, $\ge 0.60$, with, \ITM{10}} & $-12.65$ & $-7.70$ & 216 & $-21.57$ & $-3.82$ & no \\
 \bottomrule
 \end{tabular}
+\tabnotes{2013-04-01 to 2020-12-31, real asks, \$0.09 fee, dollars per contract per
+day. Only these two of the 2{,}178 settings were eligible. Luck diagnostic: 262
+shifts, 142 of them with no eligible setting (counted as the worst); 95th
+percentile of the shifted best score $+\$21.92$; $p = 0.034$. Best minus current:
+$+\$40.17$ a day, Newey--West $t = 1.56$ over 593 days.}
 \end{table}
 
-Only two of the 2{,}178 settings were eligible (Table~\ref{tab:rpdisc}). The
-better one, the 15:42 candle with a 60\% body at the money, passed the luck
+Tuning on 2013--2020 had little to choose from, because only two of the 2{,}178
+settings were eligible (Table~\ref{tab:rpdisc}). The better one, the 15:42 candle with a 60\% body at the money, passed the luck
 diagnostic, but its lead over the current rule was not significant, so the
 current rule went forward unchanged. The current rule itself lost money at the
 ask in this period. Many of its signal days could not be priced at all, mostly
@@ -702,11 +737,6 @@ period only one signal day could not be priced.
 \centering
 \caption{Confirmation: the current rule at real asks.}
 \label{tab:rpconf}
-\tabnotes{The current rule (15:50 candle, body at least 60\%, with the candle,
-\ITM{10}, held to the official close) at real asks, \$0.09 fee, dollars per
-contract. $t$ is Newey--West on the per-day series. Subperiods are descriptive.
-Mean per trade by year: 2021 $+\$175$ (67 trades), 2022 $+\$71$ (90), 2023
-$+\$4$ (113), 2024 $+\$20$ (106), 2025 $+\$65$ (117), 2026 $+\$121$ (92).}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrrrrrr}
 \toprule
@@ -717,20 +747,25 @@ Period & days & \$/day & $t$ & trades & \$/trade & won & median & worst \\
 2023--2026 & 945 & $+22.58$ & 1.56 & 428 & $+49.85$ & 53\% & $+35.91$ & $-2{,}210$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{The current rule (15:50 candle, body at least 60\%, with the candle,
+\ITM{10}, held to the official close) at real asks, \$0.09 fee, dollars per
+contract. $t$ is Newey--West on the per-day series. Subperiods are descriptive.
+Mean per trade by year: 2021 $+\$175$ (67 trades), 2022 $+\$71$ (90), 2023
+$+\$4$ (113), 2024 $+\$20$ (106), 2025 $+\$65$ (117), 2026 $+\$121$ (92).}
 \end{table}
 
-The current rule was confirmed (Table~\ref{tab:rpconf}). It earned $+\$29.87$ a
+Table~\ref{tab:rpconf} shows that the current rule was confirmed. It earned $+\$29.87$ a
 day with $t = 2.40$, against a bar of 2.0. The mean trade made $+\$67.46$, slightly
 more than half of all trades were profitable, and the worst trade lost
-\$2{,}210 on one contract. Figure~\ref{fig:rpyears} shows the full record. Three
-qualifications apply. The result confirms the current rule at real prices but
+\$2{,}210 on one contract. Figure~\ref{fig:rpyears} shows the full record. This confirmation has three weaknesses. It confirms the current rule at real prices but
 does not show that it is the best setting, since no other setting was evaluated
-on this period (Section~\ref{sec:refine} returns to that question). The index
-outcomes had already been seen. And the edge is weaker since 2023, when it is
-not significant on its own; much of the result comes from 2021--2022.
+on this period (Section~\ref{sec:refine} returns to that question). I had already seen the index outcomes. And the edge is weaker since 2023, when
+it is not significant on its own, so much of the result comes from 2021--2022.
 
 \begin{figure}[htbp]
 \centering
+\caption{The current rule at real option prices.}
+\label{fig:rpyears}
 \begin{tikzpicture}
 \begin{axis}[paper, width=0.96\linewidth, height=5.6cm, xmin=2014, xmax=2027,
   xtick={2014,...,2026}, xticklabel style={/pgf/number format/1000 sep=},
@@ -771,7 +806,7 @@ not significant on its own; much of the result comes from 2021--2022.
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{The current rule (15:50 candle, body at least 60\%, with the candle,
+\tabnotes{The current rule (15:50 candle, body at least 60\%, with the candle,
 \ITM{10}, held to the official close) at real Databento OPRA prices,
 \dollar0.09 fee, dollars per contract at each year's prices. (a) The 801 priced
 signal days, 2014--2026. At the ask the rule lost \dollar4{,}997 over the 216
@@ -781,8 +816,8 @@ made about what paying the ask made, because it missed the best days
 (Section~\ref{sec:fills}). (b) 2023 and 2024 were close to zero. (c) Median ask
 minus bid at entry. The narrowing spread is why the same signal lost money at the
 ask before 2021 and made money after it. Before 2016 SPXW had a same-day expiry
-only on some days, so the early years have few trades.}
-\label{fig:rpyears}
+only on some days, so the early years have few trades. Sources: Databento OPRA;
+Cboe; Dukascopy.}
 \end{figure}
 
 \subsection{The role of the bid-ask spread}
@@ -792,10 +827,6 @@ only on some days, so the early years have few trades.}
 \centering
 \caption{The current rule bought at the ask and at the mid.}
 \label{tab:spread}
-\tabnotes{\ITM{10}, \$0.09 fee, dollars per contract. Rows at the mid are
-descriptive and decide nothing. The spread is ask minus bid per share at entry,
-the median over the priced trades. With a \$0.74 fee the ask rows become
-$-\$23.79$ and $+\$66.81$ a trade ($t = 2.37$ in 2021--2026).}
 \begin{tabular}{llrrrrrc}
 \toprule
 Period & bought at & trades & \$/day & $t$ & \$/trade & won & median full spread \\
@@ -807,15 +838,17 @@ Period & bought at & trades & \$/day & $t$ & \$/trade & won & median full spread
  & mid & 585 & $+46.90$ & 3.71 & $+105.90$ & 56\% & \\
 \bottomrule
 \end{tabular}
+\tabnotes{\ITM{10}, \$0.09 fee, dollars per contract. Rows at the mid are
+descriptive and decide nothing. The spread is ask minus bid per share at entry,
+the median over the priced trades. With a \$0.74 fee the ask rows become
+$-\$23.79$ and $+\$66.81$ a trade ($t = 2.37$ in 2021--2026).}
 \end{table}
 
-Table~\ref{tab:spread} and Figure~\ref{fig:rpyears}(c) contain the study's main
-lesson. At the mid, the same trades made money in both periods. At the ask they
+Table~\ref{tab:spread} and Figure~\ref{fig:rpyears}(c) show how much the result depends on the spread. At the mid, the same trades made money in both periods. At the ask they
 lost money in 2013--2020, when the median quoted spread was about five times its
-2021--2026 level, and made money afterwards. Even since 2021, paying the ask
-rather than the mid costs about \$39 a trade, more than a third of the edge at
-the mid. Whether the trade pays therefore depends on how the order is filled,
-which Section~\ref{sec:execution} examines.
+2021--2026 level, and made money afterwards. Even since 2021, paying the ask instead of the mid costs about \$39 a trade,
+more than a third of the edge at the mid. How the order is filled therefore
+matters a great deal, and Section~\ref{sec:execution} looks at it.
 
 \subsection{Strikes at real prices}
 
@@ -823,8 +856,6 @@ which Section~\ref{sec:execution} examines.
 \centering
 \caption{The current rule's signal at every strike, real asks, 2021--2026.}
 \label{tab:rpstrikes}
-\tabnotes{\$0.09 fee, dollars per contract. Descriptive, not a second test:
-choosing a strike from this table would be choosing on the confirmation period.}
 \begin{tabular}{lrrrrrrr}
 \toprule
 Strike & trades & \$/trade & won & median & worst & \$/day & $t$ \\
@@ -840,10 +871,14 @@ Strike & trades & \$/trade & won & median & worst & \$/day & $t$ \\
 \OTM{20} & 529 & $-10.02$ & 3\% & $-10.09$ & $-840$ & $-4.19$ & $-2.34$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{\$0.09 fee, dollars per contract. Descriptive, not a second test:
+choosing a strike from this table would be choosing on the confirmation period.}
 \end{table}
 
 \begin{figure}[htbp]
 \centering
+\caption{The current rule's signal at every strike, real asks, 2021--2026.}
+\label{fig:rpstrikes}
 \begin{minipage}[t]{0.49\linewidth}\centering
 \begin{tikzpicture}
 \begin{axis}[paper, ybar, width=0.95\linewidth, height=4.8cm, bar width=9pt,
@@ -866,16 +901,14 @@ Strike & trades & \$/trade & won & median & worst & \$/day & $t$ \\
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
-\caption{The current rule's signal at every strike, real asks, 2021--2026,
-\dollar0.09 fee, dollars per contract. In-the-money strikes earned the most and
-won most often; out of the money the option rarely paid. Descriptive, not a
-second test (Table~\ref{tab:rpstrikes}).}
-\label{fig:rpstrikes}
+\tabnotes{\dollar0.09 fee, dollars per contract. In-the-money strikes earned the
+most and won most often; out of the money the option rarely paid. Descriptive,
+not a second test (Table~\ref{tab:rpstrikes}). Sources: Databento OPRA; Cboe;
+Dukascopy.}
 \end{figure}
 
-At real prices the strikes rank as they did in the model
-(Table~\ref{tab:rpstrikes} and Figure~\ref{fig:rpstrikes}). Strikes 10 to 20
-points in the money earned the most and won most often, and \ITM{10} needs about
+Table~\ref{tab:rpstrikes} and Figure~\ref{fig:rpstrikes} show that at real prices
+the strikes rank as they did in the model. Strikes 10 to 20 points in the money earned the most and won most often, and \ITM{10} needs about
 half the premium of \ITM{20}. At the money the mean was positive but most trades
 lost. Ten or more points out of the money, the option rarely paid.
 
@@ -886,13 +919,6 @@ lost. Ten or more points out of the money, the option rarely paid.
 \centering
 \caption{The pricing model against real prices on the same trades.}
 \label{tab:modelcheck}
-\tabnotes{The strike ladder's model (variant (a)) against real prices on the 644
-strong-body trades of 2021--2026, at the index levels of the time (not rescaled),
-on the days with a 15:51 quote for that contract. The model settles on the CFD's
-15:59 close with a \$0.10 half-spread; the real trade buys at the ask and settles
-on the official close; both pay \$0.09. Out of the money the mean ratio is not
-meaningful, because model prices can be close to zero, so only the median is
-shown.}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrrcrrr}
 \toprule
@@ -911,6 +937,13 @@ Strike & $n$ & model & real mid & real ask & mean / median & model & real & real
 \color{gray}\OTM{20} & \color{gray}524 & \color{gray}4.77 & \color{gray}0.23 & \color{gray}0.27 & \color{gray}--- / 10.82 & \color{gray}$-470.67$ & \color{gray}$-10.83$ & \color{gray}$+459.84$ (1.79) \\
 \bottomrule
 \end{tabular}
+\tabnotes{The strike ladder's model (variant (a)) against real prices on the 644
+strong-body trades of 2021--2026, at the index levels of the time (not rescaled),
+on the days with a 15:51 quote for that contract. The model settles on the CFD's
+15:59 close with a \$0.10 half-spread; the real trade buys at the ask and settles
+on the official close; both pay \$0.09. Out of the money the mean ratio is not
+meaningful, because model prices can be close to zero, so only the median is
+shown.}
 \end{table}
 
 Table~\ref{tab:modelcheck} sets the model against the real trade on the same
@@ -921,19 +954,21 @@ level-normalised dollars.) In the money the model priced the option well, with
 the real mid within about 2\% of the model price, but the real ask sat further
 above the mid than the model's flat half-spread allowed. At the money the model
 was too cheap, which is why its at-the-money results looked so much better than
-the real ones. Far out of the money its skew factors made it unusable. The
-settlement price was not the problem: the official close differed from the
+the real ones. Far out of the money its skew factors made it unusable. The settlement price was not the cause, since the official close differed from the
 CFD's 15:59 close by 1.33 points on average, with almost no bias.
 
 % =====================================================================
 \section{Execution}
 \label{sec:execution}
 
-The real-price results assume a fill at the quoted ask at 15:51:00. This section
-asks whether that is realistic, whether a cheaper order would have done better,
-and what a late entry or an early sale costs. All of it is descriptive; the
-limit-order and early-sale analyses were not pre-registered, and 2021--2026 had
-already confirmed the rule.
+The real-price results assume a fill at the quoted ask at 15:51:00. Here I ask whether that is realistic, whether a cheaper order would have done
+better, and what a late entry or an early sale costs. Apart from the real-time
+exit study of Section~\ref{sec:rtexit}, which was pre-registered, all of it is
+descriptive. The limit-order and early-sale analyses were not pre-registered,
+and 2021--2026 had already confirmed the rule. In brief, since 2021 the
+contract traded near the ask on almost every signal day, neither limit orders
+at the mid nor sales before the close improved on paying the ask and holding to
+settlement, and later entries earned less.
 
 \subsection{Did the contract trade near the ask?}
 \label{sec:fillcheck}
@@ -942,9 +977,6 @@ already confirmed the rule.
 \centering
 \caption{Trading in the entry minute.}
 \label{tab:fillcheck}
-\tabnotes{From OPRA one-minute trade bars. Prices are per share (\$100 a contract
-per \$1). The indented rows are shares or values over the entries that traded in
-the minute.}
 \begin{tabular}{lrr}
 \toprule
 Current rule, \ITM{10}, entry minute 15:51 & 2013--2020 & 2021--2026 \\
@@ -958,11 +990,15 @@ Traded in the entry minute & 122 (56\%) & 580 (99\%) \\
 \quad minute's last trade minus the mid, median & $+\dollar0.57$ & $+\dollar0.25$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{From OPRA one-minute trade bars. Prices are per share (\$100 a contract
+per \$1). The indented rows are shares or values over the entries that traded in
+the minute.}
 \end{table}
 
-The ask is a price that was offered, not one that was paid. OPRA trade bars show
-whether the contract traded in the entry minute and at what prices
-(Table~\ref{tab:fillcheck}). Since 2021 it traded in the entry minute on almost
+The ask is only a quoted price, and I do not observe what an order would
+actually have paid. OPRA trade bars show
+whether the contract traded in the entry minute and at what prices, and
+Table~\ref{tab:fillcheck} summarises them. Since 2021 it traded in the entry minute on almost
 every signal day, against just over half the days before, and on nearly all of
 those days the minute's lowest trade was at or below the 15:51 ask. The minute's
 last trade sat above the mid but inside the half-spread, and often above the
@@ -973,27 +1009,22 @@ order would have paid.
 \subsection{Limit orders and late entry}
 \label{sec:fills}
 
-At the mid the trade made far more than at the ask (Table~\ref{tab:spread}),
-which suggests an easy gain. We simulated six order styles, fixed before any
+Since the trade made far more at the mid than at the ask
+(Table~\ref{tab:spread}), the obvious thing to try is a limit order. I
+simulated six order styles, fixed before any
 result was computed: paying the 15:51 ask (P0); a limit at the 15:51 mid for one
 minute, else no trade (P1); the same, but counting a trade at the limit as a fill
 (P1t); P1 followed by paying the 15:52 ask if unfilled (P2); a mid limit left
 working for three minutes (P3); and a limit halfway between the mid and the ask,
 then the 15:52 ask (P4). A limit counts as filled if a trade printed strictly
 below it during a minute it was working, or if the quote at the end of that
-minute offered the option at or below it. These are proxies, not execution
-estimates: trade prints cannot show whether a resting order would have executed,
+minute offered the option at or below it. These are proxies and not estimates of execution. Trade prints cannot show whether a resting order would have executed,
 the order is assumed to be live with no delay, and one contract is assumed.
 
 \begin{table}[htbp]
 \centering
 \caption{Order styles for the current rule, 2021--2026.}
 \label{tab:fills}
-\tabnotes{\ITM{10}, \$0.09 fee, dollars per contract per priced signal day; an
-unfilled order counts as \$0. The subperiods have 157 (2021--2022) and 428
-(2023--2026) signal days. The $t$-statistics here treat signal days as
-independent, so P0's $t$ is 2.29 rather than the per-day Newey--West 2.40 of
-Table~\ref{tab:rpconf}.}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrrrr}
 \toprule
@@ -1009,15 +1040,17 @@ P3 mid, 3 minutes, else skip & 534 (91\%) & $+64.89$ & 2.31 & $-2.57$ ($-0.26$) 
 P4 halfway, 1 minute, then 15:52 ask & 585 (100\%) & $+62.23$ & 2.13 & $-5.23$ ($-1.63$) & $-2.36$ & $-6.29$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{\ITM{10}, \$0.09 fee, dollars per contract per priced signal day; an
+unfilled order counts as \$0. The subperiods have 157 (2021--2022) and 428
+(2023--2026) signal days. The $t$-statistics here treat signal days as
+independent, so P0's $t$ is 2.29 rather than the per-day Newey--West 2.40 of
+Table~\ref{tab:rpconf}.}
 \end{table}
 
 \begin{table}[htbp]
 \centering
 \caption{Why the mid limit does not help, and what a late entry costs.}
 \label{tab:late}
-\tabnotes{Current rule, \ITM{10}, \$0.09 fee, dollars per contract. Panel (b) uses
-the days with a quote at every one of these minutes: 216 (2013--2020), 585
-(2021--2026), 157 (2021--2022) and 428 (2023--2026), which is every priced day.}
 \begin{tabular}{llrrr}
 \multicolumn{5}{l}{\emph{(a) The same entries at the ask, split by whether P1's mid limit filled}} \\
 \toprule
@@ -1043,23 +1076,26 @@ Buy at & 2013--2020 & 2021--2026 ($t$) & 2021--2022 & 2023--2026 \\
 15:55 & $-128.97$ & $+23.01$ (1.11) & $+51.10$ & $+12.71$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{Current rule, \ITM{10}, \$0.09 fee, dollars per contract. Panel (b) uses
+the days with a quote at every one of these minutes: 216 (2013--2020), 585
+(2021--2026), 157 (2021--2022) and 428 (2023--2026), which is every priced day.}
 \end{table}
 
-\paragraph{No order style beat paying the ask.} On 2021--2026 every style earned
-roughly what paying the ask earned, and every difference was within noise
-(Table~\ref{tab:fills}). The reason is adverse selection (Table~\ref{tab:late},
-panel a). A limit at the mid fills when someone sells below the mid, which
+No order style beat paying the ask (Table~\ref{tab:fills}). On 2021--2026 every
+style earned roughly what paying the ask earned, and every difference was
+within noise. Panel (a) of Table~\ref{tab:late} suggests that the cause is
+adverse selection. A limit at the mid fills when someone sells below the mid, which
 happens most when the option is getting cheaper, that is, when the trade is
-going wrong. When the trade works at once, the price runs away and the limit is
+going wrong. When the trade works at once, the price moves away and the limit is
 left unfilled. The days on which the mid limit filled earned well below the
 average at the ask, and the days it missed earned far more. The limit saves money
 on the days it fills and misses the best days, and the two effects roughly
 cancel. Before 2021, with spreads about five times wider, the mid limit did help,
 but on a small sample.
 
-\paragraph{Being late costs money.} Bought at a later minute's ask, the same
-contract earned less the later the entry (Table~\ref{tab:late}, panel b): about
-\$12 a trade less at 15:52, and about two-thirds less at 15:55. The rule's
+Entering late also costs money. Bought at a later minute's ask, the same
+contract earned less the later the entry (Table~\ref{tab:late}, panel b), about
+\$12 a trade less at 15:52 and about two-thirds less at 15:55. The rule's
 results assume entry at 15:51:00 exactly.
 
 \subsection{Selling before the close at real bids}
@@ -1094,7 +1130,7 @@ neighbours in the grid, would then have faced a block sign-flip luck diagnostic
 ($p \le 0.05$) and a single test on 2024--2026, passing if its mean improvement
 was positive with Newey--West $t \ge 2.0$.
 
-\paragraph{Two plans.} The first plan (locked 2026-11-10 22:17 UTC) also
+The study ran under two plans. The first (locked 2026-11-10 22:17 UTC) also
 included 18 rules that trail the index level implied by put--call parity. It
 required complete quotes for at least 95\% of the entries and stopped at that
 gate before any rule was computed: only 197 of the 270 entries were complete,
@@ -1107,15 +1143,6 @@ and required complete option quotes, which all 270 entries had. It was run once.
 \centering
 \caption{Real-time exit rules at real bids.}
 \label{tab:rtexit}
-\tabnotes{\ITM{10}, bought at the 15:51 ask; dollars per contract. ``Against
-holding'' is the range, across the family's rules, of the mean paired difference
-from holding to settlement over all trades, counting zero where a rule held.
-Holding earned $+\$68.78$ a trade on 2021--2023 (270 trades) and $+\$66.32$ on
-2024--2026 (315). TS50 sells when the bid falls 50\% below its peak; PL30\_100,
-once the bid has been 30\% above the price paid, sells if it falls back to that
-price; TP1558\_30 sells from 15:58 once the bid is 30\% above the price paid. The
-2024--2026 column was computed after the decision and decides nothing; the
-fixed-minute row is descriptive in both periods.}
 \begin{tabular}{lrrlr}
 \toprule
  & & \multicolumn{2}{c}{2021--2023 (tuning)} & 2024--2026 \\
@@ -1128,33 +1155,41 @@ Take-profit & 12 & $-106.88$ to $-49.12$ & TP1558\_30 & $-108.42$ to $-39.28$ \\
 Sale at a fixed minute & 8 & $-168.26$ to $-111.74$ & 15:57 & $-120.04$ to $-51.12$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{\ITM{10}, bought at the 15:51 ask; dollars per contract. ``Against
+holding'' is the range, across the family's rules, of the mean paired difference
+from holding to settlement over all trades, counting zero where a rule held.
+Holding earned $+\$68.78$ a trade on 2021--2023 (270 trades) and $+\$66.32$ on
+2024--2026 (315). TS50 sells when the bid falls 50\% below its peak; PL30\_100,
+once the bid has been 30\% above the price paid, sells if it falls back to that
+price; TP1558\_30 sells from 15:58 once the bid is 30\% above the price paid. The
+2024--2026 column was computed after the decision and decides nothing; the
+fixed-minute row is descriptive in both periods.}
 \end{table}
 
-\paragraph{Results.} No rule was eligible, so neither the luck diagnostic nor the
-test was run (Table~\ref{tab:rtexit}). Every one of the 26 rules earned less than
-holding on 2021--2023, by \$9 to \$120 a trade. Take-profits did worst: selling
-once the bid was 10 to 30\% above the price paid cost \$49 to \$107 a trade
-against holding, with Newey--West $t$ between $-3.2$ and $-5.6$. They sell the
-trades that would have kept rising and do nothing for the losers, and every early
-sale gets the bid while holding settles at the index value with no spread. Looked
-at after the decision, 2024--2026 tells the same story: take-profits trailed
+Table~\ref{tab:rtexit} reports the outcome. No rule was eligible, so neither the
+luck diagnostic nor the test was run. Every one of the 26 rules earned less than
+holding on 2021--2023, by \$9 to \$120 a trade. Take-profits did worst. Selling once the bid was 10 to 30\% above the price paid cost \$49 to \$107 a trade
+against holding, with Newey--West $t$ between $-3.2$ and $-5.6$. They sell the trades that would have kept rising and do nothing for the losers,
+and every early sale gets the bid while holding settles at the index value with
+no spread. I looked at 2024--2026 after the decision and it agrees:
+take-profits trailed
 holding by \$39 to \$108 a trade, and the trailing stops and profit locks were
 within \$31 of holding, none with $|t|$ above 1.6. Selling at the best minute in
-hindsight would have added \$224 a trade on 2021--2023, which again measures how
-much the price moves rather than a gain any rule here could capture.
+hindsight would have added \$224 a trade on 2021--2023, which again measures how much the price moves and is not a gain any rule here
+could capture.
 
 % =====================================================================
 \section{Re-tuning on recent data}
 \label{sec:refine}
 
-Tuning on 2013--2020 was weak. Spreads were wide, many signal days could not be
-priced, and only two settings were eligible, so the search could not tell nearby
-thresholds or candle minutes apart. A further pre-registered study repeated the
-search on 2021--2023, the first three years of the current market, with tight
-spreads and, from 2022, daily SPXW expiries. It would test its pick once on
-2024--2026.
+Tuning on 2013--2020 could not tell nearby thresholds or candle minutes apart,
+because spreads were wide, many signal days could not be priced, and only two
+settings were eligible. A further pre-registered study repeated the search on
+2021--2023, the first three years with tight spreads and, from 2022, daily SPXW
+expiries. It would test its pick once on 2024--2026. The pick failed the luck
+diagnostic, so nothing was tested and the current rule was kept.
 
-\paragraph{Design.} Pricing and the grid of 2{,}178 settings are as in
+Pricing and the grid of 2{,}178 settings are as in
 Section~\ref{sec:realprice}. A setting is eligible with at least 100 trades, at
 least 40 in each half of 2021--2023, a positive mean in each half, and at least
 95\% of its signal days priced. The pick goes to the test only if it lies
@@ -1170,10 +1205,6 @@ and it recorded its decision, with a hash, before the test step could run.
 \centering
 \caption{The re-tuning pick and the current rule.}
 \label{tab:refine}
-\tabnotes{Real asks, official close, \$0.09 fee, dollars per contract. $t$ is
-Newey--West on the per-day series. H1 is 2021-01-01 to 2022-09-30 and H2 is
-2022-10-01 to 2023-12-31. The pick failed the luck diagnostic, so the 2024--2026
-rows decide nothing; the current rule's results there were already known.}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{llrrrrrrr}
 \toprule
@@ -1193,20 +1224,22 @@ Pick & 2024--2026 & 697 & $+18.88$ & 1.30 & 167 & $+78.80$ & 51\% & $-2{,}670$ \
 Current & 2024--2026 & 697 & $+29.97$ & 1.64 & 315 & $+66.32$ & 53\% & $-2{,}210$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{Real asks, official close, \$0.09 fee, dollars per contract. $t$ is
+Newey--West on the per-day series. H1 is 2021-01-01 to 2022-09-30 and H2 is
+2022-10-01 to 2023-12-31. The pick failed the luck diagnostic, so the 2024--2026
+rows decide nothing; the current rule's results there were already known.}
 \end{table}
 
-\paragraph{Results.} On 2021--2023, 119 settings were eligible. The best was the
-15:50 candle with a body of at least 80\%, traded with the candle 20 points in
-the money (Table~\ref{tab:refine}). It failed the luck diagnostic ($p = 0.21$):
+Table~\ref{tab:refine} reports the outcome. On 2021--2023, 119 settings were
+eligible. The best was the 15:50 candle with a body of at least 80\%, traded with
+the candle 20 points in the money. It failed the luck diagnostic ($p = 0.21$):
 about one shift in five found a best score at least as good with signals
-unrelated to the days. No candidate advanced, the test on 2024--2026 was not
-run, and the current rule stays. The pick's tuning record came almost entirely
+unrelated to the days. No candidate advanced, the test on 2024--2026 was not run, and the current rule
+was kept. The pick's tuning record came almost entirely
 from the first half of the period.
 
-\paragraph{After the decision.} Computed only after the decision was recorded,
-and deciding nothing, the pick earned less than the current rule on 2024--2026,
-which is what a lucky winner looks like. Figure~\ref{fig:threshold} shows why
-the threshold is hard to tune. On 2021--2023 a larger body earned more per trade
+Computed only after the decision was recorded, and deciding nothing, the pick
+earned less than the current rule on 2024--2026, as one would expect of a winner chosen by luck. Figure~\ref{fig:threshold} shows why the threshold is hard to tune. On 2021--2023 a larger body earned more per trade
 on far fewer trades, but the pattern did not persist; per day, the current 60\%
 threshold earned about the same in both periods, and no threshold beat it in
 both. Among the other candle minutes, the best eligible 15:48 setting was
@@ -1217,6 +1250,8 @@ most likely choose a lucky one.
 
 \begin{figure}[htbp]
 \centering
+\caption{The body threshold.}
+\label{fig:threshold}
 \begin{minipage}[t]{0.49\linewidth}\centering
 \begin{tikzpicture}
 \begin{axis}[paper, width=\linewidth, height=5.0cm, xmin=0.38, xmax=0.92,
@@ -1256,30 +1291,31 @@ most likely choose a lucky one.
 
 \vspace{2pt}
 \ref{thrlegend}
-\caption{The body threshold: 15:50 candle, with the candle, \ITM{10}, real
-asks, \dollar0.09 fee, dollars per contract. On 2021--2023 a bigger body earned
-more per trade, on far fewer trades (407 at 0.40, 56 at 0.90). The pattern did
-not hold on 2024--2026. Per day, 0.60 made about \dollar30 in both periods; the
-2021--2023 favourite, 0.80, made \dollar13 a day afterwards
-(Table~\ref{tab:threshold}).}
-\label{fig:threshold}
+\tabnotes{15:50 candle, with the candle, \ITM{10}, real asks, \dollar0.09 fee,
+dollars per contract. On 2021--2023 a bigger body earned more per trade, on far
+fewer trades (407 at 0.40, 56 at 0.90). The pattern did not hold on 2024--2026.
+Per day, 0.60 made about \dollar30 in both periods; the 2021--2023 favourite,
+0.80, made \dollar13 a day afterwards (Table~\ref{tab:threshold}). Sources:
+Databento OPRA; Cboe; Dukascopy.}
 \end{figure}
 
 % =====================================================================
 \section{Intraday momentum and dealer gamma}
 \label{sec:momentum}
 
+
+
 \citet{ghlz2018} find that the S\&P~500's first half-hour return, measured from
 the previous close, predicts its last half hour on SPY from 1993 to 2013.
 \citet{bdlm2021} find that the return from the previous close to 15:30 does the
 same across futures markets from 1974 to 2020, and attribute the effect to option
 dealers hedging when they are net short gamma. The 15:50 candle sits inside that
-last half hour, so momentum might sharpen the candle trade, or the candle might
-be momentum in another form. A pre-registered study asked three questions. Does
-the momentum appear in our data (Part A)? Does it improve the candle trade
-(Part B)? And is either stronger when dealers are short gamma (Part C)?
+last half hour, so momentum might improve the candle trade, or the candle might be momentum in
+another form. A pre-registered study asked whether the momentum appears in my
+data (Part A), whether it improves the candle trade (Part B), and whether
+either is stronger when dealers are short gamma (Part C).
 
-\paragraph{Design.} With PC the previous session's close and prices taken at bar
+With PC the previous session's close and prices taken at bar
 opens, the predictor is $r_{\text{rod}} = \ln(P_{15:30}/\mathrm{PC})$ and the
 target is $r_{\text{last}} = \ln(X/P_{15:30})$, where $X$ is the close of the
 15:59 bar. Part A regresses $r_{\text{last}}$ on $r_{\text{rod}}$ over 2013--2026
@@ -1298,10 +1334,6 @@ proxy is negative, each with $p \le 0.025$.
 \centering
 \caption{Part A: the momentum regression.}
 \label{tab:momA}
-\tabnotes{An adapted replication on the CFD, 2013-04-01 to 2026-10-20. Only the
-first row is a test; the rest are descriptive. BDLM is \citet{bdlm2021}. By
-single year, the $t$ of the $r_{\text{rod}}$ slope was 2.12, 1.75 and 1.84 in
-2013--2015, and between $-1.85$ and $+0.96$ in every year since.}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{llrrrr}
 \toprule
@@ -1318,27 +1350,30 @@ $r_{12}$ (15:00--15:30) & 2013--2026 & 3{,}204 & $+9.510$ & 1.30 & 0.0043 \\
 \emph{BDLM, E-mini futures} & \emph{to May 2020} & & \emph{about 6.2} & \emph{about 5.0} & \emph{about 0.034} \\
 \bottomrule
 \end{tabular}
+\tabnotes{An adapted replication on the CFD, 2013-04-01 to 2026-10-20. Only the
+first row is a test; the rest are descriptive. BDLM is \citet{bdlm2021}. By
+single year, the $t$ of the $r_{\text{rod}}$ slope was 2.12, 1.75 and 1.84 in
+2013--2015, and between $-1.85$ and $+0.96$ in every year since.}
 \end{table}
 
-\paragraph{Results.} Nothing passed. The momentum did not replicate
-(Table~\ref{tab:momA}). The slope was positive but insignificant over 2013--2026,
+The momentum did not replicate (Table~\ref{tab:momA}). The slope was positive but insignificant over 2013--2026,
 mildly positive only in 2013--2015, and about zero on 2021--2026, the only period
 outside both papers' samples. This does not show that the published results are
-wrong, since samples, instruments and periods differ; it shows that the effect is
-not visible in these data since 2013. No momentum filter improved the candle
-trade (Table~\ref{tab:momB}): trades that agreed with the day's move did better
+wrong, since samples, instruments and periods differ. It shows only that the
+effect is not visible in these data since 2013. No momentum filter improved the
+candle trade either (Table~\ref{tab:momB}, Appendix~\ref{app:tables}): trades that agreed with the day's move did better
 per trade, but the trades a filter skipped were still profitable on average, so
-skipping them lowered the total. Neither gamma test passed
-(Table~\ref{tab:partc}). Under model prices the candle trade did better on
+skipping them lowered the total. Neither gamma test passed either
+(Table~\ref{tab:partc}, Appendix~\ref{app:tables}). Under model prices the candle trade did better on
 negative-gamma days, but the difference missed its bar ($p = 0.029$ against
 0.025), came mostly from 2013--2020, and was absent at real asks on 2021--2026.
-The proxy therefore gives no reason to skip or add trades. Its positioning is
-assumed rather than observed, and open interest misses positions opened and
+The proxy therefore gives no reason to skip or add trades. Its positioning is assumed and not observed, and open interest misses positions opened and
 closed on the same day, which is most 0DTE trading since 2022.
 
 % =====================================================================
 \section{Smaller contracts: XSP and SPY}
 \label{sec:mini}
+
 
 The current rule's SPX contract cost about \$1{,}100 on 2021--2026, more than a
 small account holds. Two underlyings have 0DTE options about a tenth the size:
@@ -1356,9 +1391,6 @@ signal on smaller contracts, not whether the signal works.
 \centering
 \caption{XSP and SPY at real quotes, 2021--2026.}
 \label{tab:mini}
-\tabnotes{One contract per signal. ``Per \$1'' is total P\&L over total premium
-paid. The SPX row rebuilds the confirmation of Table~\ref{tab:rpconf} from its
-trade list.}
 \begin{tabular}{@{}lrrrrrrr@{}}
 \toprule
 Contract & Days & \$/day & $t$ & Trades & \$/trade & Won & Per \$1 \\
@@ -1369,10 +1401,13 @@ SPY \ITM{1}, sold 15:59 bid & 1{,}262 & $+0.23$ & $+0.23$ & 560 & $+0.51$ & 45\%
 SPX \ITM{10}, held & 1{,}321 & $+29.87$ & $+2.40$ & 585 & $+67.46$ & 54\% & $+0.061$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{One contract per signal. ``Per \$1'' is total P\&L over total premium
+paid. The SPX row rebuilds the confirmation of Table~\ref{tab:rpconf} from its
+trade list.}
 \end{table}
 
-\paragraph{Results.} Neither was confirmed (Table~\ref{tab:mini}). XSP lost money
-reliably and SPY broke even. The SPX trade's edge was about six cents per dollar
+Neither was confirmed (Table~\ref{tab:mini}). XSP lost money reliably and SPY
+broke even, and the reason in both cases is cost. The SPX trade's edge was about six cents per dollar
 of premium, and both smaller contracts cost more than that to trade. XSP's
 median quoted spread was 31\% of the option's price, against 5\% for SPX on the
 same days. It has narrowed since 2021 and XSP's results improved with it, but
@@ -1384,7 +1419,7 @@ all left the conclusion unchanged. SPY traded at the mid on both sides would hav
 been profitable, but that is a price an order cannot count on
 (Section~\ref{sec:fills}).
 
-\paragraph{Vertical spreads.} A vertical debit spread is not a new test. Bought
+A vertical debit spread does not need a separate test. Bought
 at the long leg's ask and sold at the short leg's bid, it earns exactly the long
 leg's P\&L at the ask, less the short leg's P\&L at the ask, less the short
 leg's quoted spread and a fee, and every term but the spread is already in
@@ -1397,11 +1432,13 @@ dollar of premium than its long leg alone.
 
 After the studies were complete, the whole chain was rebuilt with new code that
 shares nothing with the study scripts and reads the same raw files. No new data
-were bought. The check is descriptive: every day it uses had already been used,
-so it can verify the earlier work and measure how much the data can say, but it
-cannot test a new setting.
+were bought. The check is descriptive, because every day it uses had already been used. It
+can verify the earlier work and measure how much the data can say, but it
+cannot test a new setting. The re-validation reproduced the results, placed the
+start of the effect near a 60\% body, and showed that the CFD candle from which
+the signals were computed differs in shape from the SPX index candle.
 
-\paragraph{Data integrity.} The index bars contain no duplicate, out-of-order or
+The first check was the integrity of the data. The index bars contain no duplicate, out-of-order or
 internally inconsistent bar, and every kept day has option quotes, or a record
 that no same-day expiry existed, and an official close. The weekdays without an
 official close are exactly the exchange holidays, the official closes equal the
@@ -1415,7 +1452,7 @@ CFD feed was coarser in its early years, when between a fifth and a third of
 15:50 bars had a body equal to the whole range, so a 60\% threshold was a looser
 filter in the early discovery data than it is now.
 
-\paragraph{Reproduction.} Rebuilt from the raw quotes, the confirmation of
+Rebuilt from the raw quotes, the confirmation of
 Section~\ref{sec:realprice} is identical trade for trade, and so are the
 2013--2020 trades, the strike ladder, the yearly means, the late entries, the
 fixed-minute exits and the threshold profile of the re-tuning study. Coverage
@@ -1426,18 +1463,12 @@ since 2021. The missing days do not hide a better result: priced with the CFD
 price as the spot, as a sensitivity, they lost money at the ask as well
 ($-\$89$ a trade, against $+\$68$ at the mid). A five-day block bootstrap of
 2021--2026 puts the current rule's mean between $+\$21$ and $+\$115$ a trade
-(90\% interval): positive, but imprecisely measured.
+(90\% interval), so the mean is positive but imprecisely measured.
 
 \begin{table}[htbp]
 \centering
 \caption{The 15:50 candle by body-to-range bucket.}
 \label{tab:auditbuckets}
-\tabnotes{Index move: CFD, 15:51 open to 15:59 close, in the candle's direction, in basis
-points, with a Newey--West (lag 5) $t$-statistic on that bucket's days. Option
-columns: \ITM{10} in the candle's direction, 2021--2026, dollars per trade at the
-15:51 ask and at the mid. One trade lies exactly on the 0.80 boundary; classified
-in exact rather than floating-point arithmetic, it moves the option means at the
-ask of the 0.7--0.8 and 0.8--0.9 buckets to $+\$45$ and $+\$94$. Descriptive.}
 \begin{tabular}{@{}lrrrrrrr@{}}
 \toprule
  & \multicolumn{2}{c}{Index, 2013--2020} & \multicolumn{2}{c}{Index, 2021--2026} & \multicolumn{3}{c}{Options, 2021--2026} \\
@@ -1457,10 +1488,16 @@ Below 0.6 & $-0.54$ & $-0.71$ & $-0.23$ & $-0.46$ & 733 & $-37$ & $+2$ \\
 At least 0.6 & $+2.42$ & $+3.61$ & $+2.36$ & $+4.25$ & 585 & $+67$ & $+106$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{Index move: CFD, 15:51 open to 15:59 close, in the candle's direction, in basis
+points, with a Newey--West (lag 5) $t$-statistic on that bucket's days. Option
+columns: \ITM{10} in the candle's direction, 2021--2026, dollars per trade at the
+15:51 ask and at the mid. One trade lies exactly on the 0.80 boundary; classified
+in exact rather than floating-point arithmetic, it moves the option means at the
+ask of the 0.7--0.8 and 0.8--0.9 buckets to $+\$45$ and $+\$94$. Descriptive.}
 \end{table}
 
-\paragraph{Where the effect begins.} Table~\ref{tab:auditbuckets} splits the
-15:50 candle by the size of its body. Below 60\% there is no effect in either
+To see where the effect begins, Table~\ref{tab:auditbuckets} splits the 15:50
+candle by the size of its body. Below 60\% there is no effect in either
 period, in the index or in the option trade. From 60\% up, the index moved in
 the candle's direction by about the same amount in both periods. Within the
 signal, larger bodies earned more per trade in 2021--2026, but no single option
@@ -1471,16 +1508,6 @@ about break-even at the ask in 2021--2026, was the strongest in 2013--2020.
 \centering
 \caption{The body threshold at real asks, 2021--2026.}
 \label{tab:auditgrid}
-\tabnotes{15:50 candle, with the candle, \ITM{10} at the ask, 2021-01-01 to 2026-10-20.
-``Per day'' means per session with a same-day expiry and prices (1{,}321 of
-1{,}446 sessions). ``Best'' is the share of 5{,}000 five-day block-bootstrap
-resamples in which that threshold had the highest mean per day (grid 0.00 to 0.95
-in steps of 0.05); the middle 90\% of the resampled optimum ran from 0.25 to
-0.80, and the 90\% interval for 0.70 minus 0.60 is $-\$10.7$ to $+\$8.8$ a day.
-A walk-forward choice made $+\$16$ a day on 2022--2026 when its history starts in
-2021 and $+\$20$ when it starts in 2013, against $+\$24$ for a fixed 0.60
-($t = -0.98$ and $-0.96$ for the differences). 0.80 made $+\$38$ a day on
-2021--2023 and $+\$13$ on 2024--2026. Descriptive.}
 \begin{tabular}{@{}lrrrrr@{}}
 \toprule
 Body at least & Trades & \$/trade & \$/day & $t$ & Best \\
@@ -1496,15 +1523,24 @@ Body at least & Trades & \$/trade & \$/day & $t$ & Best \\
 0.90 & 151 & $+122$ & $+13.9$ & 2.09 & 1\% \\
 \bottomrule
 \end{tabular}
+\tabnotes{15:50 candle, with the candle, \ITM{10} at the ask, 2021-01-01 to 2026-10-20.
+``Per day'' means per session with a same-day expiry and prices (1{,}321 of
+1{,}446 sessions). ``Best'' is the share of 5{,}000 five-day block-bootstrap
+resamples in which that threshold had the highest mean per day (grid 0.00 to 0.95
+in steps of 0.05); the middle 90\% of the resampled optimum ran from 0.25 to
+0.80, and the 90\% interval for 0.70 minus 0.60 is $-\$10.7$ to $+\$8.8$ a day.
+A walk-forward choice made $+\$16$ a day on 2022--2026 when its history starts in
+2021 and $+\$20$ when it starts in 2013, against $+\$24$ for a fixed 0.60
+($t = -0.98$ and $-0.96$ for the differences). 0.80 made $+\$38$ a day on
+2021--2023 and $+\$13$ on 2024--2026. Descriptive.}
 \end{table}
 
-\paragraph{The threshold cannot be ranked above 60\%.} Raising the threshold
-trades frequency for size (Table~\ref{tab:auditgrid}). Per day, the difference
+Above 60\%, the thresholds cannot be ranked. Raising the threshold trades
+frequency for size, as Table~\ref{tab:auditgrid} shows. Per day, the difference
 between 60\% and 70\% is statistically unresolved: no threshold differs
 significantly from 60\% on the paired daily series, and the bootstrap interval
 for the difference between 0.70 and 0.60 straddles zero. The bootstrap shares in
-the table describe how unstable the in-sample optimum is; they are not
-probabilities that a threshold is truly best. A walk-forward choice, re-picking
+the table describe how unstable the in-sample optimum is; they are not probabilities that a given threshold is the best. A walk-forward choice, re-picking
 each year the threshold that had been best on all earlier days, earned less than
 a fixed 0.60 whichever history it started from, and with the longer history it
 chose 0.60 itself in most years. The two halves of 2021--2026 also disagree above
@@ -1512,9 +1548,9 @@ chose 0.60 itself in most years. The two halves of 2021--2026 also disagree abov
 this sample the effect starts near 60\%, and the thresholds from 60\% to about
 75\% cannot be ranked.
 
-\paragraph{The ratio is a threshold, not a measure of strength.} The bucket
-tables show where the effect sits; correlations show how much of each day it
-explains (Table~\ref{tab:auditcorr}). Across all days a higher body-to-range
+The body-to-range ratio works as a cut-off and does not measure the strength of
+the signal. The bucket tables show where the effect sits, and correlations show
+how much of each day it explains (Table~\ref{tab:auditcorr}). Across all days a higher body-to-range
 ratio went with a larger index move in the candle's direction and a better
 option result, significantly but faintly: the largest of these correlations
 accounts for 0.7\% of the day-to-day variation. Among signal days alone the
@@ -1529,13 +1565,6 @@ does not mean a larger gain, which fits the finding that the thresholds above
 \centering
 \caption{Correlations between the 15:50 CFD candle and what followed.}
 \label{tab:auditcorr}
-\tabnotes{Body size is $|c-o|/o$. Index move: CFD, 15:51 open to 15:59 close, in
-the candle's direction. Option result: \ITM{10} in the candle's direction at the
-15:51 ask, held to settlement. ``Right direction'' is 1 if the index moved the
-candle's way. Signal days have a body of at least 60\% of the range; days with a
-flat 15:50 candle are excluded. Periods: 2013-04-01 to 2020-12-31 and 2021-01-01
-to 2026-10-20. $r$ is Pearson's and $\rho$ Spearman's coefficient; $p$-values
-assume independent days. Descriptive; body size was examined after the fact.}
 \begin{tabular}{@{}llllrrrrr@{}}
 \toprule
 Feature & Outcome & Days & Period & $n$ & $r$ & $p$ & $\rho$ & $p$ \\
@@ -1555,15 +1584,19 @@ Body size & Right direction & Signal & 2021--2026 & 644 & $+0.04$ & 0.255 & $+0.
 Body size & Option result & Signal & 2021--2026 & 585 & $+0.12$ & 0.003 & $+0.08$ & 0.055 \\
 \bottomrule
 \end{tabular}
+\tabnotes{Body size is $|c-o|/o$. Index move: CFD, 15:51 open to 15:59 close, in
+the candle's direction. Option result: \ITM{10} in the candle's direction at the
+15:51 ask, held to settlement. ``Right direction'' is 1 if the index moved the
+candle's way. Signal days have a body of at least 60\% of the range; days with a
+flat 15:50 candle are excluded. Periods: 2013-04-01 to 2020-12-31 and 2021-01-01
+to 2026-10-20. $r$ is Pearson's and $\rho$ Spearman's coefficient; $p$-values
+assume independent days. Descriptive; body size was examined after the fact.}
 \end{table}
 
 \begin{table}[htbp]
 \centering
 \caption{Signal days in thirds by body-to-range ratio.}
 \label{tab:auditthirds}
-\tabnotes{Thirds are formed within each period. Index move: CFD, 15:51 open to
-15:59 close, in the candle's direction, in basis points. Option result: dollars
-per trade, \ITM{10} at the 15:51 ask, held to settlement. Descriptive.}
 \begin{tabular}{@{}lrrrrrrrr@{}}
 \toprule
  & \multicolumn{3}{c}{2013--2020} & \multicolumn{5}{c}{2021--2026} \\
@@ -1575,20 +1608,23 @@ Middle third & 0.76--0.93 & 302 & $+1.38$ & 0.74--0.87 & 214 & $+2.81$ & 201 & $
 Highest third & 0.93--1.00 & 303 & $+1.91$ & 0.87--1.00 & 215 & $+2.44$ & 193 & $+80$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{Thirds are formed within each period. Index move: CFD, 15:51 open to
+15:59 close, in the candle's direction, in basis points. Option result: dollars
+per trade, \ITM{10} at the 15:51 ask, held to settlement. Descriptive.}
 \end{table}
 
-\paragraph{Body size, an unplanned observation.} The candle's size, its body as a
-fraction of the index, was examined after the fact and is in no plan. On signal
+I looked at the candle's size, its body as a fraction of the index, only after
+the fact, and it is in no plan. On signal
 days a larger candle was followed by a larger move in its direction, in both
 periods and in the option result, but not by the right direction more often, and
-its rank correlations are smaller than its linear ones. That is the pattern a
-common volatility factor would produce: larger candles in more volatile minutes,
-followed by larger gains and larger losses, with the relation carried by a small
-number of large days. It is a hypothesis for the forward record, not a finding.
+its rank correlations are smaller than its linear ones. A common volatility factor would produce this pattern, with larger candles in
+more volatile minutes followed by larger gains and larger losses, and the
+relation carried by a small number of large days. I treat it as a hypothesis
+for the forward record.
 
-\paragraph{The signal feed is not the index.} Every signal in this paper is read
-from the CFD candle, while a trader, and the live alert, reads the SPX index
-candle. The two track each other closely in level and direction, but a candle's
+The re-validation also found a difference between the signal feed and the
+index. Every signal in this paper is read from the CFD candle, but a trader,
+and the live alert, reads the SPX index candle. The two track each other closely in level and direction, but a candle's
 body-to-range ratio depends on its shape, and the shapes differ. Real SPX
 one-minute bars are available for 36 sessions in the autumn of 2026, and the CFD
 series was extended over the same days. On those days the index candle showed a
@@ -1604,12 +1640,6 @@ always agree.
 \centering
 \caption{The SPX index candle against the CFD candle, autumn 2026.}
 \label{tab:auditfeeds}
-\tabnotes{36 sessions, 2026-09-21 to 2026-11-09. Left: 1{,}080 one-minute candles from
-15:30 to 15:59, by the index candle's body-to-range ratio, with the share that
-were CFD strong bodies. Right: the 15:50 candle, by the cut-off applied to the
-index candle; the CFD candle had 14 strong-body days, all among the index
-candle's. The median 15:50 ratio was 0.65 on the index candle and 0.54 on the
-CFD.}
 \begin{tabular}{@{}lrr@{\hspace{2.5em}}lrrr@{}}
 \toprule
 Index ratio & Candles & CFD $\ge 0.60$ & Cut-off & Days fired & CFD days & Others \\
@@ -1622,6 +1652,12 @@ Index ratio & Candles & CFD $\ge 0.60$ & Cut-off & Days fired & CFD days & Other
 0.9--1.0 & 136 & 87\% & & & & \\
 \bottomrule
 \end{tabular}
+\tabnotes{36 sessions, 2026-09-21 to 2026-11-09. Left: 1{,}080 one-minute candles from
+15:30 to 15:59, by the index candle's body-to-range ratio, with the share that
+were CFD strong bodies. Right: the 15:50 candle, by the cut-off applied to the
+index candle; the CFD candle had 14 strong-body days, all among the index
+candle's. The median 15:50 ratio was 0.65 on the index candle and 0.54 on the
+CFD.}
 \end{table}
 
 A 60\% threshold applied to the index candle is therefore a looser rule than the
@@ -1631,26 +1667,24 @@ frequency only, and the sample is a single autumn. Whether the additional days
 pay was tested separately over 2021--2026 (Section~\ref{sec:realindex}): they did
 not, and even above 70\% the two candles are not interchangeable.
 
-\paragraph{The two candles, by correlation.} The two ratios are strongly
-related: their correlation is 0.90 for the 15:50 candle over the 36 sessions and
-0.76 across all 1{,}080 candles from 15:30 to 15:59. The least-squares line
+The two ratios are also strongly correlated, at 0.90 for the 15:50 candle over
+the 36 sessions and 0.76 across all 1{,}080 candles from 15:30 to 15:59. The least-squares line
 through those candles, CFD ratio $= 0.10 + 0.72 \times$ index ratio, puts the
 CFD's 0.60 at about 0.69 on the index. This is a second route to the
 correspondence above, and it does not change it.
 
-\paragraph{A two-feed forward record.} Since 9 November 2026 the live alert
+The comparison continues in a two-feed forward record. Since 9 November 2026 the live alert
 records, every session, the 15:50 candle from both sources, each one's ratio and
 band (below 0.60, 0.60--0.70, 0.70 or more) and the index move from the 15:51
 open to the 15:59 close, and it labels each alerted signal with the index
 candle's band. The record starts with the 36 sessions already on file, of which
 only the 14 after 20 October lie outside every backtest
-(Table~\ref{tab:auditforward}). It separates nothing yet: the index moved the
+(Table~\ref{tab:auditforward}). It shows no difference yet: the index moved the
 candle's way about as often on sessions without a signal as on sessions with
 one, and on the six sessions where only the index candle reached 60\% it did so
 four times. A correlation of the size found in the history needs on the order
 of a thousand sessions to be detected, and the bands need a few hundred signals
-before they can be compared. Section~\ref{sec:realindex} adds a sharper question
-for the record: whether sessions on which both candles show a strong body continue
+before they can be compared. Section~\ref{sec:realindex} adds a more specific question for the record, whether sessions on which both candles show a strong body continue
 to outperform sessions on which only the index candle does. Since the study of
 Section~\ref{sec:spycandle}, the record also holds the SPY candle, and the alert
 acts on the rule described at the end of that section.
@@ -1659,11 +1693,6 @@ acts on the rule described at the end of that section.
 \centering
 \caption{The two-feed record, autumn 2026.}
 \label{tab:auditforward}
-\tabnotes{36 sessions, 2026-09-21 to 2026-11-09, by the band of the 15:50 candle
-on each source; only the 14 sessions after 2026-10-20 lie outside every
-backtest. ``Right'' counts sessions on which the index moved in the candle's
-direction from the 15:51 open to the 15:59 close; ``Move'' is the mean of that
-move, in index points. Descriptive; too few sessions to compare bands.}
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
  & \multicolumn{3}{c}{Index candle} & \multicolumn{3}{c}{CFD candle} \\
@@ -1675,6 +1704,11 @@ Body / range & Days & Right & Move & Days & Right & Move \\
 Below 0.60 & 16 & 10 & $+1.08$ & 22 & 14 & $+1.53$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{36 sessions, 2026-09-21 to 2026-11-09, by the band of the 15:50 candle
+on each source; only the 14 sessions after 2026-10-20 lie outside every
+backtest. ``Right'' counts sessions on which the index moved in the candle's
+direction from the 15:51 open to the 15:59 close; ``Move'' is the mean of that
+move, in index points. Descriptive; too few sessions to compare bands.}
 \end{table}
 
 % =====================================================================
@@ -1690,9 +1724,11 @@ traded it at the option prices of Section~\ref{sec:realprice}. The plan was
 locked before any index candle had been joined with a price. The option
 outcomes of these days were already known, so the study is, in the plan's words,
 an outcome-informed, retrospective check of the signal's source: not an
-independent confirmation and not a new holdout.
+independent confirmation and not a new holdout. Read from the index candle, the
+rule did not meet its criterion, and the gain was confined to the days on which
+both candles showed a strong body.
 
-\paragraph{Design.} The archive holds a valid 15:50 bar on 1{,}310 of the
+The archive holds a valid 15:50 bar on 1{,}310 of the
 1{,}322 sessions from 2021-01-01 to 2026-10-20 that have option quotes and an
 official close (99.1\%). Before the lock, and using price levels only, the
 archived bar was compared with the broker's own index bar on the 22 sessions of
@@ -1712,11 +1748,6 @@ a Holm-adjusted $p \le 0.05$.
 \small
 \caption{The rule read from the SPX index candle, 2021--2026.}
 \label{tab:realindex}
-\tabnotes{One \ITM{10} contract at the 15:51 ask, held to settlement, 2021-01-01
-to 2026-10-20. The first row is the primary line. Per day is the mean of the
-daily series (0 on days outside the cell); $t$ is Newey--West, lag 5. Holm $p$ is
-adjusted across the three secondary lines, the third of which, the difference
-between the bands, is given in the text. Pre-registered.}
 \begin{tabular}{@{}lrrrrrrrl@{}}
 \toprule
 Index candle & Trades & \$/trade & At mid & Won & \$/day & $t$ & Holm $p$ & Reading \\
@@ -1726,9 +1757,14 @@ Body $\ge 70\%$ & 579 & $+\dollar53.73$ & $+\dollar91.20$ & 53\% & $+\dollar23.7
 Body 60--70\% & 131 & $-\dollar23.69$ & $+\dollar20.44$ & 49\% & $-\dollar2.37$ & $-0.41$ & 0.685 & insufficient evidence \\
 \bottomrule
 \end{tabular}
+\tabnotes{One \ITM{10} contract at the 15:51 ask, held to settlement, 2021-01-01
+to 2026-10-20. The first row is the primary line. Per day is the mean of the
+daily series (0 on days outside the cell); $t$ is Newey--West, lag 5. Holm $p$ is
+adjusted across the three secondary lines, the third of which, the difference
+between the bands, is given in the text. Pre-registered.}
 \end{table}
 
-\paragraph{Verdicts.} Table~\ref{tab:realindex} gives the registered lines. Read
+Table~\ref{tab:realindex} gives the registered lines. Read
 from the index candle, the rule made $+\dollar39.44$ a trade, against
 $+\dollar67.24$ from the CFD candle on the same days (583 trades), and its daily
 series fell short of the criterion ($t = 1.53$). The source-check criterion was
@@ -1746,10 +1782,6 @@ from 2022 to 2024.
 \small
 \caption{Where the two candles disagree, 2021--2026.}
 \label{tab:realindexdisagree}
-\tabnotes{\ITM{10} in the index candle's direction (in the CFD candle's direction
-on days only the CFD candle signals), \dollar\ per trade at the ask and at the
-mid; $t$ is a simple $t$-statistic. The two candles never signalled opposite
-directions. Descriptive.}
 \begin{tabular}{@{}lrrrrrrrrr@{}}
 \toprule
  & & & & & & \multicolumn{2}{c}{Index $\ge 70\%$} & \multicolumn{2}{c}{Index 60--70\%} \\
@@ -1761,20 +1793,24 @@ Index candle only & 190 & $-\dollar74.14$ & $-\dollar36.80$ & 45\% & $-1.68$ & 9
 CFD candle only & 63 & $-\dollar45.92$ & $-\dollar15.20$ & 51\% & $-0.73$ & 0 &  & 0 &  \\
 \bottomrule
 \end{tabular}
+\tabnotes{\ITM{10} in the index candle's direction (in the CFD candle's direction
+on days only the CFD candle signals), \dollar\ per trade at the ask and at the
+mid; $t$ is a simple $t$-statistic. The two candles never signalled opposite
+directions. Descriptive.}
 \end{table}
 
-\paragraph{Where the difference comes from.} This part is descriptive. The two
-candles never pointed in opposite directions, but they often disagreed about
+The analysis of where the difference comes from is descriptive. The two candles
+never pointed in opposite directions, but they often disagreed about
 strength (Table~\ref{tab:realindexdisagree}), and the gain was confined to the
 days on which both showed a strong body. The 190 trades taken on days when only
 the index candle did lost $\dollar74.14$ a trade, and they include index candles
 of 70\% or more. Reading the index candle therefore adds a set of days without
 the effect, and these lower the mean. The correspondence of
-Section~\ref{sec:audit} survives as a statement about frequency: over 1{,}310
+Section~\ref{sec:audit} still holds as a statement about frequency: over 1{,}310
 days the two ratios have a correlation of 0.78, and the CFD's 0.60 corresponds
 to 0.69 on the index candle. It does not make the candles interchangeable, since
 17\% of index candles of 70\% or more were below 60\% on the CFD. One
-explanation, which we did not test, is that the CFD follows the futures, which
+explanation, which I did not test, is that the CFD follows the futures, which
 move first, while the index is computed from the last trades in 500 stocks and
 can show a strong candle while it catches up.
 
@@ -1782,16 +1818,14 @@ By the size of the index candle's body (Table~\ref{tab:realindextenths}), the
 option trade was profitable only from 80\% upward (438 trades, $+\dollar89$ a
 trade); that cut was not planned. The index itself moved in the candle's
 direction after candles of 70\% or more and not after candles of 60--70\%
-(Table~\ref{tab:realindexmove}), so the directional effect is present on the
-index candle, and it is the option trade's result that falls short.
+(Table~\ref{tab:realindexmove}), so the directional effect is present on the index candle, and only the option
+trade falls short.
 
 \begin{table}[htbp]
 \centering
 \small
 \caption{Option results by the index candle's body-to-range ratio, 2021--2026.}
 \label{tab:realindextenths}
-\tabnotes{\ITM{10} in the candle's direction whatever the ratio, \dollar\ per
-trade. A ratio of exactly 1 is in the last row. Descriptive.}
 \begin{tabular}{@{}lrrrrr@{}}
 \toprule
 Body / range & Days & Trades & Ask & Mid & Won \\
@@ -1808,6 +1842,8 @@ Body / range & Days & Trades & Ask & Mid & Won \\
 0.9--1.0 & 278 & 278 & $+\dollar102$ & $+\dollar137$ & 54\% \\
 \bottomrule
 \end{tabular}
+\tabnotes{\ITM{10} in the candle's direction whatever the ratio, \dollar\ per
+trade. A ratio of exactly 1 is in the last row. Descriptive.}
 \end{table}
 
 \begin{table}[htbp]
@@ -1815,9 +1851,6 @@ Body / range & Days & Trades & Ask & Mid & Won \\
 \small
 \caption{The index move after the index candle, 2021--2026.}
 \label{tab:realindexmove}
-\tabnotes{15:51 open to 15:59 close of the archived index bars, in the candle's
-direction, in basis points; $t$ is Newey--West, lag 5; ``Right'' is the share of
-non-zero moves in the candle's direction. Descriptive.}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 Index candle & Days & bps & $t$ & Right \\
@@ -1827,15 +1860,17 @@ Body 60--70\% & 141 & $+0.14$ & $+0.11$ & 51\% \\
 Body $< 60\%$ & 650 & $+0.23$ & $+0.46$ & 53\% \\
 \bottomrule
 \end{tabular}
+\tabnotes{15:51 open to 15:59 close of the archived index bars, in the candle's
+direction, in basis points; $t$ is Newey--West, lag 5; ``Right'' is the share of
+non-zero moves in the candle's direction. Descriptive.}
 \end{table}
 
 \begin{table}[htbp]
 \centering
+\renewcommand{\tabfont}{\fontsize{9}{11}\selectfont}
 \small
 \caption{The rule read from the index candle, by year.}
 \label{tab:realindexyears}
-\tabnotes{\dollar\ per trade at the ask, with the number of trades in
-parentheses. Descriptive.}
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
 Signal on the index candle & 2021 & 2022 & 2023 & 2024 & 2025 & 2026 \\
@@ -1845,10 +1880,12 @@ Body $\ge 70\%$ & $+\dollar218$ (63) & $+\dollar45$ (91) & $-\dollar19$ (110) & 
 Body 60--70\% & $-\dollar179$ (25) & $-\dollar157$ (21) & $+\dollar109$ (26) & $-\dollar104$ (23) & $+\dollar285$ (16) & $-\dollar16$ (20) \\
 \bottomrule
 \end{tabular}
+\tabnotes{\dollar\ per trade at the ask, with the number of trades in
+parentheses. Descriptive.}
 \end{table}
 
-\paragraph{Limits.} The days and their option outcomes are those of the earlier
-confirmation; only the candle changed, so the registered lines test the source of
+The study has limits. The days and their option outcomes are those of the
+earlier confirmation; only the candle changed, so the registered lines test the source of
 the signal and nothing else. The archive is a vendor's stored bar, which need not
 equal the bar shown live, and 12 sessions had none; on those the CFD rule's known
 result was ordinary ($+\dollar22$ a day against $+\dollar30$ on the others). The
@@ -1859,7 +1896,7 @@ every real-price study, entry is at the quote of the instant the candle closes.
 \section{The rule on the SPY candle}
 \label{sec:spycandle}
 
-The index-candle study left a practical gap. The candle that met its criterion,
+The index-candle study left a practical problem. The candle that met its criterion,
 the CFD's, cannot be seen live, and the candle that can, the index's, did not
 meet it. The CFD follows the futures, and SPY, the exchange-traded fund, trades
 live and follows them as well. A further pre-registered study therefore read the
@@ -1869,9 +1906,11 @@ option outcomes, and the study's second line was chosen after the agreement of
 two candles had been seen to do well. The plan was locked before any SPY candle
 was joined with a price, which prevents further adaptation but does not remove
 that selection. Its lines are therefore retrospective numerical criteria, not an
-independent confirmation, a new holdout or an established trading edge.
+independent confirmation, a new holdout or an established trading edge. Read from
+the SPY candle, the rule met those criteria, and the gain was again confined to
+sessions on which all three candles showed a strong body.
 
-\paragraph{Design.} The archive, from CNBC as for the index, holds a valid SPY
+The archive, from CNBC as for the index, holds a valid SPY
 15:50 bar on 1{,}312 of the 1{,}322 sessions with option quotes and an official
 close (99.2\%). Checks made before the lock, on price levels only, showed that
 the bar labelled 15:50 is the same minute as the index bar in every year, that
@@ -1889,14 +1928,10 @@ band of 70\% or more, also require a Holm-adjusted $p \le 0.05$.
 
 \begin{table}[htbp]
 \centering
+\renewcommand{\tabfont}{\fontsize{9}{11}\selectfont}
 \small
 \caption{The rule read from the SPY candle, 2021--2026.}
 \label{tab:spycandle}
-\tabnotes{One \ITM{10} contract at the 15:51 ask in the SPY candle's direction,
-held to settlement, 2021-01-01 to 2026-10-20. The first row is the primary line
-and the next two are the secondary lines; Holm $p$ is adjusted across those two.
-Per day is the mean of the daily series; $t$ is Newey--West, lag 5. The last two
-rows are descriptive. Pre-registered, retrospective.}
 \begin{tabular}{@{}lrrrrrrrl@{}}
 \toprule
 Signal & Trades & \$/trade & At mid & Won & \$/day & $t$ & Holm $p$ & Reading \\
@@ -1909,10 +1944,15 @@ SPY body 60--70\% & 154 & $-\dollar4.14$ & $+\dollar38.66$ & 49\% & & & & descri
 CFD rule, same days & 582 & $+\dollar68.84$ & $+\dollar107.33$ & 54\% & & & & descriptive \\
 \bottomrule
 \end{tabular}
+\tabnotes{One \ITM{10} contract at the 15:51 ask in the SPY candle's direction,
+held to settlement, 2021-01-01 to 2026-10-20. The first row is the primary line
+and the next two are the secondary lines; Holm $p$ is adjusted across those two.
+Per day is the mean of the daily series; $t$ is Newey--West, lag 5. The last two
+rows are descriptive. Pre-registered, retrospective.}
 \end{table}
 
-\paragraph{Verdicts.} All three registered lines met their retrospective criteria
-(Table~\ref{tab:spycandle}). Read from the SPY candle, the rule made
+Table~\ref{tab:spycandle} shows that all three registered lines met their
+retrospective criteria. Read from the SPY candle, the rule made
 $+\dollar71.74$ a trade ($t = 2.35$), about what the CFD candle made on the same
 days and nearly twice what the index candle made. The band of 70\% or more was
 the strongest line and was positive in each of the six years
@@ -1921,11 +1961,10 @@ sources.
 
 \begin{table}[htbp]
 \centering
+\renewcommand{\tabfont}{\fontsize{9}{11}\selectfont}
 \small
 \caption{The rule read from the SPY candle, by year.}
 \label{tab:spyyears}
-\tabnotes{\dollar\ per trade at the ask, with the number of trades in
-parentheses. Descriptive.}
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
 Signal & 2021 & 2022 & 2023 & 2024 & 2025 & 2026 \\
@@ -1936,17 +1975,18 @@ SPY body $\ge 70\%$ & $+\dollar281$ (34) & $+\dollar141$ (46) & $+\dollar30$ (70
 SPY body 60--70\% & $+\dollar40$ (17) & $-\dollar91$ (32) & $+\dollar91$ (28) & $-\dollar56$ (22) & $-\dollar102$ (28) & $+\dollar117$ (27) \\
 \bottomrule
 \end{tabular}
+\tabnotes{\dollar\ per trade at the ask, with the number of trades in
+parentheses. Descriptive.}
 \end{table}
 
-\paragraph{Three candles.} This part is descriptive. A strong SPY candle is
+The comparison of the three candles is descriptive. A strong SPY candle is
 nearly always a strong CFD candle: 94\% of SPY candles of 70\% or more were CFD
 signals (Table~\ref{tab:spycross}). The gain was confined to sessions on which
 all three candles showed a strong body (435 trades, $+\dollar112.78$ a trade;
 Table~\ref{tab:spythree}), and every other combination lost on average,
 including the index and CFD candles signalling without SPY. No single row of
-that table is significant on its own, but together they repeat the finding of
-Section~\ref{sec:realindex}: a strong body on only some of the candles is not
-the signal. By the size of the SPY candle's body (Table~\ref{tab:spytenths}), the
+that table is significant on its own, but together they repeat the finding of Section~\ref{sec:realindex} that a
+strong body on only some of the candles carries no edge. By the size of the SPY candle's body (Table~\ref{tab:spytenths}), the
 trade was profitable in every tenth from 70\% upward, a lower cut than the index
 candle's 80\%; below 70\% only one tenth, 0.1--0.2, was positive. The index moved
 in the SPY candle's direction after SPY candles of 70\% or more
@@ -1957,8 +1997,6 @@ in the SPY candle's direction after SPY candles of 70\% or more
 \small
 \caption{Where a SPY candle's band falls on the other two candles.}
 \label{tab:spycross}
-\tabnotes{The share of each SPY band's sessions in each band of the CFD candle
-and of the index candle, 2021--2026. Descriptive.}
 \begin{tabular}{@{}llrrrr@{}}
 \toprule
 Other candle & SPY band & Days & Other $< 60\%$ & Other 60--70\% & Other $\ge 70\%$ \\
@@ -1972,6 +2010,8 @@ Index & SPY 60--70\% & 154 & 9\% & 18\% & 73\% \\
 Index & SPY $< 60\%$ & 780 & 74\% & 12\% & 14\% \\
 \bottomrule
 \end{tabular}
+\tabnotes{The share of each SPY band's sessions in each band of the CFD candle
+and of the index candle, 2021--2026. Descriptive.}
 \end{table}
 
 \begin{table}[htbp]
@@ -1979,10 +2019,6 @@ Index & SPY $< 60\%$ & 780 & 74\% & 12\% & 14\% \\
 \small
 \caption{Which of the three candles show a strong body, 2021--2026.}
 \label{tab:spythree}
-\tabnotes{\ITM{10} in the direction of the first signalling candle in the order
-SPY, index, CFD; 1{,}300 sessions with all three candles; \dollar\ per trade at
-the ask and at the mid; $t$ is a simple $t$-statistic. No session had signalling
-candles in opposite directions. Descriptive.}
 \begin{tabular}{@{}cccrrrrrr@{}}
 \toprule
 SPY & Index & CFD & Days & Trades & Ask & Mid & Won & $t$ \\
@@ -1997,6 +2033,10 @@ yes & -- & -- & 6 & 6 & $-\dollar401.42$ & $-\dollar378.09$ & 33\% & $-1.25$ \\
 -- & -- & -- & 523 & 0 & & & & \\
 \bottomrule
 \end{tabular}
+\tabnotes{\ITM{10} in the direction of the first signalling candle in the order
+SPY, index, CFD; 1{,}300 sessions with all three candles; \dollar\ per trade at
+the ask and at the mid; $t$ is a simple $t$-statistic. No session had signalling
+candles in opposite directions. Descriptive.}
 \end{table}
 
 \begin{table}[htbp]
@@ -2004,8 +2044,6 @@ yes & -- & -- & 6 & 6 & $-\dollar401.42$ & $-\dollar378.09$ & 33\% & $-1.25$ \\
 \small
 \caption{Option results by the SPY candle's body-to-range ratio, 2021--2026.}
 \label{tab:spytenths}
-\tabnotes{\ITM{10} in the candle's direction whatever the ratio, \dollar\ per
-trade. A ratio of exactly 1 is in the last row. Descriptive.}
 \begin{tabular}{@{}lrrrrr@{}}
 \toprule
 Body / range & Days & Trades & Ask & Mid & Won \\
@@ -2022,6 +2060,8 @@ Body / range & Days & Trades & Ask & Mid & Won \\
 0.9--1.0 & 99 & 99 & $+\dollar81$ & $+\dollar112$ & 55\% \\
 \bottomrule
 \end{tabular}
+\tabnotes{\ITM{10} in the candle's direction whatever the ratio, \dollar\ per
+trade. A ratio of exactly 1 is in the last row. Descriptive.}
 \end{table}
 
 \begin{table}[htbp]
@@ -2029,9 +2069,6 @@ Body / range & Days & Trades & Ask & Mid & Won \\
 \small
 \caption{The index move after the SPY candle, 2021--2026.}
 \label{tab:spymove}
-\tabnotes{15:51 open to 15:59 close of the archived index bars, in the SPY
-candle's direction, in basis points; $t$ is Newey--West, lag 5; ``Right'' is the
-share of non-zero moves in the candle's direction. Descriptive.}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
 SPY candle & Days & bps & $t$ & Right \\
@@ -2041,9 +2078,12 @@ SPY body 60--70\% & 166 & $+1.26$ & $+1.20$ & 56\% \\
 SPY body $< 60\%$ & 835 & $+0.35$ & $+0.74$ & 55\% \\
 \bottomrule
 \end{tabular}
+\tabnotes{15:51 open to 15:59 close of the archived index bars, in the SPY
+candle's direction, in basis points; $t$ is Newey--West, lag 5; ``Right'' is the
+share of non-zero moves in the candle's direction. Descriptive.}
 \end{table}
 
-\paragraph{Limits.} This is the third source tried on the same outcomes, so its
+Several limits apply. SPY is the third source tried on the same outcomes, so its
 $t$-statistics overstate what a fresh sample would support, and the days are not
 new. The result belongs to one vendor's archived SPY candle: a second vendor's
 candle differed by a cent or two on about a third of the sessions compared,
@@ -2055,7 +2095,8 @@ result, and entry is at the quote of the instant the candle closes. Since the
 run, the live alert reads the SPY candle as well as the index candle and records
 both, so the comparison continues on new days.
 
-\paragraph{The rule now in use (descriptive).} After the SPY study the live alert was changed to act on one rule
+The rule now in use is descriptive and was not registered. After the SPY study
+the live alert was changed to act on one rule
 built from its lines: the SPY 15:50 candle in its band of 70\% or more, and the index candle at 60\% or more in the
 same direction; \ITM{10} in that direction at the 15:51 ask, held to settlement. This is the intersection of two
 cells the study reported, not a registered line of its own, and it is nearly the 70\% band itself: of that band's
@@ -2076,10 +2117,6 @@ and the decision right after 15:51:00, and logs every session's three candles an
 \small
 \caption{The rule now in use, by year.}
 \label{tab:rulenow}
-\tabnotes{SPY 15:50 candle of 70\% or more and index candle of 60\% or more in the
-same direction, \ITM{10} at the 15:51 ask, held to settlement, one contract.
-Sessions are full sessions; expiries were not daily before 2022. Won is the number
-of profitable trades. Descriptive; not a registered line.}
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
 Year & Sessions & Trades & Share & \$/trade & Total & Won \\
@@ -2094,6 +2131,10 @@ Year & Sessions & Trades & Share & \$/trade & Total & Won \\
 All & 1{,}446 & 365 & 25\% & $+\dollar101$ & $+\dollar36{{,}}986$ & 199 \\
 \bottomrule
 \end{tabular}
+\tabnotes{SPY 15:50 candle of 70\% or more and index candle of 60\% or more in the
+same direction, \ITM{10} at the 15:51 ask, held to settlement, one contract.
+Sessions are full sessions; expiries were not daily before 2022. Won is the number
+of profitable trades. Descriptive; not a registered line.}
 \end{table}
 
 % =====================================================================
@@ -2101,16 +2142,18 @@ All & 1{,}446 & 365 & 25\% & $+\dollar101$ & $+\dollar36{{,}}986$ & 199 \\
 \label{sec:search}
 
 The studies so far fixed the candle and its cut and asked whether that rule
-worked. A last pre-registered study asked the broader question: among the
-closing candles, cuts, directions and strikes near the rule, which setting does
-best on real asks, and is the best one better than luck? The plan was locked
+worked. A last pre-registered study asked a broader question, namely which setting
+among the closing candles, cuts, directions and strikes near the rule does best
+on real asks, and whether the best one is better than luck. The plan was locked
 after every earlier study, and two of its three candle sources, the SPY candle
 and the agreement of the SPY and index candles, were chosen after their results
 had been seen. It therefore guards against further selection but not against
 that history, and it set aside in advance every 15:50 setting, because those had
 already been examined on the later years and could not be tested on them afresh.
+The search chose a 15:50 setting again, so nothing went to the test, and no other
+closing minute beat the 15:50 candle on the tuning years.
 
-\paragraph{Design.} The search covers 7{,}128 settings: three candle
+The search covers 7{,}128 settings: three candle
 sources (the index candle, the SPY candle, and the two agreeing in direction),
 the eleven one-minute candles from 15:45 to 15:55, twelve body cuts from 40\% to
 95\%, trading with or against the candle, and nine strikes from \ITM{20} to
@@ -2135,12 +2178,6 @@ and 296 on the test days). It also passed synthetic self-tests and a full trial 
 \small
 \caption{The best settings on 2021--2023.}
 \label{tab:searchtune}
-\tabnotes{The ten eligible settings with the highest score, of 387
-eligible among 7{,}128. Score is the mean profit per day averaged with the
-same setting one cut above and below; \$/day is the setting's own mean over
-625 sessions. The halves are 2021-01-01 to 2022-09-30 and 2022-10-01 to
-2023-12-31. One contract at the ask, held to settlement, \$0.09 in fees.
-Pre-registered.}
 \begin{tabular}{@{}llllrrrrrr@{}}
 \toprule
 Source & Candle & Body & Side & Strike & Score & \$/day & Trades & First half & Second half \\
@@ -2157,11 +2194,16 @@ SPY & 15:54 & $\ge 40\%$ & With & \ITM{5} & $+\dollar31.46$ & $+\dollar35.46$ & 
 Both & 15:54 & $\ge 45\%$ & With & \ITM{5} & $+\dollar31.40$ & $+\dollar27.58$ & 283 & $+\dollar45.98$ & $+\dollar8.75$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{The ten eligible settings with the highest score, of 387
+eligible among 7{,}128. Score is the mean profit per day averaged with the
+same setting one cut above and below; \$/day is the setting's own mean over
+625 sessions. The halves are 2021-01-01 to 2022-09-30 and 2022-10-01 to
+2023-12-31. One contract at the ask, held to settlement, \$0.09 in fees.
+Pre-registered.}
 \end{table}
 
-\paragraph{Result.} The search chose a 15:50 setting: the index candle with a
-body of 80\% or more, traded in its direction with \ITM{20}
-(Table~\ref{tab:searchtune}). Because 15:50 settings were set aside, nothing
+Table~\ref{tab:searchtune} shows that the search chose a 15:50 setting: the index
+candle with a body of 80\% or more, traded in its direction with \ITM{20}. Because 15:50 settings were set aside, nothing
 went to the test, and this choice can be checked only on later sessions. It also
 missed the luck bar: the shifted searches reached its score in 9 of
 195 cases ($p = 0.051$; median best score $+\dollar20.11$, 95th
@@ -2176,9 +2218,6 @@ setting at all.
 \small
 \caption{The best eligible setting for each candle, 2021--2023.}
 \label{tab:searchminutes}
-\tabnotes{As in Table~\ref{tab:searchtune}, the highest-scoring eligible
-setting among those that read the given candle. Entry is at the next minute.
-Pre-registered.}
 \begin{tabular}{@{}llllrrrr@{}}
 \toprule
 Candle & Source & Body & Side & Strike & Score & \$/day & Trades \\
@@ -2196,9 +2235,12 @@ Candle & Source & Body & Side & Strike & Score & \$/day & Trades \\
 15:55 & \multicolumn{4}{l}{No eligible setting} & & & \\
 \bottomrule
 \end{tabular}
+\tabnotes{As in Table~\ref{tab:searchtune}, the highest-scoring eligible
+setting among those that read the given candle. Entry is at the next minute.
+Pre-registered.}
 \end{table}
 
-\paragraph{The whole period.} This part is descriptive. After the decision,
+The ranking over the whole period is descriptive. After the decision,
 the grid was ranked on all of 2021--2026 by mean profit per day, among settings
 with at least 200 trades and prices for 95\% of their signals. All fifteen
 leading settings were 15:50 candles traded in their direction, 10 of them
@@ -2221,11 +2263,6 @@ ask.
 \small
 \caption{The leading settings over 2021--2026, all on the 15:50 candle.}
 \label{tab:searchwhole}
-\tabnotes{The ten settings with the highest mean profit per day on 2021-01-01 to
-2026-10-20 among 3{,}887 with at least 200 trades and prices
-for 95\% of their signals; all trade in the candle's direction. $t$ is
-Newey--West, lag 5. Ranked after the tuning decision on days already seen.
-Descriptive.}
 \begin{tabular}{@{}lllrrrrr@{}}
 \toprule
 Source & Body & Strike & \$/day & $t$ & Trades & \$/trade & Won \\
@@ -2242,6 +2279,11 @@ Both & $\ge 60\%$ & \ITM{15} & $+\dollar32.10$ & $+2.53$ & 503 & $+\dollar82.84$
 SPY & $\ge 60\%$ & \ITM{20} & $+\dollar31.92$ & $+2.49$ & 524 & $+\dollar79.92$ & 54\% \\
 \bottomrule
 \end{tabular}
+\tabnotes{The ten settings with the highest mean profit per day on 2021-01-01 to
+2026-10-20 among 3{,}887 with at least 200 trades and prices
+for 95\% of their signals; all trade in the candle's direction. $t$ is
+Newey--West, lag 5. Ranked after the tuning decision on days already seen.
+Descriptive.}
 \end{table}
 
 \begin{table}[htbp]
@@ -2249,11 +2291,6 @@ SPY & $\ge 60\%$ & \ITM{20} & $+\dollar31.92$ & $+2.49$ & 524 & $+\dollar79.92$ 
 \small
 \caption{The 15:50 settings examined earlier, by period.}
 \label{tab:searchleads}
-\tabnotes{The 15:50 candle traded in its direction, one contract at the ask,
-held to settlement. The first row is the index-candle rule; the rest are the
-settings the plan set aside as examined. ``Both'' requires the index and SPY
-candles to pass the cut in the same direction. $t$ is Newey--West, lag 5.
-Descriptive.}
 \begin{tabular}{@{}lrrrrrr@{}}
 \toprule
  & \multicolumn{3}{c}{2021--2023} & \multicolumn{3}{c}{2024--2026} \\
@@ -2274,10 +2311,15 @@ Both $\ge 60\%$, \ITM{10} & $+\dollar34.52$ & $+2.11$ & 216 & $+\dollar28.30$ & 
 Both $\ge 60\%$, \ITM{20} & $+\dollar32.54$ & $+1.84$ & 217 & $+\dollar36.69$ & $+1.99$ & 288 \\
 \bottomrule
 \end{tabular}
+\tabnotes{The 15:50 candle traded in its direction, one contract at the ask,
+held to settlement. The first row is the index-candle rule; the rest are the
+settings the plan set aside as examined. ``Both'' requires the index and SPY
+candles to pass the cut in the same direction. $t$ is Newey--West, lag 5.
+Descriptive.}
 \end{table}
 
-\paragraph{Which candle predicts the index.} This part is descriptive. Without
-options, the same signals can be scored on the index move itself, from the next
+The question of which candle predicts the index move is also descriptive.
+Without options, the same signals can be scored on the index move itself, from the next
 minute's open to the 15:59 close in the candle's direction
 (Table~\ref{tab:searchmove}). On 2021--2026 the ten largest $t$-statistics all
 belonged to 15:50 candles, led by the index candle at 85\%
@@ -2299,14 +2341,6 @@ advance.
 \small
 \caption{The index move after each closing candle.}
 \label{tab:searchmove}
-\tabnotes{The settings with the largest $t$, of 132 on 2019--2020 and
-396 on 2021--2026: the index move from the open of the minute after the
-candle to the 15:59 close, in the candle's direction, in basis points, on
-sessions on which the candle passed the cut. $t$ is Newey--West, lag 5;
-``Right'' is the share of non-zero moves in the candle's direction. Shifted
-benchmark for the largest $t$: median 3.26 and 95th percentile
-6.39 on 2019--2020, 3.00 and
-5.57 on 2021--2026. Descriptive.}
 \begin{tabular}{@{}lllrrrr@{}}
 \toprule
 Source & Candle & Body & Sessions & bps & $t$ & Right \\
@@ -2331,13 +2365,21 @@ Both & 15:50 & $\ge 70\%$ & 390 & $+3.43$ & $+4.59$ & 58\% \\
 Both & 15:50 & $\ge 55\%$ & 629 & $+2.61$ & $+4.58$ & 57\% \\
 \bottomrule
 \end{tabular}
+\tabnotes{The settings with the largest $t$, of 132 on 2019--2020 and
+396 on 2021--2026: the index move from the open of the minute after the
+candle to the 15:59 close, in the candle's direction, in basis points, on
+sessions on which the candle passed the cut. $t$ is Newey--West, lag 5;
+``Right'' is the share of non-zero moves in the candle's direction. Shifted
+benchmark for the largest $t$: median 3.26 and 95th percentile
+6.39 on 2019--2020, 3.00 and
+5.57 on 2021--2026. Descriptive.}
 \end{table}
 
-\paragraph{Limits.} The search reuses the 2021--2026 outcomes of the earlier
+The search also has limits. It reuses the 2021--2026 outcomes of the earlier
 studies, and two of its candle sources were chosen with knowledge of them, so
 its luck diagnostic corrects for the 7{,}128 settings but not for that
 history. Its choice was not clearly beyond luck and earned almost all of its
-tuning gain before October 2022. What it adds is comparative: no other closing minute, cut,
+tuning gain before October 2022. The search is still useful as a comparison. No other closing minute, cut,
 direction or strike beat the 15:50 candle on 2021--2023, and settings that ask
 for a cleaner candle (80\% or more on the index, 70\% or more on SPY, or the
 two candles agreeing) made more than the 60\% rule on 2021--2023 and between
@@ -2349,6 +2391,8 @@ November 2026 can test.
 % =====================================================================
 \section{Closing-auction imbalances}
 \label{sec:imbalance}
+
+
 
 From 15:50~ET the New York Stock Exchange publishes the closing-auction imbalance of the stocks it lists, and Nasdaq
 disseminates an early imbalance indicator for its own stocks every ten seconds.\footnote{The NYSE moved its
@@ -2362,7 +2406,7 @@ more often on days when its candle points the same way as the published imbalanc
 other way. A pre-registered study (plan locked 2026-11-10 19:37 UTC, one registered run) tested this prediction on the rule's
 644 signal days of 2021--2026, the days of its holdout.
 
-\paragraph{Design.} For each year the study used the 50 largest common-stock positions of SPY at the previous
+For each year the study used the 50 largest common-stock positions of SPY at the previous
 year-end, from the fund's N-PORT reports to the SEC; they held between 51\% and 63\% of its net assets. On each signal day it
 bought from Databento the imbalance messages that each stock's listing exchange sent between 15:50 and 16:00 (NYSE
 Pillar for NYSE-listed stocks, Nasdaq TotalView-ITCH for Nasdaq-listed ones). For each stock it kept the first
@@ -2377,7 +2421,8 @@ which decide nothing, ask whether the candle agrees with the imbalance on more t
 whether the imbalance direction alone predicts the move (H3), with a Holm correction. A block bootstrap gives an
 interval for $d$, and the robustness checks of Table~\ref{tab:imbtest} were fixed in the plan, as was the wording
 of the verdict. By the plan's power calculation, which treats days as independent, 80\% power at the bar needs a
-true $d$ of about 11 to 13 points: the test can detect a large concentration of the edge on agreeing days, not a modest one.
+true $d$ of about 11 to 13 points, so the test can detect only a large
+concentration of the edge on agreeing days.
 
 Every signal day was classified. All 50 stocks had a usable first record on each of the 644 days, and the first
 closing record of the minute arrived a median of about 0.1 seconds after 15:50:00 on both exchanges (at most
@@ -2387,14 +2432,6 @@ closing record of the minute arrived a median of about 0.1 seconds after 15:50:0
 \centering
 \caption{The closing-imbalance test: the rule's hit rate on days that agree and disagree with the 15:50 imbalance.}
 \label{tab:imbtest}
-\tabnotes{Signal days 2021--2026; all 644 were classified. Cells give the value and, in brackets, the number of
-days (trades for the option P\&L). Differences of hit rates are in percentage points; $t$ uses the standard error
-of two independent proportions, and the move and option P\&L rows use Welch's $t$. The bootstrap draws 20-day blocks
-of the 1{,}446 sessions, 10{,}000 of 10{,}000 draws kept. H2 and H3 are exact one-sided binomial tests
-against one half (the half benchmark is descriptive), with a Holm correction: H2 rejects,
-H3 does not reject. Panel~B was fixed in the plan and cannot change the verdict.
-Move: from the 15:51 open to the 15:59 close in the candle's direction, basis points. Option P\&L: \ITM{10} at the
-15:51 ask, held to settlement, \$0.09 fee, on the 585 priced trades.}
 \begin{tabular}{@{}lrrrr@{}}
 \toprule
  & Agreeing days & Disagreeing days & Difference & Statistic \\
@@ -2414,19 +2451,20 @@ Move in the candle's direction (bp) & $2.41$ (469) & $2.24$ (175) & $+0.16$ & $t
 Option P\&L, \$ a trade & $+\dollar80.43$ (423) & $+\dollar33.58$ (162) & $+\dollar46.85$ & $t = 0.79$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{Signal days 2021--2026; all 644 were classified. Cells give the value and, in brackets, the number of
+days (trades for the option P\&L). Differences of hit rates are in percentage points; $t$ uses the standard error
+of two independent proportions, and the move and option P\&L rows use Welch's $t$. The bootstrap draws 20-day blocks
+of the 1{,}446 sessions, 10{,}000 of 10{,}000 draws kept. H2 and H3 are exact one-sided binomial tests
+against one half (the half benchmark is descriptive), with a Holm correction: H2 rejects,
+H3 does not reject. Panel~B was fixed in the plan and cannot change the verdict.
+Move: from the 15:51 open to the 15:59 close in the candle's direction, basis points. Option P\&L: \ITM{10} at the
+15:51 ask, held to settlement, \$0.09 fee, on the 585 priced trades.}
 \end{table}
 
 \begin{table}[htbp]
 \centering
 \caption{Signal days that agree and disagree with the 15:50 closing imbalance, by year.}
 \label{tab:imbyear}
-\tabnotes{Signal days of the rule (a 15:50 body of 60\% or more), 2021--2026. A day agrees when the sign of the
-summed dollar imbalance of the 50 largest stocks, from each stock's first closing-imbalance record received in the
-15:50 minute, equals the candle's direction. Every signal day was classified, so no day is unclassified. Hit rate:
-share of days on which the CFD moved from the 15:51 open to the 15:59 close in the candle's direction, with its
-Wilson 95\% interval in percent; bp: the mean of that move in the candle's direction, in basis points. Over all
-days the difference in hit rates is $-5.9$ points ($t = -1.35$), with a 20-day block-bootstrap 95\%
-interval from $-14.8$ to $+4.0$ points.}
 \begin{tabular}{@{}lrrlrrlr@{}}
 \toprule
  & & \multicolumn{3}{c}{Agreeing days} & \multicolumn{3}{c}{Disagreeing days} \\
@@ -2443,11 +2481,19 @@ Year & Days & $n$ & Hit rate (95\% CI) & bp & $n$ & Hit rate (95\% CI) & bp \\
 All & 644 & 469 & 55.9\% (51--60) & $2.41$ & 175 & 61.7\% (54--69) & $2.24$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{Signal days of the rule (a 15:50 body of 60\% or more), 2021--2026. A day agrees when the sign of the
+summed dollar imbalance of the 50 largest stocks, from each stock's first closing-imbalance record received in the
+15:50 minute, equals the candle's direction. Every signal day was classified, so no day is unclassified. Hit rate:
+share of days on which the CFD moved from the 15:51 open to the 15:59 close in the candle's direction, with its
+Wilson 95\% interval in percent; bp: the mean of that move in the candle's direction, in basis points. Over all
+days the difference in hit rates is $-5.9$ points ($t = -1.35$), with a 20-day block-bootstrap 95\%
+interval from $-14.8$ to $+4.0$ points.}
 \end{table}
 
-\paragraph{Results.} The candle and the published imbalance usually pointed the same way: they agreed on
-469 of the 644 days (72.8\%), far more often than half (H2, $p = 3.1\times10^{-32}$).
-Agreement did not make the candle more accurate (Table~\ref{tab:imbtest}). It was right on 55.9\% of
+Table~\ref{tab:imbtest} reports the results. The candle and the published
+imbalance usually pointed the same way: they agreed on 469 of the 644 days
+(72.8\%), far more often than half (H2, $p = 3.1\times10^{-32}$), but agreement did not
+make the candle more accurate. It was right on 55.9\% of
 agreeing days and on 61.7\% of disagreeing days, so $d = -5.9$ points (se
 4.3, $t = -1.35$), and H1 did not pass. The block-bootstrap interval of $d$, from
 $-14.8$ to $+4.0$ points, lies below the 11 to 13 points that the test was designed to detect.
@@ -2458,7 +2504,7 @@ kinds of day ($2.41$ against $2.24$ basis points), and the option trade made mor
 days ($+\dollar80.43$ against $+\dollar33.58$ a trade), but not significantly ($t = 0.79$). By year
 (Table~\ref{tab:imbyear}), disagreeing days had the higher hit rate in five of the six years, all but 2024.
 
-\paragraph{What the result means.} In the words the plan fixed in advance, the prediction was not confirmed, the
+In the words the plan fixed in advance, the prediction was not confirmed, the
 test has limited power, and a failure does not refute the auction explanation. The price may adjust within the 15:50
 candle itself and leave little after 15:51, imbalances change after their first publication, the stocks'
 imbalances can offset one another in $D$, and 50 stocks are only part of the index. The high agreement is itself an
@@ -2473,12 +2519,12 @@ depends on the size of the imbalance, were outside the plan.
 \section{Forward evidence}
 \label{sec:forward}
 
+
+
 \begin{table}[htbp]
 \centering
 \caption{Forward signals at real Robinhood prices, 22--30 October 2026.}
 \label{tab:fwdstrikes}
-\tabnotes{Strong-body signal, four trades, \$0.09 fee, dollars per contract. Four
-trades support no conclusion.}
 \begin{tabular}{lccrr}
 \toprule
 Strike & trades & wins & total, hold to close & total, sell 15:59 \\
@@ -2493,6 +2539,8 @@ Strike & trades & wins & total, hold to close & total, sell 15:59 \\
 \OTM{15} & 4 & 0 & $-\dollar305.36$ & $-\dollar341.72$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{Strong-body signal, four trades, \$0.09 fee, dollars per contract. Four
+trades support no conclusion.}
 \end{table}
 
 From 21 October to 6 November 2026, the strong-body candle fired on seven of
@@ -2501,65 +2549,64 @@ one-minute option prices; on the others the broker's minute bars had expired
 before they were collected. Table~\ref{tab:fwdstrikes} prices the four trades at
 every strike. Three of the four signals were right, by 5 to 8 points, which was
 enough for in-the-money options but not for out-of-the-money ones, and selling at
-15:59 was worse than holding at every strike. Four trades support no conclusion.
-At the recent effect size, confirming the option P\&L would take many years of
+15:59 was worse than holding at every strike. Four trades are too few to conclude anything, and at the recent effect size,
+confirming the option P\&L would take many years of
 forward signals.
 
 % =====================================================================
 \section{Discussion}
 \label{sec:discussion}
 
+
+
 \subsection{What the evidence supports}
 
-Taken together, the studies leave the trading rule unchanged and change the
-evidence behind it. The rule, as tested, is: at 15:51, check whether the 15:50
-one-minute candle has a body of at least 60\% of its range; if it does, buy one SPXW 0DTE
-option about 10 points in the money in the candle's direction (a call 10 points
-below the rounded index after an up candle, a put 10 points above it after a
-down candle); and hold it to settlement. The candle was always read from the CFD
-feed. The signal passed a pre-registered
-holdout on index moves. At real asks the rule made money on 2021--2026, about
-two-thirds as much as the model implied. Two searches over 2{,}178 nearby
-settings found nothing reliably better, a third over 7{,}128 settings that
-included other closing candles chose the 15:50 candle again, and the
-re-validation found that the
-effect begins near a 60\% body but cannot rank the thresholds between 60\% and
-about 75\%; beyond the threshold, a larger ratio was not followed by a larger
-gain. Deep in-the-money strikes were the most
-consistent, in the model and at real prices, and no early exit improved on
-holding.
+After all of these studies the trading rule itself is unchanged, although the
+evidence behind it has changed. The rule, as tested, is to check at 15:51 whether the 15:50
+one-minute candle has a body of at least 60\% of its range and, if it does, to buy
+one SPXW 0DTE option about 10 points in the money in the candle's direction (a
+call 10 points below the rounded index after an up candle, a put 10 points above
+it after a down candle) and hold it to settlement. The candle was always read
+from the CFD feed. The signal passed a pre-registered holdout on index moves, and
+at real asks the rule made money on 2021--2026, about two-thirds as much as the
+model implied. Two searches over 2{,}178 nearby settings found nothing reliably
+better, and a third over 7{,}128 settings that included other closing candles
+chose the 15:50 candle again. The re-validation found that the effect begins near
+a 60\% body but cannot rank the thresholds between 60\% and about 75\%; beyond
+the threshold, a larger ratio was not followed by a larger gain. Deep
+in-the-money strikes were the most consistent, in the model and at real prices,
+and no early exit improved on holding.
 
-The same evidence sets the limits of that conclusion. The edge is small: about
-two index points over nine minutes, or roughly six cents per dollar of premium.
-It is concentrated in 2021--2022 and is not significant on its own since 2023.
-And it is fragile to execution. The bid-ask spread erased it before 2021, a
-one-minute delay costs a meaningful share of it, and on smaller contracts the
-spread exceeds it. A confirmation of the current rule is not proof that the rule
-is optimal, and two failed searches for something better do not show that
+The edge is small, about two index points over nine minutes, or roughly six
+cents per dollar of premium. It is concentrated in 2021--2022 and is not
+significant on its own since 2023. It is also fragile to execution: the bid-ask
+spread erased it before 2021, a one-minute delay costs a meaningful share of
+it, and on smaller contracts the spread exceeds it. Confirming the current rule
+does not show that it is the best rule, and two failed searches for something better do not show that
 nothing better exists.
 
-The confirmation is also a statement about the CFD candle. Read from the SPX
-index candle, which is what a trader sees, the rule made $+\$39.44$ a trade
-rather than $+\$67.24$ on the same days and did not meet its pre-registered
+The confirmation also applies only to the CFD candle. Read from the SPX index
+candle, which is what a trader sees, the rule made $+\$39.44$ a trade against
+$+\$67.24$ on the same days and did not meet its pre-registered
 criterion (Section~\ref{sec:realindex}). The index candle fires about as often as
 the tested rule only at a threshold of roughly 70\%, and even above 70\% the days
-on which it fired alone lost money. This is a practical limit as well as a
-statistical one: in this project the CFD candle comes from daily history files
+on which it fired alone lost money. This is a practical problem as well as a statistical one, because in this
+project the CFD candle comes from daily history files
 that appear after the session, so the live alert could at first read only the
 index candle at 15:51.
 
-The SPY candle narrows that gap. Read from it, the rule made $+\$71.74$ a trade,
+The SPY candle partly solves that problem. Read from it, the rule made $+\$71.74$ a trade,
 about what the CFD candle made on the same days, and met its retrospective
 criterion (Section~\ref{sec:spycandle}); since that study the live alert reads
 the SPY candle too and acts on a rule built from it, the SPY candle at 70\% or
-more with the index candle at 60\% or more in the same direction. Because SPY was the third source tried on the same outcomes,
-and one of its lines was chosen after agreement between candles had been seen to
-do well, this is a lead for the forward record rather than a confirmation. Across
-the three sources the pattern is the same: the gain came on sessions on which
-every candle showed a strong body, and a strong body on only some of them was not
-the signal.
+more with the index candle at 60\% or more in the same direction. Because SPY
+was the third source tried on the same outcomes, and one of its lines was chosen after agreement between candles had been seen to
+do well, I treat this as a lead for the forward record and not as a confirmation. Across
+the three sources the pattern is the same. The gain came on sessions on which
+every candle showed a strong body, and a strong body on only some of them
+carried no edge.
 
-The search of Section~\ref{sec:search} adds a comparison rather than a test. No
+The search of Section~\ref{sec:search} is a comparison and not a test. No
 other closing minute, cut, direction or strike beat the 15:50 candle on
 2021--2023, and the settings that did best over 2021--2026 were all 15:50
 candles traded in their direction, most with a deeper strike than \ITM{10}. Its
@@ -2567,19 +2614,17 @@ own choice was not clearly beyond luck, and because it fell at 15:50 it could no
 be tested on the later years. Those settings are hypotheses for the forward
 record.
 
-The test of Section~\ref{sec:imbalance} bears on why the signal exists rather than
-on whether it pays. The candle usually points the same way as the closing-auction
+The test of Section~\ref{sec:imbalance} is about why the signal exists, not whether it pays. The candle usually points the same way as the closing-auction
 imbalance published at 15:50, but it was not more accurate on the days on which it
 did, so the most direct prediction of the auction explanation was not confirmed.
-The test could detect only a large difference, so it leaves that explanation open
-rather than refuted.
+The test could detect only a large difference, so that explanation is still open.
 
 \subsection{Negative results}
 \label{sec:fails}
 
-We report the failures deliberately, because in this project they have been as
-informative as the success. Of the 41 candle features, 38 did not qualify, and
-one of the three that did, a whole-day feature, collapsed out of sample. The
+This subsection lists the failures in one place. Of the 41 candle features, 38
+did not qualify, and one of the three that did, a whole-day feature, failed out
+of sample. The
 plain 15:50 direction, without a body filter, predicts the close but not
 accurately enough to pay for an option. The pre-registered skew rule failed for
 far out-of-the-money strikes. No early exit, momentum filter or dealer-gamma
@@ -2588,95 +2633,104 @@ bids earned less than holding. At real asks the trade lost money before 2021.
 The first two grid searches failed to find a better setting, the second because
 its winner failed the luck diagnostic, and the third chose a 15:50 setting whose
 luck diagnostic missed its bar. A limit order at the mid did not capture the
-spread, and the trade did not survive on XSP or SPY. Read from the index candle,
+spread, and the trade was not confirmed on XSP or SPY. Read from the index candle,
 the rule did not meet its criterion, and its 60--70\% band showed no edge, as on
 the SPY candle. The candle was not more accurate on days on which it agreed with
-the published closing-auction imbalance.
-Finally, the forward test
-lost three signal days because the broker's minute bars expired before they were
+the published closing-auction imbalance. Finally, the forward test lost three
+signal days because the broker's minute bars expired before they were
 collected.
 
 \subsection{Limitations}
 \label{sec:limits}
 
-\begin{itemize}
-\item \textbf{No blind test.} The passing candle overlaps a known effect, and the
-2021--2026 index outcomes were reused by the real-price confirmation and by the
-later descriptive analyses.
-\item \textbf{The signal comes from a CFD.} Every trading decision uses a
-Dukascopy CFD candle rather than the SPX index itself; only the option prices
-and the settlement are real. This is now measured rather than only disclosed:
-read from the index candle, the rule made $+\$39.44$ a trade and did not meet its
+The design has several limitations, and the first is that there was no blind
+test. The passing candle overlaps a known effect, and the 2021--2026 index
+outcomes were reused by the real-price confirmation and by the later descriptive
+analyses.
+
+The signal also comes from a CFD. Every trading decision uses a Dukascopy CFD candle and not the SPX index
+itself, and only the option prices and the settlement are real. I measured how
+much this matters. Read from
+the index candle, the rule made $+\$39.44$ a trade and did not meet its
 criterion, the 60--70\% band showed no edge, and the days on which only the index
 candle fired lost money (Section~\ref{sec:realindex}). That check reused outcomes
 that had already been seen. Read from the SPY candle, the rule met a
 retrospective criterion, but SPY was the third source tried on those outcomes,
 and a second vendor's SPY candle differed by a cent or two on about a third of
 the sessions compared (Section~\ref{sec:spycandle}).
-\item \textbf{Fills.} The real-price studies assume a fill at the quoted ask at
-the open of the minute, which ignores order size and fast markets. Trade bars
-show that the contract traded near the ask, but not the size or the queue, and
-the limit-order results are proxies that assume no delay.
-\item \textbf{An approximate luck diagnostic.} Expiry frequency, volatility and
-pricing changed over the samples, so a circular shift is only an approximate
-benchmark for ``no information'', yet it decided the re-tuning study and was
-one of the gates of the final search.
-\item \textbf{A thin early sample.} Before 2016 SPXW had a same-day expiry only on
-some days, and daily expiries began in 2022, so tuning on 2013--2020 rests on a
-thin, uneven sample, and the 2021--2023 re-tuning on only three years.
-\item \textbf{Model results.} The strike and exit studies use a model calibrated
-on seven days of 2026 data. The exit rules tested at real bids
-(Section~\ref{sec:rtexit}) use one-minute snapshots and assume one contract and a
-firm bid one minute after the decision.
-\item \textbf{Timing and risk.} Entry is assumed at 15:51:00, while a person
-reacting to the candle trades seconds later. A deep in-the-money contract moves
-almost point for point with the index; at real asks the worst single trade on
-2021--2026 lost \$2{,}210 at \ITM{10}.
-\item \textbf{A small forward sample.} Four priced forward trades.
-\end{itemize}
+
+Execution adds further uncertainty. The real-price studies assume a fill at the
+quoted ask at the open of the minute, which ignores order size and fast markets.
+Trade bars show that the contract traded near the ask, but not the size or the
+queue, and the limit-order results are proxies that assume no delay. Entry is
+assumed at 15:51:00, while a person reacting to the candle trades seconds later.
+The trade also carries risk: a deep in-the-money contract moves almost point for
+point with the index, and at real asks the worst single trade on 2021--2026 lost
+\$2{,}210 at \ITM{10}.
+
+The statistical tools and the samples have limits of their own. The luck
+diagnostic is approximate. Expiry frequency, volatility and pricing changed over
+the samples, so a circular shift is only an approximate benchmark for ``no
+information'', yet it decided the re-tuning study and was one of the gates of the
+final search. The early sample is thin: before 2016 SPXW had a same-day expiry
+only on some days, and daily expiries began in 2022, so tuning on 2013--2020
+rests on a thin, uneven sample, and the 2021--2023 re-tuning on only three years.
+The strike and exit studies use a model calibrated on seven days of 2026 data,
+and the exit rules tested at real bids (Section~\ref{sec:rtexit}) use one-minute
+snapshots and assume one contract and a firm bid one minute after the decision.
+Finally, the forward sample is small, with four priced forward trades.
 
 % =====================================================================
 \section{Conclusion}
 \label{sec:conclusions}
 
-One end-of-day candle survived a pre-registered, out-of-sample test: the 15:50
-one-minute SPX candle with a strong body, traded in its own direction to the
-close. It is a known effect in a sharper form, and it has faded since 2023.
-Expressed with a deep in-the-money 0DTE option, bought at the quoted ask and held
-to settlement, it made money on 2021--2026, though less than a pricing model
-implied. Nothing tried afterwards, from re-tuned settings and early exits to
-momentum filters and smaller contracts, improved on it, and a search over other
-closing candles chose the 15:50 candle again. The bid-ask spread is
-the decisive cost: it took the whole edge before 2021, and a limit order at the
-mid does not recover it, because it misses the best days. The confirmation holds
-for the candle as the backtests read it, from a CFD that tracks the index. Read
-from the SPX index candle itself, under a plan locked in advance, the rule earned
-less and did not meet its criterion; the gain was confined to days on which both
-candles showed a strong body. Read from the SPY candle, which a trader can watch
-live, it met a retrospective criterion, with the gain again confined to sessions
-on which all three candles showed a strong body. A pre-registered test with the
-exchanges' imbalance messages found that the candle usually agrees with the
-closing-auction imbalance published at 15:50 but is no more accurate when it does,
-so that explanation of the signal was not confirmed.
+I asked whether a one-minute candle near the close predicts the
+S\&P~500 into the close, and whether the prediction can be traded with same-day
+options once the spread is paid. One candle passed a pre-registered, out-of-sample test, the 15:50 one-minute
+SPX candle with a strong body, traded in its own direction to the close. It is
+a stricter version of an effect that was already known, and it has faded since
+2023. Traded with a deep in-the-money 0DTE option bought at the quoted ask and
+held to settlement, it made money on 2021--2026, though less than a pricing
+model implied. The largest cost is the bid-ask spread, which took the whole
+edge before 2021, and a limit order at the mid does not recover it because it
+misses the best days. Re-tuned settings, early exits, momentum filters and
+smaller contracts did not improve on it, and a search over other closing candles chose the 15:50 candle
+again.
 
-The fair summary is a small lead that has passed a test at real prices when
-read from the CFD candle, has not passed when read from the index candle, has
-met a retrospective criterion when read from the SPY candle, remains sensitive to
-execution, and is worth continuing to measure; it is not an
-established edge. Three steps would sharpen the evidence. Settings suggested by
-the tuning results, such as the 15:48 candle, and the stricter 15:50 settings
-favoured by the final search should be treated as hypotheses and tested only on
-days after November 2026, under new registered plans. The forward record begun in November 2026 (Section~\ref{sec:audit}), which
-since the SPY study holds all three candles and tracks the rule the alert now acts
-on, should run until it can test, on new
-days, whether sessions on which all three candles show a strong body continue to
-beat sessions on which only some do. The SPY candle's retrospective pass is a
-reason to keep that record, not a substitute for it, and the 80\% cut on the
-index candle and the futures-lead explanation of Section~\ref{sec:realindex} are
-hypotheses for it, not findings. And
-forward collection should continue, with the number of forward days
-needed for a test fixed in advance, ideally alongside records of actual order
-fills, which alone can settle how the trade should be executed.
+The evidence has limits. The edge is small, most of it comes
+from 2021--2022, and it is fragile to execution. The confirmation holds for the
+candle as the backtests read it, from a CFD that tracks the index. Read from the
+SPX index candle itself, under a plan locked in advance, the rule earned less and
+did not meet its criterion; the gain was confined to days on which both candles
+showed a strong body. Read from the SPY candle, which a trader can watch live, it
+met a retrospective criterion, with the gain again confined to sessions on which
+all three candles showed a strong body. A pre-registered test with the
+exchanges' imbalance messages found that the candle usually agrees with the
+closing-auction imbalance published at 15:50 but is no more accurate when it
+does, so that explanation of the signal was not confirmed.
+
+One advantage of pre-registering every study is that the failed tests can be
+reported and used. Because each plan was fixed and hashed before the data it
+governs was read, a reader can see which refinements were tried and did not
+help, and which explanation the data did not confirm. To summarise, the signal
+passed a test at real prices when read from the CFD candle, did not pass when
+read from the index candle, and met a retrospective criterion when read from
+the SPY candle. It remains sensitive to execution. I think it is worth
+continuing to measure, but it is not an established edge.
+
+There are three things I would do next. Settings suggested by the tuning results,
+such as the 15:48 candle, and the stricter 15:50 settings favoured by the final
+search should be treated as hypotheses and tested only on days after November
+2026, under new registered plans. The forward record begun in November 2026
+(Section~\ref{sec:audit}), which since the SPY study holds all three candles and
+tracks the rule the alert now acts on, should run until it can test, on new days,
+whether sessions on which all three candles show a strong body continue to beat
+sessions on which only some do. The SPY candle's retrospective pass is a reason to keep that record and does
+not replace it, and the 80\% cut on the index candle and the futures-lead
+explanation of Section~\ref{sec:realindex} are hypotheses for it. Finally,
+forward collection should continue, with the number of forward days needed for
+a test fixed in advance, ideally alongside records of actual order fills,
+because only real fills can show how the trade should be executed.
 
 \paragraph{Data and code availability.} The analysis code, the pre-registration
 plans, their hash ledger and the shorter journal version of this paper are public
@@ -2690,53 +2744,56 @@ from Databento and are not redistributed.
 \begin{thebibliography}{99}
 
 \bibitem[Bachelier(1900)]{bachelier1900}
-Bachelier, L., 1900, Th\'eorie de la sp\'eculation, \emph{Annales scientifiques
-de l'\'Ecole Normale Sup\'erieure} 17, 21--86.
+Bachelier, L. (1900). Th\'eorie de la sp\'eculation. \textit{Annales
+scientifiques de l'\'Ecole Normale Sup\'erieure}, 17:21--86.
 
 \bibitem[Baltussen et al.(2021)]{bdlm2021}
-Baltussen, G., Z. Da, S. Lammers, and M. Martens, 2021, Hedging demand and
-market intraday momentum, \emph{Journal of Financial Economics} 142, 377--403.
+Baltussen, G., Z. Da, S. Lammers, and M. Martens (2021). Hedging demand and
+market intraday momentum. \textit{Journal of Financial Economics}, 142:377--403.
 
 \bibitem[Gao et al.(2018)]{ghlz2018}
-Gao, L., Y. Han, S. Z. Li, and G. Zhou, 2018, Market intraday momentum,
-\emph{Journal of Financial Economics} 129, 394--414.
+Gao, L., Y. Han, S. Z. Li, and G. Zhou (2018). Market intraday momentum.
+\textit{Journal of Financial Economics}, 129:394--414.
 
 \bibitem[Harvey et al.(2016)]{harvey2016}
-Harvey, C. R., Y. Liu, and H. Zhu, 2016, \ldots\ and the cross-section of
-expected returns, \emph{Review of Financial Studies} 29, 5--68.
+Harvey, C. R., Y. Liu, and H. Zhu (2016). \ldots\ and the cross-section of
+expected returns. \textit{Review of Financial Studies}, 29:5--68.
 
 \bibitem[Holm(1979)]{holm1979}
-Holm, S., 1979, A simple sequentially rejective multiple test procedure,
-\emph{Scandinavian Journal of Statistics} 6, 65--70.
+Holm, S. (1979). A simple sequentially rejective multiple test procedure.
+\textit{Scandinavian Journal of Statistics}, 6:65--70.
 
 \bibitem[Newey and West(1987)]{neweywest1987}
-Newey, W. K., and K. D. West, 1987, A simple, positive semi-definite,
-heteroskedasticity and autocorrelation consistent covariance matrix,
-\emph{Econometrica} 55, 703--708.
+Newey, W. K. and K. D. West (1987). A simple, positive semi-definite,
+heteroskedasticity and autocorrelation consistent covariance matrix.
+\textit{Econometrica}, 55:703--708.
 
 \bibitem[Nosek et al.(2018)]{nosek2018}
-Nosek, B. A., C. R. Ebersole, A. C. DeHaven, and D. T. Mellor, 2018, The
-preregistration revolution, \emph{Proceedings of the National Academy of
-Sciences} 115, 2600--2606.
+Nosek, B. A., C. R. Ebersole, A. C. DeHaven, and D. T. Mellor (2018). The
+preregistration revolution. \textit{Proceedings of the National Academy of
+Sciences}, 115:2600--2606.
 
 \bibitem[Wilson(1927)]{wilson1927}
-Wilson, E. B., 1927, Probable inference, the law of succession, and statistical
-inference, \emph{Journal of the American Statistical Association} 22, 209--212.
+Wilson, E. B. (1927). Probable inference, the law of succession, and statistical
+inference. \textit{Journal of the American Statistical Association}, 22:209--212.
 
 \end{thebibliography}
 \endgroup
 
 % =====================================================================
 \appendix
-\AtBeginEnvironment{tabular}{\scriptsize}
-\renewcommand{\tabnotes}[1]{\par\vspace{1pt}\parbox{\linewidth}{\scriptsize\setlength{\parindent}{0pt}#1}\par\vspace{4pt}}
 \setlength{\intextsep}{6pt plus 3pt minus 2pt}
 \counterwithin{table}{section}
 \renewcommand{\thetable}{\thesection\arabic{table}}
-\titleformat{\section}{\normalfont\Large\bfseries}{Appendix \thesection}{1em}{}
+\titleformat{\section}{\normalfont\Large\bfseries}{Appendix \thesection:}{0.5em}{}
 
 \section{Pricing model calibration}
 \label{app:cal}
+
+This appendix sets out how the Bachelier model of Section~\ref{sec:pricing} was
+calibrated and reports the model variants used in Section~\ref{sec:model}.
+
+\subsection{Volatility and skew}
 
 For a day with one-minute realised volatility $RV$, the root mean square of the
 09:31--15:50 log returns, the model sets
@@ -2754,6 +2811,8 @@ median ratio of Robinhood to CFD realised volatility over 22 overlapping days,
 and $k_{D1} = k_{RH}\,c$. The skew factor $f_j$ is the median ratio of market to
 model price across days and sides (Table~\ref{tab:cal}).
 
+\subsection{Model variants}
+
 Variant (a) is this calibration. Variant (b) uses a single constant volatility,
 variant (c) the scan's own cost assumption, and variant (d) calibrates $k$ on
 10-minute bars. The sensitivities change the half-spread, scale $k$, or drop the
@@ -2764,11 +2823,6 @@ but (b), which ignores how volatile each day was.
 \centering
 \caption{Calibrated skew factors.}
 \label{tab:cal}
-\tabnotes{``Ratios'' is the number of market-to-model price ratios behind each
-factor. $k_{RH} = 1.089$; $c = 0.978$ over 22 days; $k_{D1} = 1.065$; ten-minute
-$k = 1.319$ over 22 days. The variant (a) model move to the close has a median of
-10.10 bps (10th--90th percentile 5.72--19.20). Variant (c) uses
-$\sigma = 10.78$ points.}
 \begin{tabular}{lrrrrrrrrr}
 \toprule
 & \ITM{20} & \ITM{15} & \ITM{10} & \ITM{5} & \ATM & \OTM{5} & \OTM{10} & \OTM{15} & \OTM{20} \\
@@ -2777,15 +2831,17 @@ $f_o$ & 1.005 & 1.020 & 1.005 & 1.007 & 0.969 & 1.071 & 2.091 & 2.256 & 54.000 \
 ratios & 10 & 13 & 13 & 14 & 14 & 14 & 13 & 13 & 10 \\
 \bottomrule
 \end{tabular}
+\tabnotes{``Ratios'' is the number of market-to-model price ratios behind each
+factor. $k_{RH} = 1.089$; $c = 0.978$ over 22 days; $k_{D1} = 1.065$; ten-minute
+$k = 1.319$ over 22 days. The variant (a) model move to the close has a median of
+10.10 bps (10th--90th percentile 5.72--19.20). Variant (c) uses
+$\sigma = 10.78$ points.}
 \end{table}
 
 \begin{table}[htbp]
 \centering
 \caption{Mean modelled P\&L per contract in every variant.}
 \label{tab:variants}
-\tabnotes{Level-normalised dollars, \$0.09 fee, 644 modelled trades. Strikes 10--20
-points in the money stay between $+\$102$ and $+\$242$; at the money ranges from
-$+\$68$ to $+\$261$.}
 \begin{tabular}{lrrrrrrr}
 \toprule
 Variant & \ITM{20} & \ITM{15} & \ITM{10} & \ITM{5} & \ATM & \OTM{5} & \OTM{10} \\
@@ -2801,22 +2857,28 @@ Variant & \ITM{20} & \ITM{15} & \ITM{10} & \ITM{5} & \ATM & \OTM{5} & \OTM{10} \
 (a) no skew & $+172$ & $+174$ & $+171$ & $+166$ & $+143$ & $+106$ & $+72$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{Level-normalised dollars, \$0.09 fee, 644 modelled trades. Strikes 10--20
+points in the money stay between $+\$102$ and $+\$242$; at the money ranges from
+$+\$68$ to $+\$261$.}
 \end{table}
 
-\FloatBarrier
 \needspace{10\baselineskip}
 \section{Additional tables}
 \label{app:tables}
+
+This appendix reports three tables that support Sections~\ref{sec:refine}
+and~\ref{sec:momentum}.
+
+\subsection{The body threshold profile}
+
+Table~\ref{tab:threshold} gives the profile behind Figure~\ref{fig:threshold}
+in Section~\ref{sec:refine}.
 
 \begin{table}[htbp]
 \centering
 \renewcommand{\arraystretch}{0.92}
 \caption{The body threshold profile.}
 \label{tab:threshold}
-\tabnotes{15:50 candle, with the candle, \ITM{10}, real asks, \$0.09 fee, dollars
-per contract. Descriptive. The 2024--2026 columns were examined only after the
-re-tuning decision was recorded. At 0.85 and 0.90 the setting could not be
-eligible (fewer than 100 tuning trades).}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrrrrrr}
 \toprule
@@ -2837,19 +2899,22 @@ Body at least & trades & \$/day & \$/trade & won & trades & \$/day & \$/trade & 
 0.90 & 56 & $+11.19$ & $+124.89$ & 62\% & 95 & $+16.36$ & $+120.02$ & 55\% \\
 \bottomrule
 \end{tabular}
+\tabnotes{15:50 candle, with the candle, \ITM{10}, real asks, \$0.09 fee, dollars
+per contract. Descriptive. The 2024--2026 columns were examined only after the
+re-tuning decision was recorded. At 0.85 and 0.90 the setting could not be
+eligible (fewer than 100 tuning trades).}
 \end{table}
+
+\subsection{Momentum filters}
+
+Table~\ref{tab:momB} reports the four momentum filters of Part B of the study in
+Section~\ref{sec:momentum}.
 
 \begin{table}[htbp]
 \centering
 \renewcommand{\arraystretch}{0.92}
 \caption{Momentum filters on the candle trade (momentum study, Part B).}
 \label{tab:momB}
-\tabnotes{\ITM{10}, model variant (a), \$0.09 fee, level-normalised dollars per
-contract. R0 takes every trade; R1 takes it only when it agrees with
-$r_{\text{rod}}$, R2 with the first half-hour return, R3 with both; R4 skips it on
-strong disagreement with $r_{\text{rod}}$. 2013--2020 uses 1{,}838 paired days
-and 2021--2026 uses 1{,}446. No rule was eligible, so no confirmation test was
-run.}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrrrrrr}
 \toprule
@@ -2872,19 +2937,25 @@ R3 & 225 & 419 & $+210.59$ & $+142.18$ & $-41.20$ ($-2.80$) & & & $-0.579$ \\
 R4 & 458 & 186 & $+190.44$ & $+106.09$ & $-13.65$ ($-1.37$) & & & $-0.213$ \\
 \bottomrule
 \end{tabular}
+\tabnotes{\ITM{10}, model variant (a), \$0.09 fee, level-normalised dollars per
+contract. R0 takes every trade; R1 takes it only when it agrees with
+$r_{\text{rod}}$, R2 with the first half-hour return, R3 with both; R4 skips it on
+strong disagreement with $r_{\text{rod}}$. 2013--2020 uses 1{,}838 paired days
+and 2021--2026 uses 1{,}446. No rule was eligible, so no confirmation test was
+run.}
 \end{table}
 
+\needspace{14\baselineskip}
+\subsection{Dealer gamma}
+
+Table~\ref{tab:partc} reports the two dealer-gamma tests of Part C of the same
+study.
 
 \begin{table}[htbp]
 \centering
 \renewcommand{\arraystretch}{0.92}
 \caption{Dealer gamma (momentum study, Part C).}
 \label{tab:partc}
-\tabnotes{C1: $r_{\text{last}}$ on $r_{\text{rod}}$, the negative-gamma indicator
-$N$ and $N\cdot r_{\text{rod}}$. C2: the candle trade's model P\&L (\ITM{10}, \$0.09
-fee) on $N$. Newey--West $t$; the proxy was negative on 30\% of days. The real-ask
-row is descriptive and not in the plan; \textsuperscript{a}two-sample $t$, trades
-independent.}
 \begin{tabular}{@{}llrrrl@{}}
 \toprule
 Test & Sample & Coefficient & $t$ & $p$ & Verdict \\
@@ -2898,6 +2969,11 @@ C2, $g$ & 2021--2026, 644 trades & $+\dollar84$ & 0.96 & & descriptive \\
 Real asks, difference & 2021--2026, 585 trades & $-\dollar16$ & $-0.25$\textsuperscript{a} & & descriptive \\
 \bottomrule
 \end{tabular}
+\tabnotes{C1: $r_{\text{last}}$ on $r_{\text{rod}}$, the negative-gamma indicator
+$N$ and $N\cdot r_{\text{rod}}$. C2: the candle trade's model P\&L (\ITM{10}, \$0.09
+fee) on $N$. Newey--West $t$; the proxy was negative on 30\% of days. The real-ask
+row is descriptive and not in the plan; \textsuperscript{a}two-sample $t$, trades
+independent.}
 \end{table}
 
 \end{document}

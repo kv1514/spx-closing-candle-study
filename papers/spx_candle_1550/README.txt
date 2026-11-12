@@ -1,9 +1,16 @@
 The 15:50 Candle
 ================
 
-A shorter journal version (16 pages, 10 November 2026) is in
+A shorter journal version (19 pages, 12 November 2026) is in
 ../spx_candle_1550_journal/; this working paper is its Internet
 Appendix. See that folder's README.txt.
+
+Revision of 12 November 2026: the paper is re-set at 12 pt with the
+explanatory note below each table and figure, and the text is
+rewritten in the first person. The introduction now says where the
+question came from. No number, table or figure changed; a script
+checked every number in the new text against the previous version.
+42 pages.
 
 Overleaf: New Project -> Upload Project -> drop this zip.
 It compiles as-is with pdfLaTeX (also with XeLaTeX/tectonic).

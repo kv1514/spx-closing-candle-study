@@ -3,8 +3,8 @@
 **A pre-registered study of an end-of-day signal in same-day (0DTE) SPX options.**
 Kausthubh Veldanda, November 2026.
 
-- Paper: [`papers/spx_candle_1550_journal/main.pdf`](papers/spx_candle_1550_journal/main.pdf) (16 pages)
-- Full working paper with every study: [`papers/spx_candle_1550/main.pdf`](papers/spx_candle_1550/main.pdf) (37 pages)
+- Paper: [`papers/spx_candle_1550_journal/main.pdf`](papers/spx_candle_1550_journal/main.pdf) (19 pages)
+- Full working paper with every study: [`papers/spx_candle_1550/main.pdf`](papers/spx_candle_1550/main.pdf) (42 pages)
 
 > Research only. Nothing here is investment advice, and no live trading results are claimed.
 

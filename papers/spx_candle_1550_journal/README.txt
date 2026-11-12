@@ -2,9 +2,9 @@ The 15:50 Candle: journal version
 =================================
 
 A shorter manuscript cut from the working paper in
-../spx_candle_1550/ (10 November 2026). The working paper (37 pages)
+../spx_candle_1550/ (10 November 2026). The working paper (42 pages)
 stays the full record and serves as the Internet Appendix this
-version cites. 16 pages, about 9,300 words against about 21,100;
+version cites. 19 pages against 42;
 11 tables and 1 figure.
 
 Layout (10 November 2026, later the same day): the standard LaTeX
@@ -45,6 +45,12 @@ Options"), a line under the author's name with the university and
 e-mail, and the data statement now gives the public repository
 (github.com/kv1514/spx-closing-candle-study). The blind copy keeps
 "Anonymous for review" and says the link is withheld. Still 16 pages.
+
+Revision of 12 November 2026: re-set at 12 pt with the explanatory
+note below each table and figure, and the text rewritten in the first
+person. The introduction now says where the question came from. No
+number, table or figure changed; a script checked every number in the
+new text against the previous version. 19 pages.
 
 Files
   main.tex         the source (bibliography inline; no bibtex pass)
